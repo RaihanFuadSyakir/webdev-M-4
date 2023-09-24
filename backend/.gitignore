@@ -1,0 +1,7 @@
+# Ignore .env file
+.env
+
+# Ignore any files named 'finance-management'
+finance-management
+finance-management.exe
+finance-management.exe~
