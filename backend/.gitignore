@@ -3,5 +3,4 @@
 
 # Ignore any file named 'finance-management'
 finance-management
-finance-management.exe
-finance-management.exe~
+finance-management.exe*
