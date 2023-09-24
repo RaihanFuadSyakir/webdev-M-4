@@ -19,11 +19,11 @@ func NewUserController(db *gorm.DB) *UserController {
 func (uc *UserController) GetUser(c *fiber.Ctx) error {
 	var user models.User
 
-	// Retrieve username parameter from the URL
-	username := c.Params("username")
-
-	// Retrieve user data from the database based on the username
-	if err := uc.DB.Where("username = ?", username).First(&user).Error; err != nil {
+	// Retrieve the parameter from the URL (it can be either username or email)
+	param := c.Query("identifier")
+	fmt.Println(param)
+	// Retrieve user data from the database based on the username or email
+	if err := uc.DB.Where("username = ? OR email = ?", param, param).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "User not found",
@@ -80,6 +80,36 @@ func (uc *UserController) RegisterUser(c *fiber.Ctx) error {
 
 	return c.JSON(existingUser)
 }
+
+/* func (uc *UserController) LoginUser(c *fiber.Ctx) error {
+	// Parse the request body to get the user's login credentials
+	var loginRequest struct {
+		Identifier string `json:"identifier"` // Can be username or email
+		Password   string `json:"password"`
+	}
+
+	if err := c.BodyParser(&loginRequest); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	// Check if the user with the provided username or email exists
+	var existingUser models.User
+	if err := uc.DB.Where("username = ? OR email = ?", loginRequest.Identifier, loginRequest.Identifier).First(&existingUser).Error; err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Incorrect username/email or password",
+		})
+	}
+
+	// At this point, the user has successfully logged in
+	// You may want to generate a JWT token or a session for authentication and authorization
+
+	return c.JSON(fiber.Map{
+		"status": "success",
+		"user":   existingUser,
+	})
+} */
 
 func (uc *UserController) GetUsers(c *fiber.Ctx) error {
 	var users []models.User

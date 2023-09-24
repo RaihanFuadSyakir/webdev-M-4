@@ -2,15 +2,13 @@
 "use client"
 
 import React, { useState } from 'react';
-import bcrypt from 'bcryptjs';
-
+import { useRouter } from 'next/navigation';
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
+  const router = useRouter();
   const handleLogin = async () => {
-    const hashedPassword = bcrypt.hashSync(password, 10);
 
     try {
       const response = await fetch(`/api/user/login`, {
@@ -18,29 +16,33 @@ const Login: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password: hashedPassword }),
+        body: JSON.stringify({ identifier, password }),
       });
 
       if (response.ok) {
-        // Authentication successful, redirect or perform desired action
+        console.log(response);
+        console.log(response.url);
+        router.push(response.url);
       } else {
         const responseData = await response.json();
         setError(responseData.error || 'Login failed');
       }
     } catch (error) {
       setError('An error occurred during login');
+      console.log(error);
     }
   };
 
   return (
-    <div>
+    <div >
       <h2>Login</h2>
       <div>
-        <label>Username:</label>
+        <label>identifier:</label>
         <input
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+          className='text-black'
         />
       </div>
       <div>
@@ -49,6 +51,7 @@ const Login: React.FC = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className='text-black'
         />
       </div>
       {error && <p className="error">{error}</p>}

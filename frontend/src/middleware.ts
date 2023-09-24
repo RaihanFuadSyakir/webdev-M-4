@@ -1,43 +1,37 @@
+
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { base64url, EncryptJWT, jwtDecrypt, JWTDecryptResult } from 'jose';
-import {cookies} from 'next/headers'
+import { base64url, jwtDecrypt} from 'jose';
 export async function middleware(request: NextRequest) {
+  console.log("middleware run");
   const secret = base64url.decode(process.env.PRIVATE_CODE!);
-  const res = NextResponse.next();
-
+  let res;
   if (request.cookies.has("token")) {
     const token = request.cookies.get("token");
     try {
-      const decryptedToken = await jwtDecrypt(token!.value, secret);
-      if (isTokenExpired(decryptedToken)) {
-        cookies().delete("username");
-        cookies().delete("token");
-        return NextResponse.redirect('/login');
-      } else if (request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register')) {
-        return NextResponse.redirect(new URL('/dashboard',request.url));
+      await jwtDecrypt(token!.value, secret);
+      // No error occurred during decryption, so the token is valid
+      if (request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register')) {
+        console.log("Token valid");
+        return NextResponse.redirect(new URL('/dashboard', request.url));
       }
     } catch (error) {
-      // Handle token decryption error, e.g., invalid token
+      // Handle token decryption error, e.g., invalid or expired token
       console.error("Error decrypting JWT:", error);
-      if (request.nextUrl.pathname.startsWith('/login')) {
-        res.cookies.delete("token");
-        console.log("Token deleted due to decryption error");
-        return NextResponse.redirect(new URL('/login',request.url));
-      }
-      return NextResponse.redirect(new URL('/login',request.url));
+      console.log("Token deleted due to decryption error");
+      res =  NextResponse.redirect(new URL('/login',request.url));
+      res.cookies.delete("username");
+      res.cookies.delete("token");
     }
   } else {
     if (!request.nextUrl.pathname.startsWith('/login')) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      // Redirect to login if not already on the login page and there's no token
+      return NextResponse.redirect(new URL('/login',request.url));
     }
   }
   return res;
 }
 
-function isTokenExpired(token: JWTDecryptResult): boolean {
-  return token.payload.exp !== undefined && token.payload.exp - Math.floor(Date.now() / 1000) < 0;
-}
 
 export const config = {
   matcher: ['/:path'],

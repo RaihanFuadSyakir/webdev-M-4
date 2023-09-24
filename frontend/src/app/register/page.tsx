@@ -1,3 +1,4 @@
+"use client"
 // Registration.tsx
 import React, { useState } from 'react';
 import bcrypt from 'bcryptjs';
@@ -7,12 +8,11 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
   const handleRegister = async () => {
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/user/register`, {
+      const response = await fetch(`http://${BACKEND_URL}/api/user/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,6 +40,7 @@ const Register: React.FC = () => {
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className='text-black'
         />
       </div>
       <div>
@@ -48,6 +49,7 @@ const Register: React.FC = () => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className='text-black'
         />
       </div>
       <div>
@@ -56,6 +58,7 @@ const Register: React.FC = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className='text-black'
         />
       </div>
       {error && <p className="error">{error}</p>}
