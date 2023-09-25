@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/finance-management/controllers" // Update the import path
+	"github.com/finance-management/migrations"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -19,9 +20,9 @@ func main() {
 	}
 
 	// Apply migrations
-	/* if err := migrations.Migrate(db); err != nil {
+	if err := migrations.Migrate(db); err != nil {
 		panic("Failed to apply migrations")
-	} */
+	}
 
 	// Seed the database with dummy data
 	//seeds.Seed(db) // Update the function call with the correct path

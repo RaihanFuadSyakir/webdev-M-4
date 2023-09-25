@@ -7,7 +7,14 @@ import (
 
 func Migrate(db *gorm.DB) error {
 	// Create the users table
-	if err := db.AutoMigrate(&models.User{}); err != nil {
+	if err := db.AutoMigrate(
+		&models.User{},
+		&models.Category{},
+		&models.Wallet{},
+		&models.Income{},
+		&models.Outcome{},
+		&models.DailyRecap{},
+	); err != nil {
 		return err
 	}
 

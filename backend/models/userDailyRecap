@@ -1,6 +1,0 @@
-package models
-
-type UserDailyRecap struct {
-	UserID       uint `json:"user_id"`
-	DailyRecapID uint `json:"daily_recap_id"`
-}
