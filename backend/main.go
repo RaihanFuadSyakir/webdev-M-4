@@ -29,12 +29,16 @@ func main() {
 
 	// Initialize the UserController with the database
 	userController := controllers.NewUserController(db)
+	walletController := controllers.NewWalletController(db)
 
 	// Define a route to get user data
 	app.Post("/api/user/register", userController.RegisterUser)
 	app.Get("/api/user/find", userController.GetUser)
 	app.Get("/api/users", userController.GetUsers)
 	app.Post("/api/user/token", userController.UpdateToken)
+	app.Post("/api/wallet/new", walletController.CreateWallet)
+	app.Get("/api/wallet/:id", walletController.GetWallet)
+	app.Put("/api/wallet/:id", walletController.UpdateWallet)
 	// Start the server
 	app.Listen(":5000")
 }
