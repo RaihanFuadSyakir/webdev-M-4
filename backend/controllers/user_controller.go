@@ -124,20 +124,23 @@ func (uc *UserController) GetUsers(c *fiber.Ctx) error {
 	return c.JSON(users)
 }
 
-func (uc *UserController) UpdateToken(c *fiber.Ctx) error {
-	// Parse the request body to get the user data, including the username and token
-	var currentUser models.User
-	var user models.User
+func (uc *UserController) UpdateField(c *fiber.Ctx) error {
+	// Parse the request body to get the field you want to update
+	var updateData struct {
+		UserID        uint   `json:"user_id"`
+		FieldToUpdate string `json:"field_to_update"`
+		NewValue      string `json:"new_value"`
+	}
 
-	if err := c.BodyParser(&user); err != nil {
+	if err := c.BodyParser(&updateData); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid request body",
 		})
 	}
-	fmt.Println(user)
-	fmt.Println(currentUser)
-	// Retrieve the user data from the database based on the username
-	if err := uc.DB.Where("username = ?", user.Username).First(&currentUser).Error; err != nil {
+
+	// Retrieve the user data from the database based on the userID
+	var currentUser models.User
+	if err := uc.DB.First(&currentUser, updateData.UserID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "User not found",
@@ -148,14 +151,30 @@ func (uc *UserController) UpdateToken(c *fiber.Ctx) error {
 			"error": "Failed to retrieve user data",
 		})
 	}
-	fmt.Println(user)
-	currentUser.Token = user.Token
-	// Update the user's token
-	if err := uc.DB.Save(&currentUser).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to update user token",
+
+	// Determine which field to update
+	switch updateData.FieldToUpdate {
+	case "username":
+		// Update the username field
+		currentUser.Username = updateData.NewValue
+	case "email":
+		// Update the email field
+		currentUser.Email = updateData.NewValue
+	case "password":
+		// Update the password field
+		currentUser.Password = updateData.NewValue
+	default:
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid field name",
 		})
 	}
 
-	return c.JSON(user)
+	// Save the updated user object
+	if err := uc.DB.Save(&currentUser).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to update user field",
+		})
+	}
+
+	return c.JSON(currentUser)
 }
