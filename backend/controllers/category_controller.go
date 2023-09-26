@@ -58,11 +58,27 @@ func (controller *CategoryController) CreateCategory(c *fiber.Ctx) error {
 	return c.JSON(newCategory)
 }
 
+// GetCategoryByUserID retrieves categories by user ID.
+func (controller *CategoryController) GetCategoryByUserID(c *fiber.Ctx) error {
+	userID := c.Params("user_id") // Assuming "user_id" is the parameter name
+	user := new(models.User)
+
+	if err := controller.DB.Preload("Categories").Find(user, userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": "Categories not found for the user",
+			})
+		}
+		return err
+	}
+	return c.JSON(user.Categories)
+}
+
 // GetCategoryByID retrieves a category by its ID.
 func (controller *CategoryController) GetCategoryByID(c *fiber.Ctx) error {
-	id := c.Params("id")
+	id := c.Params("category_id")
 	category := new(models.Category)
-	if err := controller.DB.Preload("User").First(category, id).Error; err != nil {
+	if err := controller.DB.First(category, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "Category not found",
