@@ -163,6 +163,9 @@ func (uc *UserController) UpdateField(c *fiber.Ctx) error {
 	case "password":
 		// Update the password field
 		currentUser.Password = updateData.NewValue
+	case "token":
+		// Update the token field
+		currentUser.Token = updateData.NewValue
 	default:
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid field name",
