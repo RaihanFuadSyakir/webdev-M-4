@@ -30,6 +30,8 @@ func main() {
 	userController := controllers.NewUserController(db)
 	walletController := controllers.NewWalletController(db)
 	categoryController := controllers.NewCategoryController(db)
+	outcomeController := controllers.NewOutcomeController(db)
+	dailyRecapController := controllers.NewDailyRecapController(db)
 	// Define a route to get user data
 	app.Post("/api/users", userController.RegisterUser)
 	app.Patch("/api/users", userController.UpdateField)
@@ -44,6 +46,17 @@ func main() {
 	app.Post("/api/wallet/new", walletController.CreateWallet)
 	app.Get("/api/wallet/:id", walletController.GetWallet)
 	app.Put("/api/wallet/:id", walletController.UpdateWallet)
+
+	app.Post("/api/outcome/new", outcomeController.CreateOutcome)
+	app.Get("/api/outcome/:id", outcomeController.GetOutcome)
+	app.Put("/api/outcome/:id", outcomeController.UpdateOutcome)
+	app.Delete("/api/outcome/delete", outcomeController.DeleteOutcome)
+
+	app.Post("/api/dailyrecap/new", dailyRecapController.CreateDailyRecap)
+	app.Get("/api/dailyrecap/:id", dailyRecapController.GetDailyRecap)
+	app.Put("/api/dailyrecap/:id", dailyRecapController.UpdateDailyRecap)
+	app.Delete("/api/dailyrecap/delete/:id", dailyRecapController.DeleteDailyRecap)
+
 	// Start the server
 	app.Listen(":5000")
 }
