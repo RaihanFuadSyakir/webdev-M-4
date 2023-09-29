@@ -46,7 +46,6 @@ func (wc *WalletController) CreateWallet(c *fiber.Ctx) error {
 	}
 
 	return jsonResponse(c, fiber.StatusCreated, "Wallet created successfully", wallet)
-
 }
 
 func (wc *WalletController) GetWallet(c *fiber.Ctx) error {
