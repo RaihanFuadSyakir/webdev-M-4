@@ -18,16 +18,16 @@ func main() {
 		panic("Failed to connect to the database")
 	}
 
-	// Apply migrations
-	/* if err := migrations.Delete(db); err != nil {
-		panic("Failed to Delete Tables")
-	}
-	if err := migrations.Migrate(db); err != nil {
-		panic("Failed to apply migrations")
-	}
+	// // Apply migrations
+	// if err := migrations.Delete(db); err != nil {
+	// 	panic("Failed to Delete Tables")
+	// }
+	// if err := migrations.Migrate(db); err != nil {
+	// 	panic("Failed to apply migrations")
+	// }
 
-	// Seed the database with dummy data
-	seeds.Seed(db) // Update the function call with the correct path */
+	// // Seed the database with dummy data
+	// seeds.Seed(db) // Update the function call with the correct path
 
 	// Initialize the UserController with the database
 	userController := controllers.NewUserController(db)
@@ -35,9 +35,9 @@ func main() {
 	budgetController := controllers.NewBudgetController(db)
 	incomeController := controllers.NewIncomeController(db)
 	categoryController := controllers.NewCategoryController(db)
-
-	// outcomeController := controllers.NewOutcomeController(db)
-	// dailyRecapController := controllers.NewDailyRecapController(db)
+	outcomeController := controllers.NewOutcomeController(db)
+	dailyRecapController := controllers.NewDailyRecapController(db)
+	reportController := controllers.NewReportController(db)
 
 	// Define a route to get user data
 	app.Post("/api/users", userController.RegisterUser)
@@ -53,15 +53,17 @@ func main() {
 	app.Get("/api/wallet/:id", walletController.GetWallet)
 	app.Put("/api/wallet/:id", walletController.UpdateWallet)
 
-	// 	app.Post("/api/outcome/new", outcomeController.CreateOutcome)
-	// 	app.Get("/api/outcome/:id", outcomeController.GetOutcome)
-	// 	app.Put("/api/outcome/:id", outcomeController.UpdateOutcome)
-	// 	app.Delete("/api/outcome/delete", outcomeController.DeleteOutcome)
+	app.Post("/api/outcome/new", outcomeController.CreateOutcome)
+	app.Get("/api/outcome/:id", outcomeController.GetOutcome)
+	app.Put("/api/outcome/:id", outcomeController.UpdateOutcome)
+	app.Delete("/api/outcome/delete", outcomeController.DeleteOutcome)
 
-	// 	app.Post("/api/dailyrecap/new", dailyRecapController.CreateDailyRecap)
-	// 	app.Get("/api/dailyrecap/:id", dailyRecapController.GetDailyRecap)
-	// 	app.Put("/api/dailyrecap/:id", dailyRecapController.UpdateDailyRecap)
-	// 	app.Delete("/api/dailyrecap/delete/:id", dailyRecapController.DeleteDailyRecap)
+	app.Post("/api/dailyrecap/new", dailyRecapController.CreateDailyRecap)
+	app.Get("/api/dailyrecap/:id", dailyRecapController.GetDailyRecap)
+	app.Get("/api/dailyrecap/byuserid/:user_id", dailyRecapController.GetDailyRecapByUserID)
+	app.Get("/api/dailyrecap/bydate/:date", dailyRecapController.GetDailyRecapByDate)
+	app.Put("/api/dailyrecap/:id", dailyRecapController.UpdateDailyRecap)
+	app.Delete("/api/dailyrecap/delete/:id", dailyRecapController.DeleteDailyRecap)
 
 	app.Post("/api/budget/new", budgetController.CreateBudget)
 	app.Get("/api/budget/:id", budgetController.GetBudgetByID)
@@ -72,6 +74,9 @@ func main() {
 	app.Get("/api/income/:id", incomeController.GetIncomeByID)
 	app.Put("/api/income/:id", incomeController.UpdateIncome)
 	app.Delete("/api/income/:id", incomeController.DeleteIncome)
+
+	 // Report routes
+	 app.Get("/api/report/outcomes", reportController.GetOutcomesByDateAndUser)
 
 	// Start the server
 	app.Listen(":5000")
