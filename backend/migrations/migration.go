@@ -23,3 +23,17 @@ func Migrate(db *gorm.DB) error {
 
 	return nil
 }
+func Delete(db *gorm.DB) error {
+	if err := DeleteTables(
+		db,
+		&models.User{},
+		&models.Category{},
+		&models.Wallet{},
+		&models.Income{},
+		&models.Outcome{},
+		&models.DailyRecap{},
+	); err != nil {
+		return err
+	}
+	return nil
+}
