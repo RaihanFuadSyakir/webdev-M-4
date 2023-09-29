@@ -18,27 +18,31 @@ func NewBudgetController(db *gorm.DB) *BudgetController {
 func (controller *BudgetController) CreateBudget(c *fiber.Ctx) error {
 	var budget models.Budget
 	if err := c.BodyParser(&budget); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
 	}
 
 	// Save the budget to the database using GORM
 	controller.DB.Create(&budget)
 
-	return c.Status(fiber.StatusCreated).JSON(budget)
-}
-
-// CreateOutcome handles the creation of a new outcome.
-func (controller *BudgetController) CreateOutcome(c *fiber.Ctx) error {
-	var outcome models.Outcome
-	if err := c.BodyParser(&outcome); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	if err := controller.DB.Create(&budget).Error; err != nil {
+		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
 
-	// Save the outcome to the database using GORM
-	controller.DB.Create(&outcome)
-
-	return c.Status(fiber.StatusCreated).JSON(outcome)
+	return jsonResponse(c, fiber.StatusCreated, "Budget created successfully", budget)
 }
+
+// // CreateOutcome handles the creation of a new outcome.
+// func (controller *BudgetController) CreateOutcome(c *fiber.Ctx) error {
+// 	var outcome models.Outcome
+// 	if err := c.BodyParser(&outcome); err != nil {
+// 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+// 	}
+
+// 	// Save the outcome to the database using GORM
+// 	controller.DB.Create(&outcome)
+
+// 	return c.Status(fiber.StatusCreated).JSON(outcome)
+// }
 
 // // CreateWallet handles the creation of a new wallet.
 // func (controller *BudgetController) CreateWallet(c *fiber.Ctx) error {
@@ -55,27 +59,27 @@ func (controller *BudgetController) CreateOutcome(c *fiber.Ctx) error {
 
 // GetBudgetByID retrieves an budget by its ID.
 func (controller *BudgetController) GetBudgetByID(c *fiber.Ctx) error {
+	var budget models.Budget
 	budgetID := c.Params("id")
 
-	var budget models.Budget
 	if err := controller.DB.Where("id = ?", budgetID).First(&budget).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Budget not found"})
+		return jsonResponse(c, fiber.StatusNotFound, "Budget not found", nil)
 	}
 
-	return c.Status(fiber.StatusOK).JSON(budget)
+	return jsonResponse(c, fiber.StatusOK, "OK", budget)
 }
 
-// GetOutcomeByID retrieves an outcome by its ID.
-func (controller *BudgetController) GetOutcomeByID(c *fiber.Ctx) error {
-	outcomeID := c.Params("id")
+// // GetOutcomeByID retrieves an outcome by its ID.
+// func (controller *BudgetController) GetOutcomeByID(c *fiber.Ctx) error {
+// 	outcomeID := c.Params("id")
 
-	var outcome models.Outcome
-	if err := controller.DB.Where("id = ?", outcomeID).First(&outcome).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Outcome not found"})
-	}
+// 	var outcome models.Outcome
+// 	if err := controller.DB.Where("id = ?", outcomeID).First(&outcome).Error; err != nil {
+// 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Outcome not found"})
+// 	}
 
-	return c.Status(fiber.StatusOK).JSON(outcome)
-}
+// 	return c.Status(fiber.StatusOK).JSON(outcome)
+// }
 
 // // GetWalletByID retrieves a wallet by its ID.
 // func (controller *BudgetController) GetWalletByID(c *fiber.Ctx) error {
@@ -91,43 +95,43 @@ func (controller *BudgetController) GetOutcomeByID(c *fiber.Ctx) error {
 
 // UpdateBudget updates an existing budget.
 func (controller *BudgetController) UpdateBudget(c *fiber.Ctx) error {
+	var updatedBudget models.Budget
 	budgetID := c.Params("id")
 
-	var updatedBudget models.Budget
 	if err := c.BodyParser(&updatedBudget); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return jsonResponse(c, fiber.StatusBadRequest, err.Error(), nil)
 	}
 
 	var budget models.Budget
 	if err := controller.DB.Where("id = ?", budgetID).First(&budget).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Budget not found"})
+		return jsonResponse(c, fiber.StatusNotFound, "Budget not found", nil)
 	}
 
 	// Update the budget in the database
 	controller.DB.Model(&budget).Updates(&updatedBudget)
 
-	return c.Status(fiber.StatusOK).JSON(budget)
+	return jsonResponse(c, fiber.StatusOK, "Budget updated successfully", budget)
 }
 
-// UpdateOutcome updates an existing outcome.
-func (controller *BudgetController) UpdateOutcome(c *fiber.Ctx) error {
-	outcomeID := c.Params("id")
+// // UpdateOutcome updates an existing outcome.
+// func (controller *BudgetController) UpdateOutcome(c *fiber.Ctx) error {
+// 	outcomeID := c.Params("id")
 
-	var updatedOutcome models.Outcome
-	if err := c.BodyParser(&updatedOutcome); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
+// 	var updatedOutcome models.Outcome
+// 	if err := c.BodyParser(&updatedOutcome); err != nil {
+// 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+// 	}
 
-	var outcome models.Outcome
-	if err := controller.DB.Where("id = ?", outcomeID).First(&outcome).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Outcome not found"})
-	}
+// 	var outcome models.Outcome
+// 	if err := controller.DB.Where("id = ?", outcomeID).First(&outcome).Error; err != nil {
+// 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Outcome not found"})
+// 	}
 
-	// Update the outcome in the database
-	controller.DB.Model(&outcome).Updates(&updatedOutcome)
+// 	// Update the outcome in the database
+// 	controller.DB.Model(&outcome).Updates(&updatedOutcome)
 
-	return c.Status(fiber.StatusOK).JSON(outcome)
-}
+// 	return c.Status(fiber.StatusOK).JSON(outcome)
+// }
 
 // // UpdateWallet updates an existing wallet.
 // func (controller *BudgetController) UpdateWallet(c *fiber.Ctx) error {
@@ -155,29 +159,29 @@ func (controller *BudgetController) DeleteBudget(c *fiber.Ctx) error {
 
 	var budget models.Budget
 	if err := controller.DB.Where("id = ?", budgetID).First(&budget).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Budget not found"})
+		return jsonResponse(c, fiber.StatusNotFound, "Budget not found", nil)
 	}
 
 	// Delete the budget from the database
 	controller.DB.Delete(&budget)
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Budget deleted successfully"})
+	return c.SendStatus(fiber.StatusNoContent)
 }
 
-// DeleteOutcome deletes an existing outcome.
-func (controller *BudgetController) DeleteOutcome(c *fiber.Ctx) error {
-	outcomeID := c.Params("id")
+// // DeleteOutcome deletes an existing outcome.
+// func (controller *BudgetController) DeleteOutcome(c *fiber.Ctx) error {
+// 	outcomeID := c.Params("id")
 
-	var outcome models.Outcome
-	if err := controller.DB.Where("id = ?", outcomeID).First(&outcome).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Outcome not found"})
-	}
+// 	var outcome models.Outcome
+// 	if err := controller.DB.Where("id = ?", outcomeID).First(&outcome).Error; err != nil {
+// 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Outcome not found"})
+// 	}
 
-	// Delete the outcome from the database
-	controller.DB.Delete(&outcome)
+// 	// Delete the outcome from the database
+// 	controller.DB.Delete(&outcome)
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Outcome deleted successfully"})
-}
+// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"message": "Outcome deleted successfully"})
+// }
 
 // // DeleteWallet deletes an existing wallet.
 // func (controller *BudgetController) DeleteWallet(c *fiber.Ctx) error {
