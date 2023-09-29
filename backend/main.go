@@ -37,8 +37,8 @@ func main() {
 	budgetController := controllers.NewBudgetController(db)
 	incomeController := controllers.NewIncomeController(db)
 	categoryController := controllers.NewCategoryController(db)
-	outcomeController := controllers.NewOutcomeController(db)
-	dailyRecapController := controllers.NewDailyRecapController(db)
+	// outcomeController := controllers.NewOutcomeController(db)
+	// dailyRecapController := controllers.NewDailyRecapController(db)
 
 	// Define a route to get user data
 	app.Post("/api/users", userController.RegisterUser)

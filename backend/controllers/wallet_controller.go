@@ -48,7 +48,7 @@ func (wc *WalletController) CreateWallet(c *fiber.Ctx) error {
     }
 
     return jsonResponse(c, fiber.StatusCreated, "Wallet created successfully", wallet)
-
+}
 
 func (wc *WalletController) GetWallet(c *fiber.Ctx) error {
 	var wallet models.Wallet
@@ -61,7 +61,7 @@ func (wc *WalletController) GetWallet(c *fiber.Ctx) error {
 
     return jsonResponse(c, fiber.StatusOK, "OK", wallet)
 
-
+}
 func (wc *WalletController) UpdateWallet(c *fiber.Ctx) error {
 	var wallet models.Wallet
 	walletID := c.Params("id")
