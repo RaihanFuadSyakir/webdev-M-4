@@ -38,7 +38,7 @@ func main() {
 	incomeController := controllers.NewIncomeController(db)
 	categoryController := controllers.NewCategoryController(db)
 	// outcomeController := controllers.NewOutcomeController(db)
-	// dailyRecapController := controllers.NewDailyRecapController(db)
+	dailyRecapController := controllers.NewDailyRecapController(db)
 
 	// Define a route to get user data
 	app.Post("/api/users", userController.RegisterUser)
@@ -59,10 +59,12 @@ func main() {
 	// 	app.Put("/api/outcome/:id", outcomeController.UpdateOutcome)
 	// 	app.Delete("/api/outcome/delete", outcomeController.DeleteOutcome)
 
-	// 	app.Post("/api/dailyrecap/new", dailyRecapController.CreateDailyRecap)
-	// 	app.Get("/api/dailyrecap/:id", dailyRecapController.GetDailyRecap)
-	// 	app.Put("/api/dailyrecap/:id", dailyRecapController.UpdateDailyRecap)
-	// 	app.Delete("/api/dailyrecap/delete/:id", dailyRecapController.DeleteDailyRecap)
+	app.Post("/api/dailyrecap/new", dailyRecapController.CreateDailyRecap)
+	app.Get("/api/dailyrecap/:id", dailyRecapController.GetDailyRecap)
+	app.Get("/api/dailyrecap/byuserid/:user_id", dailyRecapController.GetDailyRecapByUserID)
+	app.Get("/api/dailyrecap/bydate/:date", dailyRecapController.GetDailyRecapByDate)
+	app.Put("/api/dailyrecap/:id", dailyRecapController.UpdateDailyRecap)
+	app.Delete("/api/dailyrecap/delete/:id", dailyRecapController.DeleteDailyRecap)
 
 	app.Post("/api/budget/new", budgetController.CreateBudget)
 	app.Get("/api/budget/:id", budgetController.GetBudgetByID)
