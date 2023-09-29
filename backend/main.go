@@ -56,6 +56,7 @@ func main() {
 
 	app.Post("/api/outcome/new", outcomeController.CreateOutcome)
 	app.Get("/api/outcome/:id", outcomeController.GetOutcome)
+	app.Get("/api/outcome/byuserid/:user_id", outcomeController.GetOutcomeByUserID)
 	app.Put("/api/outcome/:id", outcomeController.UpdateOutcome)
 	app.Delete("/api/outcome/delete", outcomeController.DeleteOutcome)
 
