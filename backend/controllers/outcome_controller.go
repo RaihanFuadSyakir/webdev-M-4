@@ -43,6 +43,20 @@ func (oc *OutcomeController) GetOutcome(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusOK, "OK", outcome)
 }
 
+// GetOutcomeByUserID retrieves outcomes for a user by their UserID.
+func (oc *OutcomeController) GetOutcomeByUserID(c *fiber.Ctx) error {
+	userID := c.Params("user_id") // Assuming "user_id" is the parameter name
+	user := new(models.User)
+
+	if err := oc.DB.Preload("Outcomes").Find(user, userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return jsonResponse(c, fiber.StatusNotFound, "Outcome not found", nil)
+		}
+		return err
+	}
+	return jsonResponse(c, fiber.StatusOK, "OK", user.Outcomes)
+}
+
 // UpdateOutcome updates an existing outcome by its ID.
 func (oc *OutcomeController) UpdateOutcome(c *fiber.Ctx) error {
 	var outcome models.Outcome
