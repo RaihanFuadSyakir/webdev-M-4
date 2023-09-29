@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"time"
+
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -57,6 +59,51 @@ func (controller *CategoryController) CreateCategory(c *fiber.Ctx) error {
 
 	return c.JSON(newCategory)
 }
+func (controller *CategoryController) GetCategoryByUserIDAndDateRange(c *fiber.Ctx) error {
+	userID := c.Params("user_id")         // Assuming "user_id" is the parameter name
+	startDateStr := c.Query("start_date") // Get the start date from the query parameters
+	endDateStr := c.Query("end_date")     // Get the end date from the query parameters
+
+	// Parse the start and end dates from the query parameters
+	startDate, err := time.Parse("2006-01-02", startDateStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid start date format",
+		})
+	}
+
+	endDate, err := time.Parse("2006-01-02", endDateStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid end date format",
+		})
+	}
+
+	// Fetch the user by user ID
+	user := new(models.User)
+	if err := controller.DB.Preload("Categories.Outcomes").Find(user, userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": "User not found",
+			})
+		}
+		return err
+	}
+
+	// Filter categories by date range
+	filteredCategories := []models.Category{}
+	for _, category := range user.Categories {
+		for _, outcome := range category.Outcomes {
+			// Check if the outcome date is within the specified range
+			if outcome.Date.After(startDate) && outcome.Date.Before(endDate) {
+				filteredCategories = append(filteredCategories, category)
+				break
+			}
+		}
+	}
+
+	return c.JSON(filteredCategories)
+}
 
 // GetCategoryByUserID retrieves categories by user ID.
 func (controller *CategoryController) GetCategoryByUserID(c *fiber.Ctx) error {
@@ -72,6 +119,43 @@ func (controller *CategoryController) GetCategoryByUserID(c *fiber.Ctx) error {
 		return err
 	}
 	return c.JSON(user.Categories)
+}
+func (controller *CategoryController) GetCategoryByUserIDAndDate(c *fiber.Ctx) error {
+	userID := c.Params("user_id") // Assuming "user_id" is the parameter name
+	dateStr := c.Params("date")   // Assuming "date" is the parameter name
+
+	// Parse the date string to a time.Time object
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid date format",
+		})
+	}
+
+	// Fetch the user by user ID
+	user := new(models.User)
+	if err := controller.DB.Preload("Categories.Outcomes").Find(user, userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": "User not found",
+			})
+		}
+		return err
+	}
+
+	// Filter categories by date
+	filteredCategories := []models.Category{}
+	for _, category := range user.Categories {
+		for _, outcome := range category.Outcomes {
+			// Assuming you want to filter by the date of the outcome
+			if outcome.Date.Equal(date) {
+				filteredCategories = append(filteredCategories, category)
+				break
+			}
+		}
+	}
+
+	return c.JSON(filteredCategories)
 }
 
 // GetCategoryByID retrieves a category by its ID.
