@@ -42,6 +42,31 @@ func (drc *DailyRecapController) GetDailyRecap(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(dailyRecap)
 }
 
+// GetDailyRecapByUserID retrieves daily recaps for a user by their UserID.
+func (drc *DailyRecapController) GetDailyRecapByUserID(c *fiber.Ctx) error {
+	var dailyRecaps []models.DailyRecap
+	userID := c.Params("userID")
+
+	if err := drc.DB.Where("user_id = ?", userID).Find(&dailyRecaps).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "DailyRecaps not found for this user"})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(dailyRecaps)
+}
+
+// GetDailyRecapByDate retrieves daily recaps for a specific date.
+func (drc *DailyRecapController) GetDailyRecapByDate(c *fiber.Ctx) error {
+	var dailyRecaps []models.DailyRecap
+	date := c.Params("date")
+
+	// Assuming the date is in a specific format, e.g., "2006-01-02"
+	if err := drc.DB.Where("date = ?", date).Find(&dailyRecaps).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "DailyRecaps not found for this date"})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(dailyRecaps)
+}
+
 // UpdateDailyRecap updates an existing daily recap by its ID.
 func (drc *DailyRecapController) UpdateDailyRecap(c *fiber.Ctx) error {
 	var dailyRecap models.DailyRecap

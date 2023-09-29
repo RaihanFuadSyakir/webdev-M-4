@@ -49,6 +49,8 @@ func main() {
 
 	app.Post("/api/dailyrecap/new", dailyRecapController.CreateDailyRecap)
 	app.Get("/api/dailyrecap/:id", dailyRecapController.GetDailyRecap)
+	app.Get("/api/dailyrecap/byuserid/:id", dailyRecapController.GetDailyRecapByUserID)
+	app.Get("/api/dailyrecap/bydate/:id", dailyRecapController.GetDailyRecapByDate)
 	app.Put("/api/dailyrecap/:id", dailyRecapController.UpdateDailyRecap)
 	app.Delete("/api/dailyrecap/delete/:id", dailyRecapController.DeleteDailyRecap)
 
