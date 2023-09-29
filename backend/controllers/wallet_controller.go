@@ -7,7 +7,7 @@ import (
 )
 
 type WalletController struct {
-    DB *gorm.DB
+	DB *gorm.DB
 }
 
 type Response struct {
@@ -18,7 +18,7 @@ type Response struct {
 }
 
 func NewWalletController(db *gorm.DB) *WalletController {
-    return &WalletController{DB: db}
+	return &WalletController{DB: db}
 }
 
 func jsonResponse(c *fiber.Ctx, status int, msg string, data interface{}) error {
@@ -32,35 +32,40 @@ func jsonResponse(c *fiber.Ctx, status int, msg string, data interface{}) error 
 }
 
 func (wc *WalletController) CreateWallet(c *fiber.Ctx) error {
+
     var wallet models.Wallet
     if err := c.BodyParser(&wallet); err != nil {
         return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
     }
 
-    // You might want to authenticate the user here and set the UserID accordingly.
-    // wallet.UserID = authenticatedUserID
+
+	// You might want to authenticate the user here and set the UserID accordingly.
+	// wallet.UserID = authenticatedUserID
+
 
     if err := wc.DB.Create(&wallet).Error; err != nil {
         return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
     }
 
     return jsonResponse(c, fiber.StatusCreated, "Wallet created successfully", wallet)
-}
+
 
 func (wc *WalletController) GetWallet(c *fiber.Ctx) error {
-    var wallet models.Wallet
-    walletID := c.Params("id")
+	var wallet models.Wallet
+	walletID := c.Params("id")
+
 
     if err := wc.DB.Preload("Outcomes").Preload("Incomes").First(&wallet, walletID).Error; err != nil {
         return jsonResponse(c, fiber.StatusNotFound, "Wallet not found", nil)
     }
 
     return jsonResponse(c, fiber.StatusOK, "OK", wallet)
-}
+
 
 func (wc *WalletController) UpdateWallet(c *fiber.Ctx) error {
-    var wallet models.Wallet
-    walletID := c.Params("id")
+	var wallet models.Wallet
+	walletID := c.Params("id")
+
 
     if err := wc.DB.First(&wallet, walletID).Error; err != nil {
         return jsonResponse(c, fiber.StatusNotFound, "Wallet not found", nil)
@@ -75,11 +80,13 @@ func (wc *WalletController) UpdateWallet(c *fiber.Ctx) error {
     }
 
     return jsonResponse(c, fiber.StatusOK, "Wallet updated successfully", wallet)
+
 }
 
 func (wc *WalletController) DeleteWallet(c *fiber.Ctx) error {
-    var wallet models.Wallet
-    walletID := c.Params("id")
+	var wallet models.Wallet
+	walletID := c.Params("id")
+
 
     if err := wc.DB.First(&wallet, walletID).Error; err != nil {
         return jsonResponse(c, fiber.StatusNotFound, "Wallet not found", nil)
@@ -89,5 +96,6 @@ func (wc *WalletController) DeleteWallet(c *fiber.Ctx) error {
         return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
     }
 
-    return c.SendStatus(fiber.StatusNoContent)
+
+	return c.SendStatus(fiber.StatusNoContent)
 }

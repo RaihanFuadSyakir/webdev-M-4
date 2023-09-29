@@ -20,7 +20,7 @@ func (uc *UserController) GetUser(c *fiber.Ctx) error {
 	var user models.User
 
 	// Retrieve the parameter from the URL (it can be either username or email)
-	param := c.Query("identifier")
+	param := c.Params("identifier")
 	fmt.Println(param)
 	// Retrieve user data from the database based on the username or email
 	if err := uc.DB.Where("username = ? OR email = ?", param, param).First(&user).Error; err != nil {
