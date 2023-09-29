@@ -32,6 +32,7 @@ func Delete(db *gorm.DB) error {
 		&models.Income{},
 		&models.Outcome{},
 		&models.DailyRecap{},
+		&models.Budget{},
 	); err != nil {
 		return err
 	}
