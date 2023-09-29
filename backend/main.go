@@ -35,6 +35,7 @@ func main() {
 	budgetController := controllers.NewBudgetController(db)
 	incomeController := controllers.NewIncomeController(db)
 	categoryController := controllers.NewCategoryController(db)
+
 	// outcomeController := controllers.NewOutcomeController(db)
 	// dailyRecapController := controllers.NewDailyRecapController(db)
 	reportController := controllers.NewReportController(db)
