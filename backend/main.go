@@ -2,8 +2,6 @@ package main
 
 import (
 	"github.com/finance-management/controllers" // Update the import path
-	"github.com/finance-management/migrations"
-	"github.com/finance-management/seeds"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -20,16 +18,16 @@ func main() {
 		panic("Failed to connect to the database")
 	}
 
-	// Apply migrations
-	if err := migrations.Delete(db); err != nil {
-		panic("Failed to Delete Tables")
-	}
-	if err := migrations.Migrate(db); err != nil {
-		panic("Failed to apply migrations")
-	}
+	// // Apply migrations
+	// if err := migrations.Delete(db); err != nil {
+	// 	panic("Failed to Delete Tables")
+	// }
+	// if err := migrations.Migrate(db); err != nil {
+	// 	panic("Failed to apply migrations")
+	// }
 
-	// Seed the database with dummy data
-	seeds.Seed(db) // Update the function call with the correct path
+	// // Seed the database with dummy data
+	// seeds.Seed(db) // Update the function call with the correct path
 
 	// Initialize the UserController with the database
 	userController := controllers.NewUserController(db)
@@ -39,6 +37,7 @@ func main() {
 	categoryController := controllers.NewCategoryController(db)
 	// outcomeController := controllers.NewOutcomeController(db)
 	// dailyRecapController := controllers.NewDailyRecapController(db)
+	reportController := controllers.NewReportController(db)
 
 	// Define a route to get user data
 	app.Post("/api/users", userController.RegisterUser)
@@ -73,6 +72,9 @@ func main() {
 	app.Get("/api/income/:id", incomeController.GetIncomeByID)
 	app.Put("/api/income/:id", incomeController.UpdateIncome)
 	app.Delete("/api/income/:id", incomeController.DeleteIncome)
+
+	 // Report routes
+	 app.Get("/api/report/outcomes", reportController.GetOutcomesByDateAndUser)
 
 	// Start the server
 	app.Listen(":5000")
