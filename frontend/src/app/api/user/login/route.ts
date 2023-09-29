@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { base64url, EncryptJWT } from "jose";
 import { BACKEND_URL } from "@/constants";
 import bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
-  const res = NextResponse.redirect(new URL('/dashboard',request.url));
+  const res = NextResponse.redirect(new URL('/dashboard', request.url));
   try {
     const body = await request.json();
     const { identifier, password } = body;
@@ -54,7 +53,7 @@ export async function POST(request: Request) {
 }
 
 
-async function newEncrypt(secret : Uint8Array){
+async function newEncrypt(secret: Uint8Array) {
   const jwt = await new EncryptJWT({ 'urn:example:claim': true })
     .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
     .setIssuedAt()

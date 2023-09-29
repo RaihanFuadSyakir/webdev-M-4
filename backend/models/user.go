@@ -7,7 +7,7 @@ type User struct {
 	Password    string       `gorm:"not null" json:"password"`
 	Token       string       `json:"token"`
 	Wallets     []Wallet     `json:"wallets"`
-	Categorys   []Category   `gorm:"many2many:user_categories;" json:"user_categories"`
+	Categories  []Category   `json:"user_categories"`
 	DailyRecaps []DailyRecap `json:"daily_recaps"`
 	Outcomes    []Outcome    `json:"outcomes"`
 	Incomes     []Income     `json:"incomes"`
