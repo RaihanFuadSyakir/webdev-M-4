@@ -37,7 +37,7 @@ func main() {
 	budgetController := controllers.NewBudgetController(db)
 	incomeController := controllers.NewIncomeController(db)
 	categoryController := controllers.NewCategoryController(db)
-	// outcomeController := controllers.NewOutcomeController(db)
+	outcomeController := controllers.NewOutcomeController(db)
 	dailyRecapController := controllers.NewDailyRecapController(db)
 
 	// Define a route to get user data
@@ -54,10 +54,10 @@ func main() {
 	app.Get("/api/wallet/:id", walletController.GetWallet)
 	app.Put("/api/wallet/:id", walletController.UpdateWallet)
 
-	// 	app.Post("/api/outcome/new", outcomeController.CreateOutcome)
-	// 	app.Get("/api/outcome/:id", outcomeController.GetOutcome)
-	// 	app.Put("/api/outcome/:id", outcomeController.UpdateOutcome)
-	// 	app.Delete("/api/outcome/delete", outcomeController.DeleteOutcome)
+	app.Post("/api/outcome/new", outcomeController.CreateOutcome)
+	app.Get("/api/outcome/:id", outcomeController.GetOutcome)
+	app.Put("/api/outcome/:id", outcomeController.UpdateOutcome)
+	app.Delete("/api/outcome/delete", outcomeController.DeleteOutcome)
 
 	app.Post("/api/dailyrecap/new", dailyRecapController.CreateDailyRecap)
 	app.Get("/api/dailyrecap/:id", dailyRecapController.GetDailyRecap)
