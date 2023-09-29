@@ -56,7 +56,6 @@ func (wc *WalletController) GetWallet(c *fiber.Ctx) error {
 		return jsonResponse(c, fiber.StatusNotFound, "Wallet not found", nil)
 	}
 
-
 	return jsonResponse(c, fiber.StatusOK, "OK", wallet)
 }
 
