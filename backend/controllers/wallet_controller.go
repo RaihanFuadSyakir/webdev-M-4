@@ -10,13 +10,6 @@ type WalletController struct {
 	DB *gorm.DB
 }
 
-type Response struct {
-	OK     bool        `json:"ok"`
-	Status int         `json:"status"`
-	Msg    string      `json:"msg"`
-	Data   interface{} `json:"data"`
-}
-
 func NewWalletController(db *gorm.DB) *WalletController {
 	return &WalletController{DB: db}
 }
