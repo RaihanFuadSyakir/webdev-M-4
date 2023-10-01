@@ -18,16 +18,16 @@ func main() {
 		panic("Failed to connect to the database")
 	}
 
-	// // Apply migrations
-	// if err := migrations.Delete(db); err != nil {
-	// 	panic("Failed to Delete Tables")
-	// }
-	// if err := migrations.Migrate(db); err != nil {
-	// 	panic("Failed to apply migrations")
-	// }
+	// Apply migrations
+	/* if err := migrations.Delete(db); err != nil {
+		panic("Failed to Delete Tables")
+	}
+	if err := migrations.Migrate(db); err != nil {
+		panic("Failed to apply migrations")
+	}
 
-	// // Seed the database with dummy data
-	// seeds.Seed(db) // Update the function call with the correct path
+	// Seed the database with dummy data
+	seeds.Seed(db) // Update the function call with the correct path */
 
 	// Initialize the UserController with the database
 	userController := controllers.NewUserController(db)
@@ -48,6 +48,7 @@ func main() {
 	app.Get("/api/categories", categoryController.GetAllCategories)
 	app.Patch("/api/categories", categoryController.UpdateCategory)
 	app.Get("/api/categories/:user_id", categoryController.GetCategoryByUserID)
+	app.Get("/api/report/", categoryController.GetCategoryByUserIDAndDateRange)
 
 	app.Post("/api/wallet/new", walletController.CreateWallet)
 	app.Get("/api/wallet/:id", walletController.GetWallet)
@@ -76,8 +77,8 @@ func main() {
 	app.Put("/api/income/:id", incomeController.UpdateIncome)
 	app.Delete("/api/income/:id", incomeController.DeleteIncome)
 
-	 // Report routes
-	 app.Get("/api/report/outcomes", reportController.GetOutcomesByDateAndUser)
+	// Report routes
+	app.Get("/api/report/outcomes", reportController.GetOutcomesByDateAndUser)
 
 	// Start the server
 	app.Listen(":5000")

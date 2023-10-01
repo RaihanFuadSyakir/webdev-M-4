@@ -11,4 +11,5 @@ type User struct {
 	DailyRecaps []DailyRecap `json:"daily_recaps"`
 	Outcomes    []Outcome    `json:"outcomes"`
 	Incomes     []Income     `json:"incomes"`
+	Budgets     []Budget     `json:"budgets"`
 }

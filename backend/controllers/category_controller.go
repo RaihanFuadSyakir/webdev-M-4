@@ -18,7 +18,6 @@ func NewCategoryController(db *gorm.DB) *CategoryController {
 
 // CreateCategory creates a new category and associates it with a user.
 func (controller *CategoryController) CreateCategory(c *fiber.Ctx) error {
-	// Parse the request body to get the data including UserID, new category name, and isUserDefined
 	var requestData struct {
 		UserID        uint   `json:"user_id"`
 		CategoryName  string `json:"category_name"`
@@ -26,21 +25,17 @@ func (controller *CategoryController) CreateCategory(c *fiber.Ctx) error {
 	}
 
 	if err := c.BodyParser(&requestData); err != nil {
-		return err
+		return jsonResponse(c, fiber.StatusBadRequest, "Invalid request data", nil)
 	}
 
-	// Check if the provided user ID exists
 	var user models.User
 	if err := controller.DB.Preload("Categories").First(&user, requestData.UserID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "User not found",
-			})
+			return jsonResponse(c, fiber.StatusNotFound, "User not found", nil)
 		}
-		return err
+		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to retrieve user data", nil)
 	}
 
-	// Create the new category
 	newCategory := models.Category{
 		UserID:        requestData.UserID,
 		CategoryName:  requestData.CategoryName,
@@ -48,53 +43,43 @@ func (controller *CategoryController) CreateCategory(c *fiber.Ctx) error {
 	}
 
 	if err := controller.DB.Create(&newCategory).Error; err != nil {
-		return err
+		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to create category", nil)
 	}
 
-	// Associate the category with the user in the many-to-many relationship
 	association := controller.DB.Model(&user).Association("Categories")
 	if err := association.Append(&newCategory); err != nil {
-		return err
+		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to associate category with user", nil)
 	}
 
-	return c.JSON(newCategory)
+	return jsonResponse(c, fiber.StatusOK, "Category created successfully", newCategory)
 }
-func (controller *CategoryController) GetCategoryByUserIDAndDateRange(c *fiber.Ctx) error {
-	userID := c.Params("user_id")         // Assuming "user_id" is the parameter name
-	startDateStr := c.Query("start_date") // Get the start date from the query parameters
-	endDateStr := c.Query("end_date")     // Get the end date from the query parameters
 
-	// Parse the start and end dates from the query parameters
+func (controller *CategoryController) GetCategoryByUserIDAndDateRange(c *fiber.Ctx) error {
+	userID := c.Query("user_id")
+	startDateStr := c.Query("start_date")
+	endDateStr := c.Query("end_date")
+
 	startDate, err := time.Parse("2006-01-02", startDateStr)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid start date format",
-		})
+		return jsonResponse(c, fiber.StatusBadRequest, "Invalid start date format", nil)
 	}
 
 	endDate, err := time.Parse("2006-01-02", endDateStr)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid end date format",
-		})
+		return jsonResponse(c, fiber.StatusBadRequest, "Invalid end date format", nil)
 	}
 
-	// Fetch the user by user ID
 	user := new(models.User)
 	if err := controller.DB.Preload("Categories.Outcomes").Find(user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "User not found",
-			})
+			return jsonResponse(c, fiber.StatusNotFound, "User not found", nil)
 		}
 		return err
 	}
 
-	// Filter categories by date range
 	filteredCategories := []models.Category{}
 	for _, category := range user.Categories {
 		for _, outcome := range category.Outcomes {
-			// Check if the outcome date is within the specified range
 			if outcome.Date.After(startDate) && outcome.Date.Before(endDate) {
 				filteredCategories = append(filteredCategories, category)
 				break
@@ -102,52 +87,43 @@ func (controller *CategoryController) GetCategoryByUserIDAndDateRange(c *fiber.C
 		}
 	}
 
-	return c.JSON(filteredCategories)
+	return jsonResponse(c, fiber.StatusOK, "Categories retrieved successfully", filteredCategories)
 }
 
-// GetCategoryByUserID retrieves categories by user ID.
 func (controller *CategoryController) GetCategoryByUserID(c *fiber.Ctx) error {
-	userID := c.Params("user_id") // Assuming "user_id" is the parameter name
+	userID := c.Params("user_id")
 	user := new(models.User)
 
 	if err := controller.DB.Preload("Categories").Find(user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "Categories not found for the user",
-			})
+			return jsonResponse(c, fiber.StatusNotFound, "Categories not found for the user", nil)
 		}
 		return err
 	}
-	return c.JSON(user.Categories)
-}
-func (controller *CategoryController) GetCategoryByUserIDAndDate(c *fiber.Ctx) error {
-	userID := c.Params("user_id") // Assuming "user_id" is the parameter name
-	dateStr := c.Params("date")   // Assuming "date" is the parameter name
 
-	// Parse the date string to a time.Time object
+	return jsonResponse(c, fiber.StatusOK, "Categories retrieved successfully", user.Categories)
+}
+
+func (controller *CategoryController) GetCategoryByUserIDAndDate(c *fiber.Ctx) error {
+	userID := c.Params("user_id")
+	dateStr := c.Params("date")
+
 	date, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid date format",
-		})
+		return jsonResponse(c, fiber.StatusBadRequest, "Invalid date format", nil)
 	}
 
-	// Fetch the user by user ID
 	user := new(models.User)
 	if err := controller.DB.Preload("Categories.Outcomes").Find(user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "User not found",
-			})
+			return jsonResponse(c, fiber.StatusNotFound, "User not found", nil)
 		}
 		return err
 	}
 
-	// Filter categories by date
 	filteredCategories := []models.Category{}
 	for _, category := range user.Categories {
 		for _, outcome := range category.Outcomes {
-			// Assuming you want to filter by the date of the outcome
 			if outcome.Date.Equal(date) {
 				filteredCategories = append(filteredCategories, category)
 				break
@@ -155,25 +131,22 @@ func (controller *CategoryController) GetCategoryByUserIDAndDate(c *fiber.Ctx) e
 		}
 	}
 
-	return c.JSON(filteredCategories)
+	return jsonResponse(c, fiber.StatusOK, "Categories retrieved successfully", filteredCategories)
 }
 
-// GetCategoryByID retrieves a category by its ID.
 func (controller *CategoryController) GetCategoryByID(c *fiber.Ctx) error {
 	id := c.Params("category_id")
 	category := new(models.Category)
 	if err := controller.DB.First(category, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "Category not found",
-			})
+			return jsonResponse(c, fiber.StatusNotFound, "Category not found", nil)
 		}
 		return err
 	}
-	return c.JSON(category)
+
+	return jsonResponse(c, fiber.StatusOK, "Category retrieved successfully", category)
 }
 
-// GetAllCategories retrieves all categories.
 func (controller *CategoryController) GetAllCategories(c *fiber.Ctx) error {
 	var categories []models.Category
 
@@ -181,10 +154,9 @@ func (controller *CategoryController) GetAllCategories(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(categories)
+	return jsonResponse(c, fiber.StatusOK, "Categories retrieved successfully", categories)
 }
 
-// UpdateCategory updates an existing category.
 func (controller *CategoryController) UpdateCategory(c *fiber.Ctx) error {
 	id := c.Params("id")
 	category := new(models.Category)
@@ -193,7 +165,6 @@ func (controller *CategoryController) UpdateCategory(c *fiber.Ctx) error {
 		return err
 	}
 
-	// Parse the request body to get the updated name
 	var updateData struct {
 		Name string `json:"name"`
 	}
@@ -202,7 +173,6 @@ func (controller *CategoryController) UpdateCategory(c *fiber.Ctx) error {
 		return err
 	}
 
-	// Update the "name" field if it's provided in the request
 	if updateData.Name != "" {
 		category.CategoryName = updateData.Name
 	}
@@ -211,10 +181,9 @@ func (controller *CategoryController) UpdateCategory(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(category)
+	return jsonResponse(c, fiber.StatusOK, "Category updated successfully", category)
 }
 
-// DeleteCategory deletes a category by its ID.
 func (controller *CategoryController) DeleteCategory(c *fiber.Ctx) error {
 	id := c.Params("id")
 	category := new(models.Category)
@@ -226,5 +195,5 @@ func (controller *CategoryController) DeleteCategory(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.SendStatus(fiber.StatusNoContent)
+	return jsonResponse(c, fiber.StatusNoContent, "Category deleted successfully", nil)
 }
