@@ -1,11 +1,14 @@
 import React from 'react'
-import { cookies } from 'next/headers'
-export default async function Dashboard() {
-  const username = cookies().get("username");
+import Header from '@/components/Header/index';
+
+const Dashboard = () => {
   return (
     <div>
-      <h1>Dashboard</h1>
-      <h2>Hello {username?.value}</h2>
+      <Header sidebarOpen={undefined} setSidebarOpen={function (arg0: boolean): void {
+        throw new Error('Function not implemented.');
+      } } />
     </div>
-  )
-}
+  );
+};
+
+export default Dashboard;
