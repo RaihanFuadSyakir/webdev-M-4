@@ -12,7 +12,10 @@ import (
 func AuthMiddleware(c *fiber.Ctx) error {
 	// Extract JWT token from the cookie
 	tokenString, err := extractJWTToken(c)
-	fmt.Println(tokenString)
+	// request
+	header := c.GetReqHeaders()
+	fmt.Println(header)
+
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": err.Error(),
@@ -68,7 +71,8 @@ func validateAndExtractUserID(tokenString string) (uint, error) {
 }
 
 func extractJWTToken(c *fiber.Ctx) (string, error) {
-	reqToken := c.Header.Get("Cookie")
+	reqToken := c.Cookies("token")
+
 	if reqToken == "" {
 		return "", fmt.Errorf("Missing JWT token")
 	}

@@ -12,9 +12,10 @@ func main() {
 	// Initialize Fiber
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000",                // Allow requests from your frontend domain
-		AllowHeaders:     "Origin, Content-Type, Accept, Cookie", // Add the necessary headers
-		AllowCredentials: true,                                   // Allow credentials (cookies) to be sent
+		AllowOrigins:     "http://localhost:3000", // Allow requests from your frontend domain
+		AllowMethods:     "GET,POST,PUT,DELETE,PATCH",
+		AllowHeaders:     "Origin, Content-Type, Accept,token , Authorization,Set-Cookie", // Add the necessary headers
+		AllowCredentials: true,                                                            // Allow credentials (cookies) to be sent
 	}))
 	// Initialize the database
 	db, err := InitDatabase()

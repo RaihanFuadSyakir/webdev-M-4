@@ -125,14 +125,20 @@ func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 			"error": "Failed to generate JWT token",
 		})
 	}
-
+	c.Response().Header.Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	c.Response().Header.Set("Access-Control-Allow-Credentials", "true")
+	c.Response().Header.Set("Access-Control-Allow-Headers", "Content-Type,access-control-allow-origin, access-control-allow-headers,access-control-allow-credentials")
+	c.Response().Header.Set("Content-Type", "application/json")
 	// Set the JWT token as a cookie in the response
-	newCookie := new(fiber.Cookie)
-	newCookie.Name = "token"
-	newCookie.Value = tokenString
-	newCookie.Expires = time.Now().Add(24 * time.Hour)
-	c.Cookie(newCookie)
-
+	c.Cookie(&fiber.Cookie{
+		Name:     "token",
+		Value:    tokenString,
+		SameSite: fiber.CookieSameSiteLaxMode,
+		Expires:  time.Now().Add(2 * time.Hour),
+		Domain:   "localhost", // Set to the appropriate domain,
+		Path:     "/",
+	})
+	existingUser.Password = ""
 	// Return the JWT token in the JSON response (optional)
 	fmt.Println("success")
 	return c.JSON(fiber.Map{

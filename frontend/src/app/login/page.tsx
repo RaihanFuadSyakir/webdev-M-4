@@ -5,25 +5,25 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BACKEND_URL } from '@/constants';
 import { setCookie, getCookie } from 'cookies-next';
+import axios from 'axios';
 const Login: React.FC = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const testFetch = async () => {
+  const testFetch = () => {
     const token = getCookie("token");
     console.log(token)
     try {
-      const response = await fetch(`${BACKEND_URL}/api/users`, {
-        method: 'GET',
-        headers: {
+      axios.get(`${BACKEND_URL}/api/users`,{
+        headers : {
           'Content-Type': 'application/json',
-          'Cookie': `token=<${token}>`,
+          Authorization: 'Bearer your-token-here',
         },
-        credentials: 'include',
-      });
-      const res = await response.json()
-      console.log(res)
+        withCredentials: true,
+      }).then((response : any) => {
+        console.log(response)
+      })
     } catch (error) {
 
     }
@@ -41,8 +41,7 @@ const Login: React.FC = () => {
       });
       const res = await response.json();
       console.log(res)
-      /* console.log(res);;
-      setCookie("token", res.token); */
+      setCookie("token", res.token);
     } catch (error) {
       setError('An error occurred during login');
       console.log(error);
