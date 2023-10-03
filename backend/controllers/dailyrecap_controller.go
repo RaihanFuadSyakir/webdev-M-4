@@ -80,35 +80,6 @@ func (drc *DailyRecapController) GetDailyRecapByDate(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusOK, "OK", dailyRecaps)
 }
 
-func (controller *DailyRecapController) GetDailyRecapByUserID(c *fiber.Ctx) error {
-	userID := c.Params("user_id") // Assuming "user_id" is the parameter name
-	user := new(models.User)
-
-	if err := controller.DB.Preload("DailyRecaps").Find(user, userID).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "Categories not found for the user",
-			})
-		}
-		return err
-	}
-	return c.JSON(user.DailyRecaps)
-}
-
-func (drc *DailyRecapController) GetDailyRecapByDate(c *fiber.Ctx) error {
-	date := c.Params("date")
-	dailyrecap := new(models.DailyRecap)
-	if err := drc.DB.First(dailyrecap, date).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "Category not found",
-			})
-		}
-		return err
-	}
-	return c.JSON(dailyrecap)
-}
-
 // UpdateDailyRecap updates an existing daily recap by its ID.
 func (drc *DailyRecapController) UpdateDailyRecap(c *fiber.Ctx) error {
 	var dailyRecap models.DailyRecap

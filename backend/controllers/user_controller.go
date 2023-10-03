@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -94,7 +97,7 @@ func (uc *UserController) UpdateField(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusOK, "User field updated successfully", currentUser)
 }
 
-/* func (uc *UserController) LoginUser(c *fiber.Ctx) error {
+func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 	// Parse the request body to get the user's login credentials
 	var loginRequest struct {
 		Identifier string `json:"identifier"` // Can be username or email
@@ -115,11 +118,26 @@ func (uc *UserController) UpdateField(c *fiber.Ctx) error {
 		})
 	}
 
-	// At this point, the user has successfully logged in
-	// You may want to generate a JWT token or a session for authentication and authorization
+	// Generate a new JWT token for the user
+	tokenString, err := generateJWTToken(existingUser.ID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to generate JWT token",
+		})
+	}
 
+	// Set the JWT token as a cookie in the response
+	newCookie := new(fiber.Cookie)
+	newCookie.Name = "token"
+	newCookie.Value = tokenString
+	newCookie.Expires = time.Now().Add(24 * time.Hour)
+	c.Cookie(newCookie)
+
+	// Return the JWT token in the JSON response (optional)
+	fmt.Println("success")
 	return c.JSON(fiber.Map{
 		"status": "success",
 		"user":   existingUser,
+		"token":  tokenString, // Include the token in the response if needed
 	})
-} */
+}
