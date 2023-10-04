@@ -13,7 +13,7 @@ const FormLayout = () => {
         console.log("clicked")
     }
   return (
-    <>
+    <div className="text-black">
       <Breadcrumb pageName="Finance-App-M-4" />
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
         <div className="flex flex-col gap-9">
@@ -65,7 +65,7 @@ const FormLayout = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

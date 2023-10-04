@@ -3,6 +3,7 @@
 import { BACKEND_URL } from '@/constants';
 import { useEffect, useState } from 'react';
 import { Category, dbResponse } from '@/type/type';
+import axios, { AxiosResponse } from 'axios';
 const CategorySelect = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -10,10 +11,16 @@ const CategorySelect = () => {
     useEffect(() => {
         // Make a GET request to your backend API endpoint to fetch categories.
         console.log("fetching")
-        fetch(`${BACKEND_URL}/api/categories`)
-            .then((response) => response.json())
-            .then((datas : dbResponse<Category>) => setCategories(datas.data))
-            .catch((error) => console.error('Error fetching categories:', error));
+        axios.get(`${BACKEND_URL}/api/categories/1`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+          }).then((response: AxiosResponse) => {
+            const res: dbResponse<Category> = response.data;
+            const categories: Category[] = res.data;
+            setCategories(categories);
+          }).catch((e) => { console.log(e) })
     }, []);
 
     return (
@@ -26,11 +33,13 @@ const CategorySelect = () => {
                     onChange={(e) => setSelectedCategory(e.target.value)}
                 >
                     <option value="">Select Category</option>
-                    {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                            {category.category_name}
-                        </option>
-                    ))}
+                    {categories && (
+                        categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.category_name}
+                            </option>
+                        ))
+                    )}
                 </select>
                 <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                     <svg

@@ -42,7 +42,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div >
+    <div className=' text-black'>
       <h2>Login</h2>
       <div>
         <label>identifier:</label>
@@ -50,7 +50,7 @@ const Login: React.FC = () => {
           type="text"
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
-          className='text-black'
+          className=''
         />
       </div>
       <div>
