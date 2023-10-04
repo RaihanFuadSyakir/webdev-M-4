@@ -12,9 +12,6 @@ import (
 func AuthMiddleware(c *fiber.Ctx) error {
 	// Extract JWT token from the cookie
 	tokenString, err := extractJWTToken(c)
-	// request
-	header := c.GetReqHeaders()
-	fmt.Println(header)
 
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

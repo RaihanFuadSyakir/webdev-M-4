@@ -5,47 +5,40 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BACKEND_URL } from '@/constants';
 import { setCookie, getCookie } from 'cookies-next';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { User, dbResponse } from '@/type/type'
 const Login: React.FC = () => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [users, setUsers] = useState<User[]>([]);
   const router = useRouter();
   const testFetch = () => {
     const token = getCookie("token");
     console.log(token)
-    try {
-      axios.get(`${BACKEND_URL}/api/users`,{
-        headers : {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer your-token-here',
-        },
-        withCredentials: true,
-      }).then((response : any) => {
-        console.log(response)
-      })
-    } catch (error) {
-
-    }
+    axios.get(`${BACKEND_URL}/api/users`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer your-token-here',
+      },
+      withCredentials: true,
+    }).then((response: AxiosResponse) => {
+      const res: dbResponse<User> = response.data;
+      const users: User[] = res.data;
+      setUsers(users);
+    }).catch((e) => { console.log(e) })
 
   }
   const handleLogin = async () => {
-
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/users/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ identifier, password }),
-      });
-      const res = await response.json();
-      console.log(res)
-      setCookie("token", res.token);
-    } catch (error) {
-      setError('An error occurred during login');
-      console.log(error);
-    }
+    axios.post(`${BACKEND_URL}/api/users/login`, {
+      identifier: identifier,
+      password: password
+    }, {
+      withCredentials: true // Include cookies in the request
+    })
+      .then((response: AxiosResponse) => {
+        console.log(response.data)
+      })
   };
 
   return (
@@ -72,6 +65,9 @@ const Login: React.FC = () => {
       {error && <p className="error">{error}</p>}
       <button onClick={handleLogin}>Login</button>
       <button onClick={testFetch}>Fetch</button>
+      {users && (users.map((user) => (
+        <div key={user.id}>{user.username}</div>
+      )))}
     </div>
   );
 };
