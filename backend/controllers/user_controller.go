@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -16,14 +19,16 @@ func NewUserController(db *gorm.DB) *UserController {
 
 func (uc *UserController) GetUser(c *fiber.Ctx) error {
 	var user models.User
-	param := c.Params("identifier")
-	if err := uc.DB.Where("username = ? OR email = ?", param, param).First(&user).Error; err != nil {
+	userID := c.Locals("userID")
+	if err := uc.DB.First(&user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return jsonResponse(c, fiber.StatusNotFound, "User not found", nil)
 		}
 		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to retrieve user data", nil)
 	}
-	return jsonResponse(c, fiber.StatusOK, "User retrieved successfully", user)
+	// Create an array containing the user
+	users := []models.User{user}
+	return jsonResponse(c, fiber.StatusOK, "User retrieved successfully", users)
 }
 
 func (uc *UserController) RegisterUser(c *fiber.Ctx) error {
@@ -94,7 +99,7 @@ func (uc *UserController) UpdateField(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusOK, "User field updated successfully", currentUser)
 }
 
-/* func (uc *UserController) LoginUser(c *fiber.Ctx) error {
+func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 	// Parse the request body to get the user's login credentials
 	var loginRequest struct {
 		Identifier string `json:"identifier"` // Can be username or email
@@ -110,16 +115,47 @@ func (uc *UserController) UpdateField(c *fiber.Ctx) error {
 	// Check if the user with the provided username or email exists
 	var existingUser models.User
 	if err := uc.DB.Where("username = ? OR email = ?", loginRequest.Identifier, loginRequest.Identifier).First(&existingUser).Error; err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Incorrect username/email or password",
-		})
+		response := Response{
+			OK:     false,
+			Status: fiber.StatusUnauthorized,
+			Msg:    "Unauthorized",
+			Data:   "Incorrect username/email or password",
+		}
+
+		return c.Status(fiber.StatusUnauthorized).JSON(response)
 	}
 
-	// At this point, the user has successfully logged in
-	// You may want to generate a JWT token or a session for authentication and authorization
+	// Generate a new JWT token for the user
+	tokenString, err := generateJWTToken(existingUser.ID)
+	if err != nil {
+		response := Response{
+			OK:     false,
+			Status: fiber.StatusInternalServerError,
+			Msg:    "Internal Server Error",
+			Data:   "Failed to generate JWT token",
+		}
 
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
+	}
+	/* c.Response().Header.Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	c.Response().Header.Set("Access-Control-Allow-Credentials", "true")
+	c.Response().Header.Set("Access-Control-Allow-Headers", "Content-Type,access-control-allow-origin, access-control-allow-headers,access-control-allow-credentials")
+	c.Response().Header.Set("Content-Type", "application/json") */
+	// Set the JWT token as a cookie in the response
+	c.Cookie(&fiber.Cookie{
+		Name:     "token",
+		Value:    tokenString,
+		SameSite: fiber.CookieSameSiteLaxMode,
+		Expires:  time.Now().Add(2 * time.Hour),
+		Domain:   "localhost", // Set to the appropriate domain,
+		Path:     "/",
+	})
+	existingUser.Password = ""
+	// Return the JWT token in the JSON response (optional)
+	fmt.Println("success")
 	return c.JSON(fiber.Map{
 		"status": "success",
 		"user":   existingUser,
+		"token":  tokenString, // Include the token in the response if needed
 	})
-} */
+}

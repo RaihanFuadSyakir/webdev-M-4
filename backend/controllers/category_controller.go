@@ -91,7 +91,7 @@ func (controller *CategoryController) GetCategoryByUserIDAndDateRange(c *fiber.C
 }
 
 func (controller *CategoryController) GetCategoryByUserID(c *fiber.Ctx) error {
-	userID := c.Params("user_id")
+	userID := c.Locals("userID")
 	user := new(models.User)
 
 	if err := controller.DB.Preload("Categories").Find(user, userID).Error; err != nil {
