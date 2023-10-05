@@ -14,8 +14,6 @@ const Login: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const router = useRouter();
   const testFetch = () => {
-    const token = getCookie("token");
-    console.log(token)
     axios.get(`${BACKEND_URL}/api/users`, {
       headers: {
         'Content-Type': 'application/json',
