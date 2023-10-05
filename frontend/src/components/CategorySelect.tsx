@@ -11,16 +11,16 @@ const CategorySelect = () => {
     useEffect(() => {
         // Make a GET request to your backend API endpoint to fetch categories.
         console.log("fetching")
-        axios.get(`${BACKEND_URL}/api/categories/1`, {
+        axios.get(`${BACKEND_URL}/api/categories/user`, {
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             withCredentials: true,
-          }).then((response: AxiosResponse) => {
+        }).then((response: AxiosResponse) => {
             const res: dbResponse<Category> = response.data;
             const categories: Category[] = res.data;
             setCategories(categories);
-          }).catch((e) => { console.log(e) })
+        }).catch((e) => { console.log(e) })
     }, []);
 
     return (

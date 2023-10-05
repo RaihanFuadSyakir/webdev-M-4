@@ -9,24 +9,50 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type Response struct {
+	OK     bool        `json:"ok"`
+	Status int         `json:"status"`
+	Msg    string      `json:"msg"`
+	Data   interface{} `json:"data"`
+}
+
 func AuthMiddleware(c *fiber.Ctx) error {
 	// Extract JWT token from the cookie
 	tokenString, err := extractJWTToken(c)
 
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		// Remove the "token" cookie
+		c.ClearCookie("token")
+
+		response := Response{
+			OK:     false,
+			Status: fiber.StatusUnauthorized,
+			Msg:    "Unauthorized",
+			Data:   nil,
+		}
+
+		return c.Status(fiber.StatusUnauthorized).JSON(response)
 	}
 
 	// Validate and extract user ID from the JWT token
 	userID, err := validateAndExtractUserID(tokenString)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": err.Error(),
-		})
+		// Remove the "token" cookie
+		c.ClearCookie("token")
+
+		// Remove the userID from Locals when token validation fails
+		c.Locals("userID", nil)
+
+		response := Response{
+			OK:     false,
+			Status: fiber.StatusUnauthorized,
+			Msg:    "Unauthorized",
+			Data:   nil,
+		}
+
+		return c.Status(fiber.StatusUnauthorized).JSON(response)
 	}
-	fmt.Println(userID)
+
 	// Store the user ID in the context for use in route handlers
 	c.Locals("userID", userID)
 

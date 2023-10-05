@@ -113,28 +113,38 @@ func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 	// Check if the user with the provided username or email exists
 	var existingUser models.User
 	if err := uc.DB.Where("username = ? OR email = ?", loginRequest.Identifier, loginRequest.Identifier).First(&existingUser).Error; err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Incorrect username/email or password",
-		})
+		response := Response{
+			OK:     false,
+			Status: fiber.StatusUnauthorized,
+			Msg:    "Unauthorized",
+			Data:   "Incorrect username/email or password",
+		}
+
+		return c.Status(fiber.StatusUnauthorized).JSON(response)
 	}
 
 	// Generate a new JWT token for the user
 	tokenString, err := generateJWTToken(existingUser.ID)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to generate JWT token",
-		})
+		response := Response{
+			OK:     false,
+			Status: fiber.StatusInternalServerError,
+			Msg:    "Internal Server Error",
+			Data:   "Failed to generate JWT token",
+		}
+
+		return c.Status(fiber.StatusInternalServerError).JSON(response)
 	}
-	c.Response().Header.Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	/* c.Response().Header.Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.Response().Header.Set("Access-Control-Allow-Credentials", "true")
 	c.Response().Header.Set("Access-Control-Allow-Headers", "Content-Type,access-control-allow-origin, access-control-allow-headers,access-control-allow-credentials")
-	c.Response().Header.Set("Content-Type", "application/json")
+	c.Response().Header.Set("Content-Type", "application/json") */
 	// Set the JWT token as a cookie in the response
 	c.Cookie(&fiber.Cookie{
 		Name:     "token",
 		Value:    tokenString,
 		SameSite: fiber.CookieSameSiteLaxMode,
-		Expires:  time.Now().Add(2 * time.Hour),
+		Expires:  time.Now().Add(2 * time.Minute),
 		Domain:   "localhost", // Set to the appropriate domain,
 		Path:     "/",
 	})
