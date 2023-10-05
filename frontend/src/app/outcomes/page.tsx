@@ -1,67 +1,70 @@
 "use client"
-import Breadcrumb from "@/components/template/Breadcrumbs/Breadcrumb";
+
 import CategorySelect from "@/components/category/CategorySelect";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import { currencySchema } from "@/utils/validation";
+import { useState } from "react";
+import { ZodError } from "zod";
+import Button from "@mui/material/Button";
 
-
-const FormLayout = () => {
-    const onClick = () => {
-        console.log("clicked")
+const Outcomes = () => {
+  const [nominal,setNominal] = useState(0);
+  const [category,setCategpry] = useState('')
+  const [description,setDescription] = useState('')
+  const [nominalError,setNominalError] = useState('');
+  const handleInput = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
+    const {name,value} = e.target;
+    if(name === 'nominal'){
+      try {
+        const nominal = currencySchema.parse(parseInt(value));
+        setNominal(nominal);
+        setNominalError('')
+      } catch (error) {
+        if (error instanceof ZodError) {
+          setNominalError(error.issues[0].message);
+        }
+      }
     }
+    else if(name === 'category'){
+      setCategpry(value);
+    }
+    else if(name === 'description'){
+      setDescription(value);
+    }
+  }
+  const addOutcome = () =>{
+
+  }
   return (
-    <div className="text-black">
-      <Breadcrumb pageName="Finance-App-M-4" />
-      <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
-        <div className="flex flex-col gap-9">
-          {/* <!-- Contact Form --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black">
-                Outcome
-              </h3>
-            </div>
-            <form action="#">
-              <div className="p-6.5">
-              <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black">
-                    Total Outcome <span className="text-meta-1"></span>
-                  </label>
-                  <input
-                    type="money"
-                    placeholder=""
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                </div>
-
-                
-
-                <div className="mb-4.5">
-                <CategorySelect/>
-                </div>      
-
-                <div className="mb-6">
-                  <label className="mb-2.5 block text-black ">
-                    Deskripsi
-                  </label>
-                  <textarea
-                    rows={6}
-                    placeholder="Type your message"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  ></textarea>
-                </div>
-
-                <button 
-                className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray"
-                onClick={onClick}
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+    <div className="h-96 w-96 bg-amber-100 rou">
+      <div className="w-full">
+        <h2>Outcome</h2>
+        <TextField
+          error={nominalError !== ''}
+          id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
+          label="Nominal"
+          name="nominal"
+          sx={{ m: 1, width: 'auto' }}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+          }}
+          helperText={nominalError}
+          value={nominal}
+          onChange={handleInput}
+        />
       </div>
+      <div>
+        <h2>Category</h2>
+        <CategorySelect setSelectedCategory={setCategpry}/>
+      </div>
+      <div>
+        <h2>Deskripsi</h2>
+        <textarea name="description" id="deskripsi" rows={6} onChange={handleInput}></textarea>
+      </div>
+      <Button color="secondary" onClick={addOutcome}>Tambahkan</Button>
     </div>
   );
 };
 
-export default FormLayout;
+export default Outcomes;
