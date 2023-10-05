@@ -50,6 +50,8 @@ func main() {
 	reportController := controllers.NewReportController(db)
 
 	// Define routes
+	app.Post("/api/users/login", userController.LoginUser)
+	app.Post("/api/users", userController.RegisterUser)
 	defineUserRoutes(app, userController)
 	defineCategoryRoutes(app, categoryController)
 	defineWalletRoutes(app, walletController)
@@ -64,13 +66,10 @@ func main() {
 
 // Define route functions for each controller
 func defineUserRoutes(app *fiber.App, controller *controllers.UserController) {
-	app.Post("/api/users/login", controller.LoginUser)
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
-	app.Post("/api/users/login", controller.LoginUser)
-	authenticatedRoutes.Post("/api/users", controller.RegisterUser)
 	authenticatedRoutes.Patch("/api/users", controller.UpdateField)
 	authenticatedRoutes.Get("/api/users", controller.GetUsers)
-	authenticatedRoutes.Get("/api/users/:identifier", controller.GetUser)
+	authenticatedRoutes.Get("/api/users/personal", controller.GetUser)
 }
 
 func defineCategoryRoutes(app *fiber.App, controller *controllers.CategoryController) {

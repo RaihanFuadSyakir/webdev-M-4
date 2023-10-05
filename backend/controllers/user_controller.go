@@ -19,14 +19,16 @@ func NewUserController(db *gorm.DB) *UserController {
 
 func (uc *UserController) GetUser(c *fiber.Ctx) error {
 	var user models.User
-	param := c.Params("identifier")
-	if err := uc.DB.Where("username = ? OR email = ?", param, param).First(&user).Error; err != nil {
+	userID := c.Locals("userID")
+	if err := uc.DB.First(&user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return jsonResponse(c, fiber.StatusNotFound, "User not found", nil)
 		}
 		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to retrieve user data", nil)
 	}
-	return jsonResponse(c, fiber.StatusOK, "User retrieved successfully", user)
+	// Create an array containing the user
+	users := []models.User{user}
+	return jsonResponse(c, fiber.StatusOK, "User retrieved successfully", users)
 }
 
 func (uc *UserController) RegisterUser(c *fiber.Ctx) error {
@@ -144,7 +146,7 @@ func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 		Name:     "token",
 		Value:    tokenString,
 		SameSite: fiber.CookieSameSiteLaxMode,
-		Expires:  time.Now().Add(2 * time.Minute),
+		Expires:  time.Now().Add(2 * time.Hour),
 		Domain:   "localhost", // Set to the appropriate domain,
 		Path:     "/",
 	})
