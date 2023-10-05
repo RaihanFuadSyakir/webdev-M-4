@@ -1,6 +1,6 @@
 "use client"
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import CategorySelect from "@/components/CategorySelect";
+import Breadcrumb from "@/components/template/Breadcrumbs/Breadcrumb";
+import CategorySelect from "@/components/category/CategorySelect";
 
 
 const FormLayout = () => {
