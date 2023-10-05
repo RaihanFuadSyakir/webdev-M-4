@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { BACKEND_URL } from '@/constants';
-import { Redirect } from 'next';
+import { redirect } from 'next/navigation';
 const axiosInstance = axios.create({
     baseURL: `${BACKEND_URL}/api`,
     withCredentials: true,

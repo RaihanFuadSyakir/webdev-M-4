@@ -4,9 +4,16 @@ import { BACKEND_URL } from '@/constants';
 import { useEffect, useState } from 'react';
 import { Category, dbResponse } from '@/utils/type';
 import axios, { AxiosResponse } from 'axios';
-const CategorySelect = () => {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategory, setSelectedCategory] = useState('');
+import { useRouter } from 'next/navigation';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import { Chip } from '@mui/material';
+interface props {
+    setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
+  }
+const CategorySelect :  React.FC<props> =({setSelectedCategory}) => {
+    const router = useRouter()
+    const [categories, setCategories] = useState<{id : number,label : string}[]>([]);
 
     useEffect(() => {
         // Make a GET request to your backend API endpoint to fetch categories.
@@ -18,42 +25,39 @@ const CategorySelect = () => {
             withCredentials: true,
         }).then((response: AxiosResponse) => {
             const res: dbResponse<Category> = response.data;
-            const categories: Category[] = res.data;
-            setCategories(categories);
-        }).catch((e) => { console.log(e) })
+            const categoryList: Category[] = res.data;
+            categoryList.forEach((category) =>{
+                setCategories((prev) =>{
+                    return [...prev,{id:category.id ,label : category.category_name}]
+                })
+            })
+        }).catch((e) => { 
+            router.push('login');
+        })
     }, []);
 
     return (
-        <div className="mb-4.5">
-            <label className="mb-2.5 block text-black ">Category</label>
-            <div className="relative z-20 bg-transparent dark:bg-form-input">
-                <select
-                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                    <option value="">Select Category</option>
-                    {categories && (
-                        categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.category_name}
-                            </option>
-                        ))
-                    )}
-                </select>
-                <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                    <svg
-                        className="fill-current"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        {/* Your SVG icon code */}
-                    </svg>
-                </span>
-            </div>
+        <div>
+            <Autocomplete
+                onChange={(event,value)=>{
+                    if(value !== undefined){
+                        setSelectedCategory(value!.label);
+                    }  
+                }}
+                disablePortal
+                id="combo-box-demo"
+                options={categories}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField {...params} label="Category" name="category"/>}
+                renderOption={(props, option) => {
+                    return (
+                      <li {...props} key={option.id}>
+                        {option.label}
+                      </li>
+                    );
+                  }}
+                
+            />
         </div>
     );
 };
