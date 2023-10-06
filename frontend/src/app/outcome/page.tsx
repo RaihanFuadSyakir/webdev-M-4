@@ -15,7 +15,7 @@ const FormLayout = () => {
   return (
     <>
       <Breadcrumb pageName="Finance-App-M-4" />
-      <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
+  
         <div className="flex flex-col gap-9">
           {/* <!-- Contact Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -35,9 +35,7 @@ const FormLayout = () => {
                     placeholder=""
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                </div>
-
-                
+                </div>                
 
                 <div className="mb-4.5">
                 <CategorySelect/>
@@ -64,7 +62,7 @@ const FormLayout = () => {
             </form>
           </div>
         </div>
-      </div>
+      
     </>
   );
 };

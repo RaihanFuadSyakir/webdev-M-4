@@ -6,15 +6,17 @@ import { Category, dbResponse } from '@/type/type';
 const CategorySelect = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
+    const user_id = 1; // Ganti nilai user_id sesuai kebutuhan Anda
 
     useEffect(() => {
-        // Make a GET request to your backend API endpoint to fetch categories.
-        console.log("fetching")
-        fetch(`${BACKEND_URL}/api/categories`)
+        // Make a GET request to your backend API endpoint to fetch categories for the specific user_id.
+        console.log("fetching");
+        const url = `${BACKEND_URL}/api/categories?user_id=${user_id}&value=${selectedCategory}`;
+        fetch(url)
             .then((response) => response.json())
-            .then((datas : dbResponse<Category>) => setCategories(datas.data))
+            .then((datas: dbResponse<Category>) => setCategories(datas.data))
             .catch((error) => console.error('Error fetching categories:', error));
-    }, []);
+    }, [user_id, selectedCategory]);
 
     return (
         <div className="mb-4.5">
