@@ -9,7 +9,7 @@ export default function Dashboard() {
   useEffect(()=>{
     axiosInstance.get('/users/personal')
     .then((response : AxiosResponse<dbResponse<User>>)=>{
-      setUsername(response.data.data[0].username);
+      setUsername(response.data.data.username);
       console.log(response);
     })
     .catch((error)=>{
