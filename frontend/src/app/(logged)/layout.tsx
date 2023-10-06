@@ -1,7 +1,7 @@
 "use client"
 
-import './globals.css'
-import "./data-tables-css.css";
+import '@/app/globals.css'
+import '@/app/(logged)/data-tables-css.css';
 import type { Metadata } from 'next'
 import { useState, useEffect } from "react";
 import { Inter } from 'next/font/google'
@@ -11,7 +11,7 @@ import Header from "@/components/Header";
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function RootLayout({
+export default function LoggedLayout({
   children,
 }: {
   children: React.ReactNode;
