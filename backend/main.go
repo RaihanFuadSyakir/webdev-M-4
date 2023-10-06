@@ -84,6 +84,7 @@ func defineCategoryRoutes(app *fiber.App, controller *controllers.CategoryContro
 func defineWalletRoutes(app *fiber.App, controller *controllers.WalletController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
 	authenticatedRoutes.Post("/api/wallet/new", controller.CreateWallet)
+	authenticatedRoutes.Get("/api/wallet/user/", controller.GetWalletByUserID)
 	authenticatedRoutes.Get("/api/wallet/:id", controller.GetWallet)
 	authenticatedRoutes.Put("/api/wallet/:id", controller.UpdateWallet)
 }

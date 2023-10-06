@@ -86,3 +86,17 @@ func (wc *WalletController) DeleteWallet(c *fiber.Ctx) error {
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
+
+func (controller *WalletController) GetWalletByUserID(c *fiber.Ctx) error {
+	userID := c.Locals("userID")
+	user := new(models.User)
+
+	if err := controller.DB.Preload("Wallets").Find(user, userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return jsonResponse(c, fiber.StatusNotFound, "Wallets not found for the user", nil)
+		}
+		return err
+	}
+
+	return jsonResponse(c, fiber.StatusOK, "Wallets retrieved successfully", user.Wallets)
+}

@@ -1,6 +1,7 @@
 "use client"
 
 import CategorySelect from "@/components/category/CategorySelect";
+import WalletSelect from "@/components/wallet/WalletSelect";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import { currencySchema } from "@/utils/validation";
@@ -10,8 +11,9 @@ import Button from "@mui/material/Button";
 
 const Outcomes = () => {
   const [nominal,setNominal] = useState(0);
-  const [category,setCategpry] = useState('')
+  const [category,setCategory] = useState('')
   const [description,setDescription] = useState('')
+  const [wallet,setWallet] = useState('')
   const [nominalError,setNominalError] = useState('');
   const handleInput = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
     const {name,value} = e.target;
@@ -27,10 +29,13 @@ const Outcomes = () => {
       }
     }
     else if(name === 'category'){
-      setCategpry(value);
+      setCategory(value);
     }
     else if(name === 'description'){
       setDescription(value);
+    }
+    else if (name === 'wallet'){
+      setWallet(value);
     }
   }
   const addOutcome = () =>{
@@ -56,7 +61,11 @@ const Outcomes = () => {
       </div>
       <div>
         <h2>Category</h2>
-        <CategorySelect setSelectedCategory={setCategpry}/>
+        <CategorySelect setSelectedCategory={setCategory}/>
+      </div>
+      <div>
+        <h2>Wallet</h2>
+        <WalletSelect setSelectedWallet={setWallet}/>
       </div>
       <div>
         <h2>Deskripsi</h2>
