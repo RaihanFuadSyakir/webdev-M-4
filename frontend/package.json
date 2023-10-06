@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "tailadmin-free-nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.12",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/unitedstates": "^1.0.1",
     "@types/node": "20.4.8",
@@ -16,6 +19,9 @@
     "@types/react-dom": "18.2.7",
     "apexcharts": "^3.41.1",
     "autoprefixer": "10.4.14",
+    "axios": "^1.5.1",
+    "cookies-next": "^4.0.0",
+    "debug": "^4.3.4",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
     "jsvectormap": "^1.5.3",
@@ -26,9 +32,7 @@
     "react-dom": "18.2.0",
     "react-jvectormap": "^0.0.16",
     "tailwindcss": "3.3.3",
-    "typescript": "5.2.2"
-  },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.4"
+    "typescript": "5.1.6",
+    "zod": "^3.22.4"
   }
 }
