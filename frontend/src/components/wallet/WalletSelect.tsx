@@ -9,7 +9,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 
 interface Props {
-  setSelectedWallet: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedWallet: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const WalletSelect: React.FC<Props> = ({ setSelectedWallet }) => {
@@ -42,7 +42,7 @@ const WalletSelect: React.FC<Props> = ({ setSelectedWallet }) => {
       <Autocomplete
         onChange={(event, value) => {
           if (value !== undefined) {
-            setSelectedWallet(value!.label);
+            setSelectedWallet(value!.id);
           }
         }}
         disablePortal

@@ -9,7 +9,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { Chip } from '@mui/material';
 interface props {
-    setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
+    setSelectedCategory: React.Dispatch<React.SetStateAction<number>>;
   }
 const CategorySelect :  React.FC<props> =({setSelectedCategory}) => {
     const router = useRouter()
@@ -41,7 +41,7 @@ const CategorySelect :  React.FC<props> =({setSelectedCategory}) => {
             <Autocomplete
                 onChange={(event,value)=>{
                     if(value !== undefined){
-                        setSelectedCategory(value!.label);
+                        setSelectedCategory(value!.id);
                     }  
                 }}
                 disablePortal
