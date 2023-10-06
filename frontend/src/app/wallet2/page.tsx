@@ -1,55 +1,74 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { BACKEND_URL } from '@/constants';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
-const Wallet = () => {
+const WalletPage = () => {
   const [walletName, setWalletName] = useState('');
-  const [budget, setBudget] = useState('');
+  const [totalBalance, setTotalBalance] = useState('');
   const [wallets, setWallets] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const [editMode, setEditMode] = useState(false);
-  const [editWalletId, setEditWalletId] = useState(null);
-
-  const handleInput = (e) => {
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === 'walletName') {
       setWalletName(value);
-    } else if (name === 'budget') {
-      setBudget(value);
+    } else if (name === 'totalBalance') {
+      setTotalBalance(value);
     }
   };
 
-  const addWallet = () => {
-    if (walletName && budget) {
-      const newWallet = {
-        id: Date.now(),
-        name: walletName,
-        budget: parseFloat(budget),
+  const addWallet = async () => {
+    setLoading(true);
+    try {
+      if (!walletName || !totalBalance) {
+        setError('Nama wallet dan total balance harus diisi.');
+        setLoading(false);
+        return;
+      }
+
+      const data = {
+        wallet_name: walletName,
+        total_balance: parseFloat(totalBalance),
       };
-      setWallets([...wallets, newWallet]);
-      setWalletName('');
-      setBudget('');
-    } else {
-      console.error('Nama wallet dan budget harus diisi.');
+
+      axios
+        .post(`${BACKEND_URL}/api/wallet/new`, data, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          setError('');
+          // Reset form fields
+          setWalletName('');
+          setTotalBalance('');
+          // Optionally, you can refresh the wallet list here by making another GET request
+        })
+        .catch((error) => {
+          setError('Gagal menambahkan wallet.');
+        });
+    } catch (error) {
+      setError('Gagal menambahkan wallet.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const editWallet = (id) => {
-    const editedWallets = wallets.map((wallet) =>
-      wallet.id === id ? { ...wallet, budget: parseFloat(budget) } : wallet
-    );
-    setWallets(editedWallets);
-    setEditMode(false);
-    setEditWalletId(null);
-    setBudget('');
-  };
-
-  const deleteWallet = (id) => {
-    const updatedWallets = wallets.filter((wallet) => wallet.id !== id);
-    setWallets(updatedWallets);
-  };
+  useEffect(() => {
+    // Fetch list of wallets from the backend when the component mounts
+    axios
+      .get(`${BACKEND_URL}/api/wallets`)
+      .then((response) => {
+        setWallets(response.data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }, []); // Empty array ensures this effect runs once after initial render
 
   return (
     <div className="h-96 w-96 bg-amber-100 rounded p-4">
@@ -63,55 +82,30 @@ const Wallet = () => {
         margin="normal"
       />
       <TextField
-        label="Budget (Rp)"
-        name="budget"
+        label="Total Balance (Rp)"
+        name="totalBalance"
         type="number"
-        value={budget}
+        value={totalBalance}
         onChange={handleInput}
         fullWidth
         margin="normal"
       />
-      {editMode ? (
-        <Button color="primary" onClick={() => editWallet(editWalletId)}>
-          Simpan Perubahan
-        </Button>
-      ) : (
-        <Button color="primary" onClick={addWallet}>
-          Tambah Wallet
-        </Button>
-      )}
+      <Button color="primary" onClick={addWallet}>
+        Tambah Wallet
+      </Button>
 
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <h2>Wallets</h2>
         <ul>
           {wallets.map((wallet) => (
             <li key={wallet.id}>
-              <strong>{wallet.name}</strong> - Budget: Rp {wallet.budget}
-              <Button
-                color="secondary"
-                size="small"
-                onClick={() => {
-                  setEditMode(true);
-                  setEditWalletId(wallet.id);
-                  setWalletName(wallet.name);
-                  setBudget(wallet.budget);
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                color="error"
-                size="small"
-                onClick={() => deleteWallet(wallet.id)}
-              >
-                Delete
-              </Button>
+              <strong>{wallet.wallet_name}</strong> - Total Balance: Rp {wallet.total_balance}
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default Wallet;
+export default WalletPage;
