@@ -4,8 +4,10 @@
     padding: 5px 10px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
+    color: red;
   }
   
   .card-switcher-buttons button.active {
     background-color: #e0e0e0;
+    color: red;
   }

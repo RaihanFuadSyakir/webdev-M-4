@@ -52,63 +52,65 @@ const Wallet = () => {
   };
 
   return (
-    <div className="h-96 w-96 bg-amber-100 rounded p-4">
-      <h2>Tambah Wallet</h2>
-      <TextField
-        label="Nama Wallet"
-        name="walletName"
-        value={walletName}
-        onChange={handleInput}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Budget (Rp)"
-        name="budget"
-        type="number"
-        value={budget}
-        onChange={handleInput}
-        fullWidth
-        margin="normal"
-      />
-      {editMode ? (
-        <Button color="primary" onClick={() => editWallet(editWalletId)}>
-          Simpan Perubahan
-        </Button>
-      ) : (
-        <Button color="primary" onClick={addWallet}>
-          Tambah Wallet
-        </Button>
-      )}
+    <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+      <div className="h-96 w-96 bg-amber-100 rounded p-4">
+        <h2>Tambah Wallet</h2>
+        <TextField
+          label="Nama Wallet"
+          name="walletName"
+          value={walletName}
+          onChange={handleInput}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Budget (Rp)"
+          name="budget"
+          type="number"
+          value={budget}
+          onChange={handleInput}
+          fullWidth
+          margin="normal"
+        />
+        {editMode ? (
+          <Button color="primary" onClick={() => editWallet(editWalletId)}>
+            Simpan Perubahan
+          </Button>
+        ) : (
+          <Button color="primary" onClick={addWallet}>
+            Tambah Wallet
+          </Button>
+        )}
 
-      <div className="mt-4">
-        <h2>Wallets</h2>
-        <ul>
-          {wallets.map((wallet) => (
-            <li key={wallet.id}>
-              <strong>{wallet.name}</strong> - Budget: Rp {wallet.budget}
-              <Button
-                color="secondary"
-                size="small"
-                onClick={() => {
-                  setEditMode(true);
-                  setEditWalletId(wallet.id);
-                  setWalletName(wallet.name);
-                  setBudget(wallet.budget);
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                color="error"
-                size="small"
-                onClick={() => deleteWallet(wallet.id)}
-              >
-                Delete
-              </Button>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-4">
+          <h2>Wallets</h2>
+          <ul>
+            {wallets.map((wallet) => (
+              <li key={wallet.id}>
+                <strong>{wallet.name}</strong> - Budget: Rp {wallet.budget}
+                <Button
+                  color="secondary"
+                  size="small"
+                  onClick={() => {
+                    setEditMode(true);
+                    setEditWalletId(wallet.id);
+                    setWalletName(wallet.name);
+                    setBudget(wallet.budget);
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  color="error"
+                  size="small"
+                  onClick={() => deleteWallet(wallet.id)}
+                >
+                  Delete
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
