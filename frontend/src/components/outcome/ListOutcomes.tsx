@@ -12,6 +12,15 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+const formattedDateString = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      });
+}
+
 const ListOutcomes = () => {
   const [Outcomes, setOutcomes] = useState<Outcome[]>([]);
     
@@ -45,7 +54,7 @@ const ListOutcomes = () => {
             {Outcomes.map((outcome) => (
               <TableRow key={outcome.id}>
                 <TableCell component="th" scope="row">
-                  {outcome.date}
+                  {formattedDateString(outcome.date)}
                 </TableCell>
                 <TableCell align="right">{outcome.total_outcome}</TableCell>
                 <TableCell>{outcome.description}</TableCell>
