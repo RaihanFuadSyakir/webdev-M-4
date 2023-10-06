@@ -24,7 +24,7 @@ const CategorySelect :  React.FC<props> =({setSelectedCategory}) => {
             },
             withCredentials: true,
         }).then((response: AxiosResponse) => {
-            const res: dbResponse<Category> = response.data;
+            const res: dbResponse<Category[]> = response.data;
             const categoryList: Category[] = res.data;
             categoryList.forEach((category) =>{
                 setCategories((prev) =>{

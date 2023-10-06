@@ -60,5 +60,5 @@ export interface dbResponse<T> {
   ok: boolean;
   status: number;
   msg: string;
-  data: [T]
+  data: T
 }
