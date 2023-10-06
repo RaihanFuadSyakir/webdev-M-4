@@ -92,7 +92,7 @@ func defineOutcomeRoutes(app *fiber.App, controller *controllers.OutcomeControll
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
 	authenticatedRoutes.Post("/api/outcome/new", controller.CreateOutcome)
 	authenticatedRoutes.Get("/api/outcome/:id", controller.GetOutcome)
-	authenticatedRoutes.Get("/api/outcome/byuserid/:user_id", controller.GetOutcomeByUserID)
+	authenticatedRoutes.Get("/api/outcomes/", controller.GetOutcomeByUserID)
 	authenticatedRoutes.Put("/api/outcome/:id", controller.UpdateOutcome)
 	authenticatedRoutes.Delete("/api/outcome/delete", controller.DeleteOutcome)
 }

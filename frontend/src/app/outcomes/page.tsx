@@ -13,6 +13,7 @@ import WalletSelect from '@/components/wallet/WalletSelect';
 import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
 import CategorySelect from '@/components/category/CategorySelect';
+import ListOutcomes from '@/components/outcome/ListOutcomes';
 
 const Outcomes = () => {
   const [nominal, setNominal] = useState(0);
@@ -96,7 +97,7 @@ const Outcomes = () => {
   };
 
   return (
-    <div className="h-96 w-96 bg-amber-100 rou">
+    <div className="">
       <div className="w-full">
         <h2>Outcome</h2>
         <TextField
@@ -137,7 +138,11 @@ const Outcomes = () => {
       <Button color="secondary" onClick={addOutcome}>
         Tambahkan
       </Button>
+      <div>
+        <ListOutcomes />
+      </div>
     </div>
+    
   );
 };
 

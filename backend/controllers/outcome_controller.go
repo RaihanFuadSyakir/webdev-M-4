@@ -40,7 +40,7 @@ func (oc *OutcomeController) CreateOutcome(c *fiber.Ctx) error {
 func (oc *OutcomeController) GetOutcome(c *fiber.Ctx) error {
 	var outcome models.Outcome
 	outcomeID := c.Params("id")
-
+	fmt.Println("outcome id")
 	if err := oc.DB.First(&outcome, outcomeID).Error; err != nil {
 		return jsonResponse(c, fiber.StatusNotFound, "Outcome not found", nil)
 	}
@@ -50,9 +50,9 @@ func (oc *OutcomeController) GetOutcome(c *fiber.Ctx) error {
 
 // GetOutcomeByUserID retrieves outcomes for a user by their UserID.
 func (oc *OutcomeController) GetOutcomeByUserID(c *fiber.Ctx) error {
-	userID := c.Params("user_id") // Assuming "user_id" is the parameter name
+	userID := c.Locals("userID") // Assuming "user_id" is the parameter name
 	user := new(models.User)
-
+	fmt.Println("user id", userID)
 	if err := oc.DB.Preload("Outcomes").Find(user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return jsonResponse(c, fiber.StatusNotFound, "Outcome not found", nil)
