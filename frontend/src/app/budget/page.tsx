@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumbs";
+import CardSwitcher from "@/components/Card/CardSwitcher"
+import BudgetSelect from "@/components/Budget/BudgetSelect";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Buttons Page | Next.js E-commerce Dashboard Template",
@@ -7,110 +9,27 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-const Buttons = () => {
+const Budget = () => {
+  const financialCards = ['Card 1', 'Card 2', 'Card 3']; // Sample card names
   return (
     <>
       <Breadcrumb pageName="Buttons" />
 
       {/* <!-- Normal Button Items --> */}
-      <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
-          <h3 className="font-medium text-black dark:text-white">
-            Normal Button
-          </h3>
+      <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+        <div>
+          <h1>Cards</h1>
+          <CardSwitcher cards={financialCards} />
         </div>
 
-        <div className="p-4 md:p-6 xl:p-9">
-          <div className="mb-7.5 flex flex-wrap gap-5 xl:gap-20">
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
+      </div>
 
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-md bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-md border border-primary py-4 px-10 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-          </div>
-
-          <div className="mb-7.5 flex flex-wrap gap-5 xl:gap-20">
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-full bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-md border border-meta-3 py-4 px-10 text-center font-medium text-meta-3 hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-          </div>
-
-          <div className="flex flex-wrap gap-5 xl:gap-20">
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center bg-black py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-md bg-black py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-full bg-black py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-
-            <Link
-              href="#"
-              className="inline-flex items-center justify-center rounded-md border border-black py-4 px-10 text-center font-medium text-black hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              Button
-            </Link>
-          </div>
+      <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+        <div>
+          <h1>Select Budget</h1>
+          <BudgetSelect />
         </div>
+
       </div>
 
       {/* <!-- Button With Icon Items --> */}
@@ -473,4 +392,4 @@ const Buttons = () => {
   );
 };
 
-export default Buttons;
+export default Budget;

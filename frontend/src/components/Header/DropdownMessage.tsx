@@ -55,7 +55,7 @@ const DropdownMessage = () => {
         </span>
 
         <svg
-          className="fill-current duration-300 ease-in-out"
+          className="fill-black duration-300 ease-in-out"
           width="18"
           height="18"
           viewBox="0 0 18 18"

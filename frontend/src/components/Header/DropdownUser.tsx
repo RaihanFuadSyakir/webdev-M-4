@@ -43,7 +43,7 @@ const DropdownUser = () => {
         href="#"
       >
         <span className="hidden text-right lg:block">
-          <span className="block text-sm font-medium text-black dark:text-white">
+          <span className="block text-sm font-medium text-black">
             Thomas Anree
           </span>
           <span className="block text-xs">UX Designer</span>
@@ -59,7 +59,7 @@ const DropdownUser = () => {
         </span>
 
         <svg
-          className="hidden fill-current sm:block"
+          className="hidden fill-black sm:block"
           width="12"
           height="8"
           viewBox="0 0 12 8"
