@@ -29,5 +29,7 @@ export default function Dashboard() {
       <h1>Dashboard</h1>
       <h2>Hello {username}</h2>
     </div>
-  )
-}
+  );
+};
+
+export default Dashboard;
