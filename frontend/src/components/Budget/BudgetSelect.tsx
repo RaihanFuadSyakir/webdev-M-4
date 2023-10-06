@@ -1,11 +1,28 @@
 "use client"
-
 // components/BudgetSelect.tsx
+import { BACKEND_URL } from '@/constants';
 import React, { useState } from 'react';
-import Modal from './BudgetModal'; // Create a Modal component (explained later)
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+} from '@mui/material';
+import Modal from './BudgetModal';
+import axios from 'axios'; // Import Axios
 
 const BudgetSelect: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const [date, setDate] = useState('');
+  const [total_budget, settotal_budget] = useState('');
+  const [description, setDescription] = useState('');
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -15,47 +32,97 @@ const BudgetSelect: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleCreateBudget = () => {
-    // Implement your logic for creating a budget
-    console.log('Budget created!');
-    closeModal();
+  const handleCreateBudget = async () => {
+    try {
+      // Make a POST request to your API endpoint with the input data
+      const response = await axios.post(`${BACKEND_URL}/api/budget/new`, {
+        date: date,
+        month: selectedMonth,
+        total_budget: total_budget,
+        description: description,
+      });
+
+      console.log('Budget created successfully:', response.data);
+      closeModal();
+    } catch (error) {
+      console.error('Error creating budget:', error);
+    }
+  };
+
+  const handleMonthChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedMonth(event.target.value as string);
   };
 
   return (
     <div>
-      <button onClick={openModal} className="bg-primary-500 hover:bg-primary-700 text-black font-bold py-2 px-4 rounded">
+      <Button variant="contained" color="primary" onClick={openModal}>
         Create Budget
-      </button>
+      </Button>
 
       {isModalOpen && (
         <Modal closeModal={closeModal}>
-          <div className="px-4 py-5 bg-white sm:p-6">
-            <h1 className="text-lg">Create Budget</h1>
+          <DialogTitle>Create Budget</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Date"
+              type="date"
+              fullWidth
+              margin="normal"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+            
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="month-select-label">Month Selector</InputLabel>
+              <Select
+                labelId="month-select-label"
+                id="month-select"
+                value={selectedMonth}
+                onChange={handleMonthChange}
+                label="Month Selector"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value="January">January</MenuItem>
+                <MenuItem value="February">February</MenuItem>
+                <MenuItem value="March">March</MenuItem>
+                <MenuItem value="April">April</MenuItem>
+                <MenuItem value="May">May</MenuItem>
+                <MenuItem value="June">June</MenuItem>
+                <MenuItem value="July">July</MenuItem>
+                <MenuItem value="August">August</MenuItem>
+                <MenuItem value="September">September</MenuItem>
+                <MenuItem value="October">October</MenuItem>
+                <MenuItem value="November">November</MenuItem>
+                <MenuItem value="December">December</MenuItem>
+              </Select>
+            </FormControl>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Date:</label>
-              <input type="date" className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Month Selector:</label>
-              {/* Add your month selector input here */}
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Total Budget:</label>
-              <input type="number" className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-              <textarea rows={4} className="resize-y border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-
-            <button onClick={handleCreateBudget} className="mt-5 bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded">
+            <TextField
+              label="Total Budget"
+              type="number"
+              fullWidth
+              margin="normal"
+              value={total_budget}
+              onChange={(e) => settotal_budget(e.target.value)}
+            />
+            
+            <TextField
+              label="Description"
+              multiline
+              rows={4}
+              fullWidth
+              margin="normal"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCreateBudget} variant="contained" color="primary">
               Save
-            </button>
-          </div>
+            </Button>
+          </DialogActions>
         </Modal>
       )}
     </div>

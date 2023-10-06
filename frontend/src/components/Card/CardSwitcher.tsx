@@ -1,8 +1,7 @@
 "use client"
-
 // components/CardSwitcher.tsx
 import React, { useState } from 'react';
-import styles from '@/components/Card/CardSwither.module.css';  // Import the CSS
+import { Button, ButtonGroup, Paper, Typography } from '@mui/material';
 
 interface CardSwitcherProps {
   cards: string[]; // An array of card names or identifiers
@@ -16,25 +15,30 @@ const CardSwitcher: React.FC<CardSwitcherProps> = ({ cards }) => {
   };
 
   return (
-    <div>
-      <div className="card-switcher-buttons">
+    <Paper elevation={3} style={{ padding: '20px', margin: '20px', maxWidth: '400px' }}>
+      <Typography variant="h5" component="div" gutterBottom>
+        Card Switcher
+      </Typography>
+
+      <ButtonGroup color="primary" aria-label="outlined primary button group">
         {cards.map((card, index) => (
-          <button
+          <Button
             key={index}
+            variant={index === activeCardIndex ? 'contained' : 'outlined'}
             onClick={() => handleCardSwitch(index)}
-            className={index === activeCardIndex ? 'active' : ''}
           >
             {card}
-          </button>
+          </Button>
         ))}
-      </div>
+      </ButtonGroup>
 
-      <div className="active-card-info">
-        <h3>Active Card: {cards[activeCardIndex]}</h3>
+      <div style={{ marginTop: '20px' }}>
+        <Typography variant="body1">Active Card: {cards[activeCardIndex]}</Typography>
         {/* Add more card details or components here */}
       </div>
-    </div>
+    </Paper>
   );
 };
 
 export default CardSwitcher;
+
