@@ -26,9 +26,7 @@ func (uc *UserController) GetUser(c *fiber.Ctx) error {
 		}
 		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to retrieve user data", nil)
 	}
-	// Create an array containing the user
-	users := []models.User{user}
-	return jsonResponse(c, fiber.StatusOK, "User retrieved successfully", users)
+	return jsonResponse(c, fiber.StatusOK, "User retrieved successfully", user)
 }
 
 func (uc *UserController) RegisterUser(c *fiber.Ctx) error {
