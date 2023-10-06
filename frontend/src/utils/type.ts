@@ -21,13 +21,13 @@ export interface Wallet {
 }
 
 export interface Outcome {
-  id: number;
+  id: number | null;
   date: string; // You can use a string for representing time
   total_outcome: number;
   description: string;
   category_id: number;
   wallet_id: number;
-  user_id: number;
+  user_id: number | null;
 }
 
 export interface Income {
