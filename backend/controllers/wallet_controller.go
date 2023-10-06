@@ -25,20 +25,25 @@ func jsonResponse(c *fiber.Ctx, status int, msg string, data interface{}) error 
 }
 
 func (wc *WalletController) CreateWallet(c *fiber.Ctx) error {
+    var wallet models.Wallet
+    if err := c.BodyParser(&wallet); err != nil {
+        return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
+    }
 
-	var wallet models.Wallet
-	if err := c.BodyParser(&wallet); err != nil {
-		return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
-	}
+    // Extract the userID from c.Locals("userID")
+    userID, ok := c.Locals("userID").(uint)
+    if !ok {
+        return jsonResponse(c, fiber.StatusUnauthorized, "Unauthorized", nil)
+    }
 
-	// You might want to authenticate the user here and set the UserID accordingly.
-	// wallet.UserID = authenticatedUserID
+    // Set the UserID field of the wallet
+    wallet.UserID = userID
 
-	if err := wc.DB.Create(&wallet).Error; err != nil {
-		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
-	}
+    if err := wc.DB.Create(&wallet).Error; err != nil {
+        return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
+    }
 
-	return jsonResponse(c, fiber.StatusCreated, "Wallet created successfully", wallet)
+    return jsonResponse(c, fiber.StatusCreated, "Wallet created successfully", wallet)
 }
 
 func (wc *WalletController) GetWallet(c *fiber.Ctx) error {
@@ -85,4 +90,18 @@ func (wc *WalletController) DeleteWallet(c *fiber.Ctx) error {
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)
+}
+
+func (controller *WalletController) GetWalletByUserID(c *fiber.Ctx) error {
+	userID := c.Locals("userID")
+	user := new(models.User)
+
+	if err := controller.DB.Preload("Wallets").Find(user, userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return jsonResponse(c, fiber.StatusNotFound, "Wallets not found for the user", nil)
+		}
+		return err
+	}
+
+	return jsonResponse(c, fiber.StatusOK, "Wallets retrieved successfully", user.Wallets)
 }

@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -15,18 +17,21 @@ func NewOutcomeController(db *gorm.DB) *OutcomeController {
 }
 
 func (oc *OutcomeController) CreateOutcome(c *fiber.Ctx) error {
+	
 	var outcome models.Outcome
 	if err := c.BodyParser(&outcome); err != nil {
+		fmt.Println("outcome 0")
 		return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
 	}
-
+	userID := c.Locals("userID")
+	outcome.UserID = userID.(uint)
 	// You might want to authenticate the user here and set the UserID accordingly.
 	// wallet.UserID = authenticatedUserID
 
 	if err := oc.DB.Create(&outcome).Error; err != nil {
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
-
+	fmt.Println("Outcome created successfully")
 	return jsonResponse(c, fiber.StatusCreated, "Outcome created successfully", outcome)
 
 }
