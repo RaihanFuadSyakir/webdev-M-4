@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -25,25 +27,25 @@ func jsonResponse(c *fiber.Ctx, status int, msg string, data interface{}) error 
 }
 
 func (wc *WalletController) CreateWallet(c *fiber.Ctx) error {
-    var wallet models.Wallet
-    if err := c.BodyParser(&wallet); err != nil {
-        return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
-    }
+	var wallet models.Wallet
+	if err := c.BodyParser(&wallet); err != nil {
+		return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
+	}
 
-    // Extract the userID from c.Locals("userID")
-    userID, ok := c.Locals("userID").(uint)
-    if !ok {
-        return jsonResponse(c, fiber.StatusUnauthorized, "Unauthorized", nil)
-    }
+	// Extract the userID from c.Locals("userID")
+	userID, ok := c.Locals("userID").(uint)
+	if !ok {
+		return jsonResponse(c, fiber.StatusUnauthorized, "Unauthorized", nil)
+	}
 
-    // Set the UserID field of the wallet
-    wallet.UserID = userID
+	// Set the UserID field of the wallet
+	wallet.UserID = userID
 
-    if err := wc.DB.Create(&wallet).Error; err != nil {
-        return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
-    }
-
-    return jsonResponse(c, fiber.StatusCreated, "Wallet created successfully", wallet)
+	if err := wc.DB.Create(&wallet).Error; err != nil {
+		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
+	}
+	fmt.Println("Wallet created successfully")
+	return jsonResponse(c, fiber.StatusCreated, "Wallet created successfully", wallet)
 }
 
 func (wc *WalletController) GetWallet(c *fiber.Ctx) error {
