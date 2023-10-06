@@ -23,7 +23,7 @@ const WalletPage = () => {
     }
   };
 
-  const addWallet = () => {
+  const addWallet = async () => {
     setLoading(true);
     try {
       if (!walletName || !totalBalance) {
@@ -94,7 +94,7 @@ const WalletPage = () => {
         Tambah Wallet
       </Button>
 
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <h2>Wallets</h2>
         <ul>
           {wallets.map((wallet) => (
@@ -103,7 +103,7 @@ const WalletPage = () => {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
     </div>
   );
 };
