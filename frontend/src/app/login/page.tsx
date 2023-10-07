@@ -10,42 +10,41 @@ import { ZodError } from 'zod';
 import { Button, CircularProgress, TextField } from '@mui/material';
 import { AxiosError, AxiosResponse } from 'axios';
 const Login: React.FC = () => {
-  const route = useRouter();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState(['','','']);
-  const [users, setUsers] = useState<User[]>([]);
-  const [isLoading,setLoading] = useState(false);
+  const [errors, setErrors] = useState(['', '', '']);
+  const [isLoading, setLoading] = useState(false);
   const router = useRouter();
-  const handleOnChange = (event : any) =>{
-    const {name,value} = event.target;
-    if(name === 'identifier'){
+  const handleOnChange = (event: any) => {
+    const { name, value } = event.target;
+    if (name === 'identifier') {
       setIdentifier(value);
     }
-    if(name === 'password'){
+    if (name === 'password') {
       setPassword(value);
     }
   }
   const handleLogin = async () => {
+    setLoading(() => true);
     try {
       const formData = loginSchema.parse({ identifier, password });
       axiosInstance
-    .post('/users/login', formData)
-    .then((response) => {
-      const removeError = ['','','']
-      setErrors(removeError);
-      router.push('/');
-    })
-    .catch((error : AxiosError<dbResponse<User>>) => {
-      const updateError = [...errors]
-      const res : dbResponse<User> | undefined= error.response?.data;
-      updateError[2] = res!.msg;
-      setErrors(updateError);
-    });
-    } catch (error : any) {
+        .post('/users/login', formData)
+        .then((response) => {
+          const removeError = ['', '', '']
+          setErrors(removeError);
+          router.push('/dashboard');
+        })
+        .catch((error: AxiosError<dbResponse<User>>) => {
+          const updateError = [...errors]
+          const res: dbResponse<User> | undefined = error.response?.data;
+          updateError[2] = res!.msg;
+          setErrors(updateError);
+        });
+    } catch (error: any) {
       if (error instanceof ZodError) {
         // Access the error messages for each field
-        const errorMessages = ['','']
+        const errorMessages = ['', '']
         const identifierError = error.issues.find((issue) => issue.path[0] === 'identifier');
         const passwordError = error.issues.find((issue) => issue.path[0] === 'password');
         // You can use the error messages as needed
@@ -57,20 +56,22 @@ const Login: React.FC = () => {
           errorMessages[1] = passwordError.message;
         }
         setErrors(errorMessages);
-        };
-        
-      }
+      };
+
+    } finally {
+      setLoading(() => false);
     }
+  }
 
   return (
     <div className=' text-black flex items-center justify-center h-screen'>
       <div className='flex flex-col h-72 w-72 shadow-md rounded'>
-      <h2 className="text-3xl font-semibold text-center text-indigo-600">Login</h2>
-      <TextField
+        <h2 className="text-3xl font-semibold text-center text-indigo-600">Login</h2>
+        <TextField
           required
           error={errors[0] !== ''}
           id={errors[0] !== '' ? "outlined-required" : "outlined-error-helper-text"}
-          name = "identifier"
+          name="identifier"
           label="username/email"
           defaultValue=""
           onChange={handleOnChange}
@@ -81,7 +82,7 @@ const Login: React.FC = () => {
           required
           error={errors[1] !== ''}
           id={errors[1] !== '' ? "outlined-required" : "outlined-error-helper-text"}
-          name = "password"
+          name="password"
           label="Password"
           type="password"
           defaultValue=""
@@ -90,19 +91,19 @@ const Login: React.FC = () => {
           className='m-2'
         />
         <div className='flex items-center justify-center'>
-        <Button 
-          variant="contained" 
-          onClick={handleLogin}
-          className='bg-cyan-700'
-          disabled={isLoading}
+          <Button
+            variant="contained"
+            onClick={handleLogin}
+            className={`${!isLoading && 'bg-cyan-700'}`}
+            disabled={isLoading}
           >
-          {isLoading ? <CircularProgress color='primary' /> : "Login"}
+            {isLoading ? <CircularProgress color='primary' /> : "Login"}
           </Button>
         </div>
-        {errors[2] !== '' && 
+        {errors[2] !== '' &&
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-          <strong className="font-bold">Error:</strong>
-          <span className="block sm:inline">{errors[2]}</span>
+            <strong className="font-bold">Error:</strong>
+            <span className="block sm:inline">{errors[2]}</span>
           </div>
         }
       </div>

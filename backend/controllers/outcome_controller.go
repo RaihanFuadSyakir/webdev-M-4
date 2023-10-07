@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -15,18 +17,21 @@ func NewOutcomeController(db *gorm.DB) *OutcomeController {
 }
 
 func (oc *OutcomeController) CreateOutcome(c *fiber.Ctx) error {
+	
 	var outcome models.Outcome
 	if err := c.BodyParser(&outcome); err != nil {
+		fmt.Println("outcome 0")
 		return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
 	}
-
+	userID := c.Locals("userID")
+	outcome.UserID = userID.(uint)
 	// You might want to authenticate the user here and set the UserID accordingly.
 	// wallet.UserID = authenticatedUserID
 
 	if err := oc.DB.Create(&outcome).Error; err != nil {
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
-
+	fmt.Println("Outcome created successfully")
 	return jsonResponse(c, fiber.StatusCreated, "Outcome created successfully", outcome)
 
 }
@@ -35,7 +40,7 @@ func (oc *OutcomeController) CreateOutcome(c *fiber.Ctx) error {
 func (oc *OutcomeController) GetOutcome(c *fiber.Ctx) error {
 	var outcome models.Outcome
 	outcomeID := c.Params("id")
-
+	fmt.Println("outcome id")
 	if err := oc.DB.First(&outcome, outcomeID).Error; err != nil {
 		return jsonResponse(c, fiber.StatusNotFound, "Outcome not found", nil)
 	}
@@ -45,9 +50,9 @@ func (oc *OutcomeController) GetOutcome(c *fiber.Ctx) error {
 
 // GetOutcomeByUserID retrieves outcomes for a user by their UserID.
 func (oc *OutcomeController) GetOutcomeByUserID(c *fiber.Ctx) error {
-	userID := c.Params("user_id") // Assuming "user_id" is the parameter name
+	userID := c.Locals("userID") // Assuming "user_id" is the parameter name
 	user := new(models.User)
-
+	fmt.Println("user id", userID)
 	if err := oc.DB.Preload("Outcomes").Find(user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return jsonResponse(c, fiber.StatusNotFound, "Outcome not found", nil)
