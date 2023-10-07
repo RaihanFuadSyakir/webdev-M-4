@@ -70,6 +70,7 @@ func defineUserRoutes(app *fiber.App, controller *controllers.UserController) {
 	authenticatedRoutes.Patch("/api/users", controller.UpdateField)
 	authenticatedRoutes.Get("/api/users", controller.GetUsers)
 	authenticatedRoutes.Get("/api/users/personal", controller.GetUser)
+	authenticatedRoutes.Get("api/users/logout", controller.LogoutUser)
 }
 
 func defineCategoryRoutes(app *fiber.App, controller *controllers.CategoryController) {
