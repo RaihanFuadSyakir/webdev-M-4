@@ -27,7 +27,9 @@ export interface Outcome {
   description: string;
   category_id: number;
   wallet_id: number;
-  user_id: number | null;
+  user_id: number;
+  wallet : Wallet | undefined;
+  category : Category | undefined;
 }
 
 export interface Income {

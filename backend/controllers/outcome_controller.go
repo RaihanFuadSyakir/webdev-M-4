@@ -17,7 +17,6 @@ func NewOutcomeController(db *gorm.DB) *OutcomeController {
 }
 
 func (oc *OutcomeController) CreateOutcome(c *fiber.Ctx) error {
-	
 	var outcome models.Outcome
 	if err := c.BodyParser(&outcome); err != nil {
 		fmt.Println("outcome 0")
@@ -58,6 +57,12 @@ func (oc *OutcomeController) GetOutcomeByUserID(c *fiber.Ctx) error {
 			return jsonResponse(c, fiber.StatusNotFound, "Outcome not found", nil)
 		}
 		return err
+	}
+	// Loop through each Outcome and preload related Category and Wallet data
+	for i := range user.Outcomes {
+		if err := oc.DB.Preload("Category").Preload("Wallet").Find(&user.Outcomes[i]).Error; err != nil {
+			return err
+		}
 	}
 	return jsonResponse(c, fiber.StatusOK, "OK", user.Outcomes)
 }

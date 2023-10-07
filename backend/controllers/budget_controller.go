@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -20,14 +22,12 @@ func (controller *BudgetController) CreateBudget(c *fiber.Ctx) error {
 	if err := c.BodyParser(&budget); err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
 	}
-
-	// Save the budget to the database using GORM
-	controller.DB.Create(&budget)
-
+	userID := c.Locals("userID")
+	budget.UserID = userID.(uint)
 	if err := controller.DB.Create(&budget).Error; err != nil {
+		fmt.Println(err)
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
-
 	return jsonResponse(c, fiber.StatusCreated, "Budget created successfully", budget)
 }
 
