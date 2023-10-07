@@ -15,7 +15,10 @@ import {
   Select,
 } from '@mui/material';
 import Modal from './BudgetModal';
-import axios from 'axios'; // Import Axios
+import axios, { AxiosError, AxiosResponse } from 'axios'; // Import Axios
+import axiosInstance from '@/utils/fetchData';
+import { Budget, dbResponse } from '@/utils/type';
+import { currencySchema } from '@/utils/validation';
 
 const BudgetSelect: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,24 +35,27 @@ const BudgetSelect: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleCreateBudget = async () => {
+  const handleCreateBudget = () => {
     try {
+      const validBudget = currencySchema.parse(parseFloat(total_budget))
       // Make a POST request to your API endpoint with the input data
-      const response = await axios.post(`${BACKEND_URL}/api/budget/new`, {
-        date: date,
+      axiosInstance.post('/budget/new',{
+        date: new Date(date),
         month: selectedMonth,
-        total_budget: total_budget,
+        total_budget: validBudget,
         description: description,
-      });
-
-      console.log('Budget created successfully:', response.data);
+      }).then((response : AxiosResponse<dbResponse<Budget>>)=>{
+        console.log(response.data.msg);
+      }).catch((err_response : AxiosError<dbResponse<Budget>>) =>{
+        console.log(err_response.response?.data.msg);
+      })
       closeModal();
     } catch (error) {
       console.error('Error creating budget:', error);
     }
   };
 
-  const handleMonthChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleMonthChange = (event: any) => {
     setSelectedMonth(event.target.value as string);
   };
 

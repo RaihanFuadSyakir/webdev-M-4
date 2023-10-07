@@ -1,5 +1,5 @@
 {
-  "name": "tailadmin-free-nextjs",
+  "name": "m4-finance-management",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,7 +19,6 @@
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
     "apexcharts": "^3.41.1",
-    "autoprefixer": "10.4.14",
     "axios": "^1.5.1",
     "cookies-next": "^4.0.0",
     "debug": "^4.3.4",
@@ -28,13 +27,16 @@
     "jsvectormap": "^1.5.3",
     "mdi-material-ui": "^7.7.0",
     "next": "13.4.12",
-    "postcss": "8.4.27",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-dom": "18.2.0",
     "react-jvectormap": "^0.0.16",
-    "tailwindcss": "3.3.3",
     "typescript": "5.1.6",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.3"
   }
 }
