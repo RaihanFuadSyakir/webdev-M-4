@@ -24,7 +24,7 @@ const Login: React.FC = () => {
       setPassword(value);
     }
   }
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setLoading(() => true);
     try {
       const formData = loginSchema.parse({ identifier, password });

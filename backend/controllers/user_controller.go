@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/finance-management/models"
@@ -105,40 +104,21 @@ func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 	}
 
 	if err := c.BodyParser(&loginRequest); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid request body",
-		})
+		return jsonResponse(c, fiber.StatusBadRequest, "Invalid request body", nil)
 	}
 
 	// Check if the user with the provided username or email exists
 	var existingUser models.User
 	if err := uc.DB.Where("username = ? OR email = ?", loginRequest.Identifier, loginRequest.Identifier).First(&existingUser).Error; err != nil {
-		response := Response{
-			OK:     false,
-			Status: fiber.StatusUnauthorized,
-			Msg:    "Unauthorized",
-			Data:   "Incorrect username/email or password",
-		}
-
-		return c.Status(fiber.StatusUnauthorized).JSON(response)
+		return jsonResponse(c, fiber.StatusUnauthorized, "Unauthorized", "Incorrect username/email or password")
 	}
 
 	// Generate a new JWT token for the user
 	tokenString, err := generateJWTToken(existingUser.ID)
 	if err != nil {
-		response := Response{
-			OK:     false,
-			Status: fiber.StatusInternalServerError,
-			Msg:    "Internal Server Error",
-			Data:   "Failed to generate JWT token",
-		}
-
-		return c.Status(fiber.StatusInternalServerError).JSON(response)
+		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", "Failed to generate JWT token")
 	}
-	/* c.Response().Header.Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	c.Response().Header.Set("Access-Control-Allow-Credentials", "true")
-	c.Response().Header.Set("Access-Control-Allow-Headers", "Content-Type,access-control-allow-origin, access-control-allow-headers,access-control-allow-credentials")
-	c.Response().Header.Set("Content-Type", "application/json") */
+
 	// Set the JWT token as a cookie in the response
 	c.Cookie(&fiber.Cookie{
 		Name:     "token",
@@ -148,12 +128,29 @@ func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 		Domain:   "localhost", // Set to the appropriate domain,
 		Path:     "/",
 	})
+
 	existingUser.Password = ""
+
 	// Return the JWT token in the JSON response (optional)
-	fmt.Println("success")
-	return c.JSON(fiber.Map{
-		"status": "success",
-		"user":   existingUser,
-		"token":  tokenString, // Include the token in the response if needed
+	return jsonResponse(c, fiber.StatusOK, "Success", fiber.Map{
+		"user":  existingUser,
+		"token": tokenString, // Include the token in the response if needed
 	})
+}
+func (uc *UserController) LogoutUser(c *fiber.Ctx) error {
+	// Remove the "token" cookie by setting it to an empty value and expiring it
+	c.Cookie(&fiber.Cookie{
+		Name:     "token",
+		Value:    "",
+		Expires:  time.Now().Add(-1 * time.Second), // Expire immediately
+		Domain:   "localhost",                      // Set to the appropriate domain,
+		Path:     "/",
+		SameSite: fiber.CookieSameSiteLaxMode,
+	})
+
+	// Clear the "userID" from locals
+	c.Locals("userID", nil)
+
+	// Return a response indicating successful logout
+	return jsonResponse(c, fiber.StatusOK, "Logout successful", nil)
 }
