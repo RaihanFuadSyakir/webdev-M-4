@@ -61,7 +61,7 @@ const BudgetSelect: React.FC = () => {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={openModal}>
+      <Button variant='contained' color='success' onClick={openModal}>
         Create Budget
       </Button>
 

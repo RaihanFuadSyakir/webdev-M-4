@@ -1,10 +1,11 @@
 "use client"
-import React, { useEffect, useState } from 'react'
 import axiosInstance from '@/utils/fetchData';
 import { User, dbResponse } from '@/utils/type';
 import { AxiosResponse } from 'axios';
+// No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 export default function Dashboard() {
   const router = useRouter()
   const [username, setUsername] = useState('');
