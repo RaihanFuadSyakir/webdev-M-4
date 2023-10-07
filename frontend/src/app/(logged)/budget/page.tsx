@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumbs";
+import Breadcrumb from "@/components/template/Breadcrumbs/Breadcrumb";
 import CardSwitcher from "@/components/Card/CardSwitcher"
 import BudgetSelect from "@/components/Budget/BudgetSelect";
 import { Metadata } from "next";

@@ -1,4 +1,4 @@
-import Breadcrumb from "../Breadcrumbs/Breadcrumb";
+import Breadcrumb from "@/components/template/Breadcrumbs/Breadcrumb";
 
 const Calendar = () => {
   return (
