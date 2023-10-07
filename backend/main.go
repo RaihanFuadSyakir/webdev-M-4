@@ -27,8 +27,8 @@ func main() {
 		panic("Failed to connect to the database")
 	}
 
-	// Apply migrations
-	/* if err := migrations.Delete(db); err != nil {
+	/* // Apply migrations
+	if err := migrations.Delete(db); err != nil {
 		panic("Failed to Delete Tables")
 	}
 	if err := migrations.Migrate(db); err != nil {

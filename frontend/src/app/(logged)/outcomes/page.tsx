@@ -21,13 +21,12 @@ const Outcomes = () => {
   const [description, setDescription] = useState('');
   const [wallet, setWallet] = useState(0);
   const [date, setDate] = useState(''); // Add date state
-  console.log(wallet);
-  console.log(date);
   const [nominalError, setNominalError] = useState('');
   const [walletError, setWalletError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
+  const [seed,setSeed] = useState(0);
+  console.log("category",category);
   const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === 'nominal') {
@@ -60,7 +59,11 @@ const Outcomes = () => {
         setLoading(false);
         return;
       }
-
+      if (!category) {
+        setWalletError('Please select a category.');
+        setLoading(false);
+        return;
+      }
       // Create a data object to send in the POST request
       
       const data= {
@@ -70,9 +73,9 @@ const Outcomes = () => {
         category_id: category,
         wallet_id: wallet,
       };
-      console.log(data)
+      console.log(data);
       axiosInstance
-        .post(`${BACKEND_URL}/api/outcome/new`, data, {
+        .post(`/outcome/new`, data, {
           withCredentials: true,
         })
         .then((response) => {
@@ -83,6 +86,7 @@ const Outcomes = () => {
           setDescription('');
           setWallet(0);
           setDate(''); // Reset the date field
+          setSeed(Math.floor(Math.random()))
         })
         .catch((error: AxiosError) => {
           console.log("axios",error)
@@ -97,50 +101,50 @@ const Outcomes = () => {
   };
 
   return (
-    <div className="">
-      <div className="w-full">
-        <h2>Outcome</h2>
-        <TextField
-          error={nominalError !== ''}
-          id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
-          label="Nominal"
-          name="nominal"
-          sx={{ m: 1, width: 'auto' }}
-          InputProps={{
-            startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
-          }}
-          helperText={nominalError}
-          value={nominal}
-          onChange={handleInput}
-        />
+    <div className="flex">
+      <div className='max-w-xl'>
+        <div>
+          <h2>Outcome</h2>
+          <TextField
+            error={nominalError !== ''}
+            id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
+            label="Nominal"
+            name="nominal"
+            sx={{ m: 1, width: 'auto' }}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+            }}
+            helperText={nominalError}
+            value={nominal}
+            onChange={handleInput}
+          />
+        </div>
+        <div>
+          <h2>Category</h2>
+          <CategorySelect setSelectedCategory={setCategory} />
+        </div>
+        <div>
+          <h2>Wallet</h2>
+          <WalletSelect setSelectedWallet={setWallet} />
+        </div>
+        <div>
+          <h2>Date</h2>
+          <TextField
+            type="date"
+            name="date"
+            value={date}
+            onChange={handleInput}
+          />
+        </div>
+        <div>
+          <h2>Deskripsi</h2>
+          <textarea name="description" id="deskripsi" rows={6} onChange={handleInput}></textarea>
+        </div>
+        <Button color="secondary" onClick={addOutcome}>
+          Tambahkan
+        </Button>
       </div>
-      <div>
-        <h2>Category</h2>
-        <CategorySelect setSelectedCategory={setCategory} />
-      </div>
-      <div>
-        <h2>Wallet</h2>
-        <WalletSelect setSelectedWallet={setWallet} />
-      </div>
-      <div>
-        <h2>Date</h2>
-        <TextField
-          type="date"
-          name="date"
-          value={date}
-          onChange={handleInput}
-        />
-      </div>
-      <div>
-        <h2>Deskripsi</h2>
-        <textarea name="description" id="deskripsi" rows={6} onChange={handleInput}></textarea>
-      </div>
-      <Button color="secondary" onClick={addOutcome}>
-        Tambahkan
-      </Button>
-      <div>
-        <ListOutcomes />
-      </div>
+      <ListOutcomes seed={seed}/>
     </div>
     
   );

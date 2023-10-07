@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss'
 import colors from 'tailwindcss/colors'
+import defaultTheme from 'tailwindcss/defaultTheme'
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -7,6 +8,7 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    extend: {
     colors: {
       ...colors,
       current: "currentColor",
@@ -45,7 +47,7 @@ const config: Config = {
       danger: "#D34053",
       warning: "#FFA70B",
     },
-    extend: {
+    
       fontSize: {
         "title-xxl": ["44px", "55px"],
         "title-xl": ["36px", "45px"],
