@@ -16,7 +16,9 @@ const Budget = () => {
       <Breadcrumb pageName="Buttons" />
 
       {/* <!-- Normal Button Items --> */}
-      <CardSwitcher cards={financialCards} />
+      <div className="my-10 rounded-sm border border-stroke bg-white shadow-default">
+        <CardSwitcher cards={financialCards} />
+      </div>
 
       <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
         <div>
