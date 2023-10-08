@@ -25,6 +25,7 @@ func (uc *UserController) GetUser(c *fiber.Ctx) error {
 		}
 		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to retrieve user data", nil)
 	}
+	user.Password = ""
 	return jsonResponse(c, fiber.StatusOK, "User retrieved successfully", user)
 }
 

@@ -8,13 +8,23 @@ import { useRouter } from 'next/navigation';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { Chip } from '@mui/material';
+import ButtonCreateCategory from './ButtonCreateCategory';
+import ButtonDeleteCategory from './ButtonDeleteCategory';
 interface props {
     setSelectedCategory: React.Dispatch<React.SetStateAction<number>>;
   }
+
 const CategorySelect :  React.FC<props> =({setSelectedCategory}) => {
     const router = useRouter()
     const [categories, setCategories] = useState<{id : number,label : string}[]>([]);
+    const [isExist,setExist] = useState(false);
+    console.log(isExist)
+    const handleCreate = (e : any) =>{
 
+    }
+    const handleDelete = (e: any) =>{
+        
+    }
     useEffect(() => {
         // Make a GET request to your backend API endpoint to fetch categories.
         console.log("fetching")
@@ -37,12 +47,17 @@ const CategorySelect :  React.FC<props> =({setSelectedCategory}) => {
     }, []);
 
     return (
-        <div>
+        <div className='flex'>
             <Autocomplete
                 onChange={(event,value)=>{
                     if(value !== undefined){
                         setSelectedCategory(value!.id);
-                    }  
+                        setExist(true);
+                    }
+                    else{
+                        setSelectedCategory(0);
+                        setExist(false);
+                    } 
                 }}
                 disablePortal
                 id="combo-box-demo"
@@ -58,6 +73,8 @@ const CategorySelect :  React.FC<props> =({setSelectedCategory}) => {
                   }}
                 
             />
+            <ButtonCreateCategory isExist={isExist} onClick={handleCreate}/>
+            <ButtonDeleteCategory isExist={isExist} onClick={handleDelete}/>
         </div>
     );
 };
