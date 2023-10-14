@@ -12,6 +12,7 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+
 const ListOutcomes = ({seed} : {seed: number}) => {
   const [Outcomes, setOutcomes] = useState<Outcome[]>([]);
     
@@ -46,11 +47,13 @@ const ListOutcomes = ({seed} : {seed: number}) => {
           <TableBody>
             {Outcomes.map((outcome) => (
               <TableRow key={outcome.id}>
+
                 <TableCell component="th" scope="row">{outcome.date}</TableCell>
                 <TableCell align="right">{outcome.total_outcome}</TableCell>
                 <TableCell>{outcome.description}</TableCell>
                 <TableCell>{outcome.category?.category_name}</TableCell>
                 <TableCell>{outcome.wallet?.wallet_name}</TableCell>
+
               </TableRow>
             ))}
           </TableBody>
