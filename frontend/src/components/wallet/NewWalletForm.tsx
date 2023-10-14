@@ -1,32 +1,33 @@
 "use client"
-import { useState } from "react";
-import axiosInstance from "@/utils/fetchData";
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '@/utils/fetchData';
+import { AxiosError, AxiosResponse } from 'axios';
+import { Wallet, dbResponse } from '@/utils/type';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { AxiosError, AxiosResponse } from "axios";
-import { Wallet, dbResponse } from "@/utils/type";
 
-const NewWalletForm = () => {
+interface NewWalletFormProps {
+  onWalletAdded: () => void;
+  onWalletEdited: () => void;
+  editingWallet: Wallet | null;
+}
+
+const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEdited, editingWallet }) => {
   const [walletName, setWalletName] = useState('');
   const [totalBalance, setTotalBalance] = useState('');
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    if (name === 'walletName') {
-      setWalletName(value);
-    } else if (name === 'totalBalance') {
-      setTotalBalance(value);
+  useEffect(() => {
+    // Populate form fields when in edit mode
+    if (editingWallet) {
+      setWalletName(editingWallet.wallet_name);
+      setTotalBalance(editingWallet.total_balance.toString());
     }
-  };
+  }, [editingWallet]);
 
-  const addWallet = async () => {
-    setLoading(true);
+  const handleFormSubmit = async () => {
     try {
-      if (!walletName || !totalBalance) {
-        setError('Nama wallet dan total balance harus diisi.');
-        setLoading(false);
+      if (!totalBalance) {
+        // Handle validation error
         return;
       }
 
@@ -35,45 +36,51 @@ const NewWalletForm = () => {
         total_balance: parseFloat(totalBalance),
       };
 
-      axiosInstance.post('/wallet/new', data)
-        .then((response: AxiosResponse<dbResponse<Wallet>>) => {
-          console.log(response.data.msg);
-        })
-        .catch((err_response: AxiosError<dbResponse<Wallet>>) => {
-          console.log(err_response.response?.data.msg);
-        });
+      if (editingWallet) {
+        // If in edit mode, send PUT request
+        await axiosInstance.put(`/wallet/${editingWallet.id}`, data);
+        onWalletEdited();
+      } else {
+        // If in add mode, send POST request
+        await axiosInstance.post('/wallet/new', data);
+        onWalletAdded();
+      }
+
+      // Reset input fields
+      setWalletName('');
+      setTotalBalance('');
     } catch (error) {
-      setError('Gagal menambahkan wallet.');
-    } finally {
-      setLoading(false);
+      // Handle error
+      console.error("Failed to save wallet:", error);
     }
   };
 
   return (
-    <div className="h-96 w-96 bg-white rounded m-4 p-2 text-black">
+    <div className="rounded mb-4 p-2 text-black">
       <h2 className="font-bold text-xl mb-2">Wallet</h2>
       <TextField
         label="Wallet Name"
         name="walletName"
         value={walletName}
-        onChange={handleInput}
+        onChange={(e) => setWalletName(e.target.value)}
         fullWidth
         margin="normal"
+        disabled={!!editingWallet} // Disable the field in edit mode
       />
       <TextField
         label="Total Balance (Rp)"
         name="totalBalance"
         type="number"
         value={totalBalance}
-        onChange={handleInput}
+        onChange={(e) => setTotalBalance(e.target.value)}
         fullWidth
         margin="normal"
       />
       <Button
         className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
-        onClick={addWallet}
+        onClick={handleFormSubmit}
       >
-        Add Wallet
+        {editingWallet ? 'Update Wallet' : 'Add Wallet'}
       </Button>
     </div>
   );
