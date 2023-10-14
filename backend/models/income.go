@@ -9,4 +9,5 @@ type Income struct {
 	Description string    `json:"description"`
 	WalletID    uint      `json:"wallet_id" gorm:"foreignKey:WalletID"`
 	UserID      uint      `json:"user_id" gorm:"foreignKey:UserID"`
+	Wallet      Wallet    `json:"wallet"`
 }
