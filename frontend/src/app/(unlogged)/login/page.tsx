@@ -24,9 +24,9 @@ const Login: React.FC = () => {
       setPassword(value);
     }
   }
-  const handleLogin = async () => {
-    setLoading(() => true);
+  const handleLogin = () => {
     try {
+      setLoading(() => {return true});
       const formData = loginSchema.parse({ identifier, password });
       axiosInstance
         .post('/users/login', formData)
@@ -58,9 +58,8 @@ const Login: React.FC = () => {
         setErrors(errorMessages);
       };
 
-    } finally {
-      setLoading(() => false);
-    }
+    } 
+    setLoading(() => {return false});
   }
 
   return (
@@ -94,7 +93,7 @@ const Login: React.FC = () => {
           <Button
             variant="contained"
             onClick={handleLogin}
-            className={`${!isLoading && 'bg-cyan-700'}`}
+            className={`${isLoading ? 'bg-white' :  'bg-cyan-700'}`}
             disabled={isLoading}
           >
             {isLoading ? <CircularProgress color='primary' /> : "Login"}

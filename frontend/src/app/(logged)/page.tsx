@@ -5,9 +5,5 @@ import Outcome from './outcomes/page';
 
 
 export default function Home() {
-    return (
-        <>
-          <Dashboard />
-        </>
-      );
+  redirect('/dashboard');
 }

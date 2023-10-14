@@ -12,16 +12,8 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-const formattedDateString = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      });
-}
 
-const ListOutcomes = () => {
+const ListOutcomes = ({seed} : {seed: number}) => {
   const [Outcomes, setOutcomes] = useState<Outcome[]>([]);
     
   // Fetch outcomes data when the component mounts
@@ -37,29 +29,31 @@ const ListOutcomes = () => {
       .catch((error) => {
         console.error('Failed to fetch outcomes:', error);
       });
-  }, []);
+  }, [seed]);
 
   return (
-    <div>
+    <div className='max-w-2xl'>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell align="right">Total Outcome</TableCell>
-              <TableCell>Description</TableCell>
+              <TableCell align="center">Date</TableCell>
+              <TableCell align="center">Total Outcome</TableCell>
+              <TableCell align="center">Description</TableCell>
+              <TableCell align="center">Wallet</TableCell>
+              <TableCell align="center">Category</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {Outcomes.map((outcome) => (
               <TableRow key={outcome.id}>
-                <TableCell component="th" scope="row">
-                  {formattedDateString(outcome.date)}
-                </TableCell>
+
+                <TableCell component="th" scope="row">{outcome.date}</TableCell>
                 <TableCell align="right">{outcome.total_outcome}</TableCell>
                 <TableCell>{outcome.description}</TableCell>
-                <TableCell>{outcome.category_id}</TableCell>
-                <TableCell>{outcome.wallet_id}</TableCell>
+                <TableCell>{outcome.category?.category_name}</TableCell>
+                <TableCell>{outcome.wallet?.wallet_name}</TableCell>
+
               </TableRow>
             ))}
           </TableBody>

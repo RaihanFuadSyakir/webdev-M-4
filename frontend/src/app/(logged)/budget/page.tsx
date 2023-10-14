@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumbs";
+import Breadcrumb from "@/components/template/Breadcrumbs/Breadcrumb";
 import CardSwitcher from "@/components/Card/CardSwitcher"
 import BudgetSelect from "@/components/Budget/BudgetSelect";
 import { Metadata } from "next";
@@ -16,12 +16,8 @@ const Budget = () => {
       <Breadcrumb pageName="Buttons" />
 
       {/* <!-- Normal Button Items --> */}
-      <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
-        <div>
-          <h1>Cards</h1>
-          <CardSwitcher cards={financialCards} />
-        </div>
-
+      <div className="my-10 rounded-sm border border-stroke bg-white shadow-default">
+        <CardSwitcher cards={financialCards} />
       </div>
 
       <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">

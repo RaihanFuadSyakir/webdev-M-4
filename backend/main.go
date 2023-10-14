@@ -27,8 +27,8 @@ func main() {
 		panic("Failed to connect to the database")
 	}
 
-	// Apply migrations
-	/* if err := migrations.Delete(db); err != nil {
+	/* // Apply migrations
+	if err := migrations.Delete(db); err != nil {
 		panic("Failed to Delete Tables")
 	}
 	if err := migrations.Migrate(db); err != nil {
@@ -68,8 +68,9 @@ func main() {
 func defineUserRoutes(app *fiber.App, controller *controllers.UserController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
 	authenticatedRoutes.Patch("/api/users", controller.UpdateField)
-	authenticatedRoutes.Get("/api/users", controller.GetUsers)
+	//authenticatedRoutes.Get("/api/users", controller.GetUsers)
 	authenticatedRoutes.Get("/api/users/personal", controller.GetUser)
+	authenticatedRoutes.Get("/api/users/logout", controller.LogoutUser)
 }
 
 func defineCategoryRoutes(app *fiber.App, controller *controllers.CategoryController) {

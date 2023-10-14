@@ -10,4 +10,6 @@ type Outcome struct {
 	CategoryID   uint      `json:"category_id" gorm:"foreignKey:CategoryID"`
 	WalletID     uint      `json:"wallet_id" gorm:"foreignKey:WalletID"`
 	UserID       uint      `json:"user_id" gorm:"foreignKey:UserID"`
+	Category     Category  `json:"category"`
+	Wallet       Wallet    `json:"wallet"`
 }
