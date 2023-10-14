@@ -31,6 +31,20 @@ func (controller *BudgetController) CreateBudget(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusCreated, "Budget created successfully", budget)
 }
 
+// GetOutcomeByUserID retrieves outcomes for a user by their UserID.
+func (controller *BudgetController) GetBudgetsByUserID(c *fiber.Ctx) error {
+	userID := c.Locals("userID") // Assuming "user_id" is the parameter name
+	user := new(models.User)
+
+	if err := controller.DB.Preload("Budgets").Find(user, userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return jsonResponse(c, fiber.StatusNotFound, "Budget not found", nil)
+		}
+		return err
+	}
+	return jsonResponse(c, fiber.StatusOK, "OK", user.Budgets)
+}
+
 // // CreateOutcome handles the creation of a new outcome.
 // func (controller *BudgetController) CreateOutcome(c *fiber.Ctx) error {
 // 	var outcome models.Outcome
