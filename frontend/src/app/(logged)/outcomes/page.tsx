@@ -102,7 +102,7 @@ const Outcomes = () => {
 
   return (
     <div className="flex">
-      <div className='max-w-xl'>
+      <div className='max-w-xl p-5 bg-white'>
         <div>
           <h2>Outcome</h2>
           <TextField
