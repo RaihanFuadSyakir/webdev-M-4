@@ -93,6 +93,7 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory }) => {
             handleCreate(newValue);
           } else {
             setCurrentCategory(newValue)
+            setSelectedCategory(newValue?.id!)
           }
         }}
         selectOnFocus
