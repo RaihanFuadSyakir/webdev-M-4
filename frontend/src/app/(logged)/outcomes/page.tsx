@@ -103,7 +103,7 @@ const Outcomes = () => {
 
   return (
     <div className="flex">
-      <div className='max-w-xl'>
+      <div className='max-w-xl p-5 bg-white'>
         <div>
           <h2>Outcome</h2>
           <TextField
@@ -141,7 +141,7 @@ const Outcomes = () => {
         </div>
         <div>
           <h2>Deskripsi</h2>
-          <textarea name="description" id="deskripsi" rows={6} onChange={handleInput}></textarea>
+          <textarea name="description" id="deskripsi" className='' rows={6} onChange={handleInput}></textarea>
         </div>
         <Button color="secondary" onClick={addOutcome}>
           Tambahkan

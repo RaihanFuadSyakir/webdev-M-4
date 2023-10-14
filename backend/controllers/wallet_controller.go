@@ -91,7 +91,7 @@ func (wc *WalletController) DeleteWallet(c *fiber.Ctx) error {
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
 
-	return c.SendStatus(fiber.StatusNoContent)
+	return jsonResponse(c, fiber.StatusOK, "Wallets deleted successfully", wallet)
 }
 
 func (controller *WalletController) GetWalletByUserID(c *fiber.Ctx) error {

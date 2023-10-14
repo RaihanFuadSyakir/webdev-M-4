@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
 import { Income, dbResponse } from '@/utils/type';
+
 import { Axios, AxiosError, AxiosResponse } from 'axios';
+
+
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -14,11 +17,14 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 
 
+
 const ListIncomes = ({seed} : {seed: number}) => {
   const [Incomes, setIncomes] = useState<Income[]>([]);
+
   const handleDelete = (selectedOption: number) => {
     deleteIncome(selectedOption);
   }
+
     
   // Fetch Incomes data when the component mounts
   useEffect(() => {
@@ -55,6 +61,7 @@ const ListIncomes = ({seed} : {seed: number}) => {
                 <TableCell align="right">{Income.total_income}</TableCell>
                 <TableCell>{Income.description}</TableCell>
                 <TableCell>{Income.wallet?.wallet_name}</TableCell>
+
                 <TableCell>
                   <Button
                     variant="outlined"
@@ -64,6 +71,7 @@ const ListIncomes = ({seed} : {seed: number}) => {
                     Delete
                   </Button>
                 </TableCell>
+
               </TableRow>
             ))}
           </TableBody>
@@ -72,6 +80,7 @@ const ListIncomes = ({seed} : {seed: number}) => {
     </div>
   );
 };
+
 function deleteIncome(id: number) {
   axiosInstance.delete(`/income/delete/${id}`)
     .then(() => {
@@ -81,4 +90,5 @@ function deleteIncome(id: number) {
       console.log(JSON.stringify(res_err.response?.data));
     })
 }
+
 export default ListIncomes;

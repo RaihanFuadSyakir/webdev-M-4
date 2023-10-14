@@ -3,6 +3,9 @@ package controllers
 import (
 	"fmt"
 
+	"time"
+
+
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -46,6 +49,26 @@ func (controller *IncomeController) GetIncomeByID(c *fiber.Ctx) error {
 }
 
 
+// GetIncomeByID retrieves an income by its date.
+func (controller *IncomeController) GetIncomeByDate(c *fiber.Ctx) error {
+	// Get the date parameter from the request
+	dateParam := c.Params("date")
+
+	// Parse the date parameter to a time.Time object
+	date, err := time.Parse("2006-01-02", dateParam)
+	if err != nil {
+		return jsonResponse(c, fiber.StatusBadRequest, "Invalid date format", nil)
+	}
+
+	// Get incomes for the given date
+	var incomes []models.Income
+	if err := controller.DB.Where("date = ?", date).Find(&incomes).Error; err != nil {
+		return jsonResponse(c, fiber.StatusInternalServerError, "Error getting incomes", nil)
+	}
+
+	return jsonResponse(c, fiber.StatusOK, "OK", incomes)
+}
+
 
 // UpdateIncome updates an existing income.
 func (controller *IncomeController) UpdateIncome(c *fiber.Ctx) error {
@@ -68,7 +91,6 @@ func (controller *IncomeController) UpdateIncome(c *fiber.Ctx) error {
 }
 
 
-
 // DeleteIncome deletes an existing income.
 func (controller *IncomeController) DeleteIncome(c *fiber.Ctx) error {
 	incomeID := c.Params("id")
@@ -88,7 +110,7 @@ func (controller *IncomeController) DeleteIncome(c *fiber.Ctx) error {
 func (oc *IncomeController) GetIncomeByUserID(c *fiber.Ctx) error {
 	userID := c.Locals("userID") // Assuming "user_id" is the parameter name
 	user := new(models.User)
-	
+
 	if err := oc.DB.Preload("Incomes").Find(user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return jsonResponse(c, fiber.StatusNotFound, "Income not found by UserID", nil)
@@ -102,4 +124,4 @@ func (oc *IncomeController) GetIncomeByUserID(c *fiber.Ctx) error {
 		}
 	}
 	return jsonResponse(c, fiber.StatusOK, "OK", user.Incomes)
-}
+

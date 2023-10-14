@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/finance-management/controllers"
 	"github.com/finance-management/middleware"
+	"github.com/finance-management/migrations"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	// Update the import path
@@ -34,6 +35,9 @@ func main() {
 	// if err := migrations.Migrate(db); err != nil {
 	// 	panic("Failed to apply migrations")
 	// }
+
+	migrations.AddTriggers(db)
+
 
 	// // Seed the database with dummy data
 	// seeds.Seed(db) // Update the function call with the correct path
@@ -89,6 +93,7 @@ func defineWalletRoutes(app *fiber.App, controller *controllers.WalletController
 	authenticatedRoutes.Get("/api/wallet/user/", controller.GetWalletByUserID)
 	authenticatedRoutes.Get("/api/wallet/:id", controller.GetWallet)
 	authenticatedRoutes.Put("/api/wallet/:id", controller.UpdateWallet)
+	authenticatedRoutes.Delete("/api/wallet/:id", controller.DeleteWallet)
 }
 func defineOutcomeRoutes(app *fiber.App, controller *controllers.OutcomeController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
@@ -111,6 +116,7 @@ func defineBudgetRoutes(app *fiber.App, controller *controllers.BudgetController
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
 	authenticatedRoutes.Post("/api/budget/new", controller.CreateBudget)
 	authenticatedRoutes.Get("/api/budget/:id", controller.GetBudgetByID)
+	authenticatedRoutes.Get("/api/budgets/", controller.GetBudgetsByUserID)
 	authenticatedRoutes.Put("/api/budget/:id", controller.UpdateBudget)
 	authenticatedRoutes.Delete("/api/budget/delete/:id", controller.DeleteBudget)
 }
@@ -121,6 +127,8 @@ func defineIncomeRoutes(app *fiber.App, controller *controllers.IncomeController
 	authenticatedRoutes.Put("/api/incomes/:id", controller.UpdateIncome)
 	authenticatedRoutes.Delete("/api/income/delete/:id", controller.DeleteIncome)
 	authenticatedRoutes.Get("/api/incomes/user", controller.GetIncomeByUserID)
+	authenticatedRoutes.Get("/api/incomes/date/:date", controller.GetIncomeByDate)
+
 }
 func defineReportRoutes(app *fiber.App, controller *controllers.ReportController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
