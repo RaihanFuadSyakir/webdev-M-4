@@ -14,6 +14,7 @@ import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
 import CategorySelect from '@/components/category/CategorySelect';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
+import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 
 const Outcomes = () => {
   const [nominal, setNominal] = useState(0);
@@ -102,6 +103,8 @@ const Outcomes = () => {
   };
 
   return (
+    <>
+    <Breadcrumb pageName="Outcome" />
     <div className="flex">
       <div className='max-w-xl p-5 bg-white'>
         <div>
@@ -149,7 +152,7 @@ const Outcomes = () => {
       </div>
       <ListOutcomes seed={seed}/>
     </div>
-    
+    </>
   );
 };
 

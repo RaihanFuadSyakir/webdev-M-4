@@ -34,7 +34,6 @@ func (controller *IncomeController) CreateIncome(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusCreated, "Income created successfully", income)
 }
 
-
 // GetIncomeByID retrieves an income by its ID.
 func (controller *IncomeController) GetIncomeByID(c *fiber.Ctx) error {
 	incomeID := c.Params("id")
@@ -46,7 +45,6 @@ func (controller *IncomeController) GetIncomeByID(c *fiber.Ctx) error {
 
 	return jsonResponse(c, fiber.StatusOK, "OK", income)
 }
-
 
 // GetIncomeByID retrieves an income by its date.
 func (controller *IncomeController) GetIncomeByDate(c *fiber.Ctx) error {
@@ -68,7 +66,6 @@ func (controller *IncomeController) GetIncomeByDate(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusOK, "OK", incomes)
 }
 
-
 // UpdateIncome updates an existing income.
 func (controller *IncomeController) UpdateIncome(c *fiber.Ctx) error {
 	incomeID := c.Params("id")
@@ -88,7 +85,6 @@ func (controller *IncomeController) UpdateIncome(c *fiber.Ctx) error {
 
 	return jsonResponse(c, fiber.StatusOK, "Income updated successfully", income)
 }
-
 
 // DeleteIncome deletes an existing income.
 func (controller *IncomeController) DeleteIncome(c *fiber.Ctx) error {

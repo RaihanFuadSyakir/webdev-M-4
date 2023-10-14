@@ -13,6 +13,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Box,
 } from '@mui/material';
 import Modal from './BudgetModal';
 import axios, { AxiosError, AxiosResponse } from 'axios'; // Import Axios
@@ -77,23 +78,28 @@ const BudgetSelect: React.FC<BudgetProps> = ({budgets,setDataBudgets}) => {
 
   return (
     <div>
-      <Button variant='contained' color='success' onClick={openModal}>
+      <Button 
+        variant='contained' 
+        color='success' 
+        className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2' 
+        onClick={openModal}>
         Create Budget
       </Button>
+      {/* <button className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2' onClick={openModal}>Create Budget</button> */}
 
       {isModalOpen && (
         <Modal closeModal={closeModal}>
           <DialogTitle>Create Budget</DialogTitle>
           <DialogContent>
+          <h2>Date</h2>
             <TextField
-              label="Date"
               type="date"
-              fullWidth
-              margin="normal"
+              name="date"
               value={date}
+              fullWidth
               onChange={(e) => setDate(e.target.value)}
             />
-            
+            <h2>Month Selector</h2>
             <FormControl fullWidth margin="normal">
               <InputLabel id="month-select-label">Month Selector</InputLabel>
               <Select
@@ -120,7 +126,7 @@ const BudgetSelect: React.FC<BudgetProps> = ({budgets,setDataBudgets}) => {
                 <MenuItem value="December">December</MenuItem>
               </Select>
             </FormControl>
-
+            <h2>Total Budget</h2>
             <TextField
               label="Total Budget"
               type="number"
@@ -129,7 +135,7 @@ const BudgetSelect: React.FC<BudgetProps> = ({budgets,setDataBudgets}) => {
               value={total_budget}
               onChange={(e) => settotal_budget(e.target.value)}
             />
-            
+            <h2 className='w-[450px]'>Description</h2>
             <TextField
               label="Description"
               multiline
@@ -141,11 +147,14 @@ const BudgetSelect: React.FC<BudgetProps> = ({budgets,setDataBudgets}) => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCreateBudget} variant="contained" color="primary">
+            <Button 
+              onClick={handleCreateBudget} 
+              variant="contained" 
+              color="primary" 
+              className='bg-blue-500 text-white rounded p-2 hover:bg-blue-700 hover:text-white mr-2'>
               Save
             </Button>
           </DialogActions>
-          <button onClick={getData}>Get</button>
         </Modal>
       )}
     </div>
