@@ -78,6 +78,7 @@ func defineCategoryRoutes(app *fiber.App, controller *controllers.CategoryContro
 	authenticatedRoutes.Post("/api/categories", controller.CreateCategory)
 	authenticatedRoutes.Get("/api/categories", controller.GetAllCategories)
 	authenticatedRoutes.Patch("/api/categories", controller.UpdateCategory)
+	authenticatedRoutes.Delete("/api/categories/:id", controller.DeleteCategory)
 	authenticatedRoutes.Get("/api/categories/user/", controller.GetCategoryByUserID)
 	authenticatedRoutes.Get("/api/report/", controller.GetCategoryByUserIDAndDateRange)
 }
