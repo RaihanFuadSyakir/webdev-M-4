@@ -88,6 +88,7 @@ func defineWalletRoutes(app *fiber.App, controller *controllers.WalletController
 	authenticatedRoutes.Get("/api/wallet/user/", controller.GetWalletByUserID)
 	authenticatedRoutes.Get("/api/wallet/:id", controller.GetWallet)
 	authenticatedRoutes.Put("/api/wallet/:id", controller.UpdateWallet)
+	authenticatedRoutes.Delete("/api/wallet/:id", controller.DeleteWallet)
 }
 func defineOutcomeRoutes(app *fiber.App, controller *controllers.OutcomeController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
