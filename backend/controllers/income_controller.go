@@ -5,7 +5,6 @@ import (
 
 	"time"
 
-
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -125,3 +124,4 @@ func (oc *IncomeController) GetIncomeByUserID(c *fiber.Ctx) error {
 	}
 	return jsonResponse(c, fiber.StatusOK, "OK", user.Incomes)
 
+}
