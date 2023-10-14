@@ -25,7 +25,7 @@ export default function Dashboard() {
     <div >
       <div className='bg-slate-700 flex text-white'>
         <Link href='outcomes' className='m-2'>Outcomes</Link>
-        <Link href='outcomes' className='m-2'>Incomes</Link>
+        <Link href='incomes' className='m-2'>Incomes</Link>
         <Link href='budget' className='m-2'>Budget</Link>
         <Link href='category' className='m-2'>Category</Link>
       </div>

@@ -24,6 +24,7 @@ func (oc *OutcomeController) CreateOutcome(c *fiber.Ctx) error {
 	}
 	userID := c.Locals("userID")
 	outcome.UserID = userID.(uint)
+	fmt.Println("outcome 1")
 	// You might want to authenticate the user here and set the UserID accordingly.
 	// wallet.UserID = authenticatedUserID
 
