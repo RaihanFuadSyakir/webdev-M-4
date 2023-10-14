@@ -27,16 +27,16 @@ func main() {
 		panic("Failed to connect to the database")
 	}
 
-	/* // Apply migrations
-	if err := migrations.Delete(db); err != nil {
-		panic("Failed to Delete Tables")
-	}
-	if err := migrations.Migrate(db); err != nil {
-		panic("Failed to apply migrations")
-	}
+	// // Apply migrations
+	// if err := migrations.Delete(db); err != nil {
+	// 	panic("Failed to Delete Tables")
+	// }
+	// if err := migrations.Migrate(db); err != nil {
+	// 	panic("Failed to apply migrations")
+	// }
 
-	// Seed the database with dummy data
-	seeds.Seed(db) // Update the function call with the correct path */
+	// // Seed the database with dummy data
+	// seeds.Seed(db) // Update the function call with the correct path
 
 	// Initialize the UserController with the database
 
@@ -115,10 +115,11 @@ func defineBudgetRoutes(app *fiber.App, controller *controllers.BudgetController
 }
 func defineIncomeRoutes(app *fiber.App, controller *controllers.IncomeController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
-	authenticatedRoutes.Post("/api/income", controller.CreateIncome)
+	authenticatedRoutes.Post("/api/incomes/new", controller.CreateIncome)
 	authenticatedRoutes.Get("/api/income/:id", controller.GetIncomeByID)
-	authenticatedRoutes.Put("/api/income/:id", controller.UpdateIncome)
+	authenticatedRoutes.Put("/api/incomes/:id", controller.UpdateIncome)
 	authenticatedRoutes.Delete("/api/income/:id", controller.DeleteIncome)
+	authenticatedRoutes.Get("/api/incomes/user", controller.GetIncomeByUserID)
 }
 func defineReportRoutes(app *fiber.App, controller *controllers.ReportController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { BACKEND_URL } from '@/constants';
 import { redirect } from 'next/navigation';
 const axiosInstance = axios.create({
@@ -11,9 +11,9 @@ axiosInstance.interceptors.response.use(
       // Handle successful responses here
       return response;
     },
-    (error) => {
+    (error : AxiosError) => {
       // Handle errors here
-      if (error.response.status === 401) {
+      if (error.response?.status === 401) {
         // Server responded with a non-2xx status code
         console.error('Session Expired or no User Logged in', error.response.status);
         // You can handle specific error cases here
