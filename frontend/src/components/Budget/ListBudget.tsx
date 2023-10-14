@@ -17,24 +17,14 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+interface dataBudget{
+    budgets : Budget[]
+}
 
-const ListBudget = ({seed} : {seed: number}) => {
-  const [Budget, setBudget] = useState<Budget[]>([]);
+const ListBudget = ({budgets} : dataBudget) => {
+    
     
   // Fetch outcomes data when the component mounts
-  useEffect(() => {
-    axiosInstance
-      .get(`${BACKEND_URL}/api/budget/`) // Replace with your actual endpoint
-      .then((response : AxiosResponse<dbResponse<Budget[]>>) => {
-        const res : dbResponse<Budget[]> = response.data;
-        console.log(res,"db")
-        setBudget(res.data);
-        console.log(Budget);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch outcomes:', error);
-      });
-  }, [seed]);
 
   return (
     <div className='max-w-2xl'>
@@ -49,7 +39,7 @@ const ListBudget = ({seed} : {seed: number}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Budget.map((budget) => (
+            {budgets.map((budget) => (
               <TableRow key={budget.id}>
 
                 <TableCell component="th" scope="row">{budget.date}</TableCell>

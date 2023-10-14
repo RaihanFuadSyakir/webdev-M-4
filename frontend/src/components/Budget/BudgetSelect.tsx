@@ -1,7 +1,7 @@
 "use client"
 // components/BudgetSelect.tsx
 import { BACKEND_URL } from '@/constants';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -19,8 +19,11 @@ import axios, { AxiosError, AxiosResponse } from 'axios'; // Import Axios
 import axiosInstance from '@/utils/fetchData';
 import { Budget, dbResponse } from '@/utils/type';
 import { currencySchema } from '@/utils/validation';
-
-const BudgetSelect: React.FC = () => {
+interface BudgetProps{
+  budgets : Budget[] | undefined
+  setDataBudgets: React.Dispatch<React.SetStateAction<Budget[] | undefined>>;
+}
+const BudgetSelect: React.FC<BudgetProps> = ({budgets,setDataBudgets}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [date, setDate] = useState('');
@@ -45,7 +48,9 @@ const BudgetSelect: React.FC = () => {
         total_budget: validBudget,
         description: description,
       }).then((response : AxiosResponse<dbResponse<Budget>>)=>{
+        const data = response.data.data;
         console.log(response.data.msg);
+        setDataBudgets((prev)=> [...prev!,data])
       }).catch((err_response : AxiosError<dbResponse<Budget>>) =>{
         console.log(err_response.response?.data.msg);
       })
@@ -54,7 +59,18 @@ const BudgetSelect: React.FC = () => {
       console.error('Error creating budget:', error);
     }
   };
-
+  const getData = (e:any)=>{
+      axiosInstance
+        .get(`${BACKEND_URL}/api/budgets/`) // Replace with your actual endpoint
+        .then((response : AxiosResponse<dbResponse<Budget[]>>) => {
+          const res : dbResponse<Budget[]> = response.data;
+          console.log(res,"db")
+          setDataBudgets([]);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch outcomes:', error);
+        });
+  }
   const handleMonthChange = (event: any) => {
     setSelectedMonth(event.target.value as string);
   };
@@ -129,6 +145,7 @@ const BudgetSelect: React.FC = () => {
               Save
             </Button>
           </DialogActions>
+          <button onClick={getData}>Get</button>
         </Modal>
       )}
     </div>

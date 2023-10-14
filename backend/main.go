@@ -35,9 +35,7 @@ func main() {
 	// if err := migrations.Migrate(db); err != nil {
 	// 	panic("Failed to apply migrations")
 	// }
-	if err := migrations.AddTriggers(db); err != nil {
-		panic("Failed to ad triggers")
-	}
+	migrations.AddTriggers(db)
 
 	// // Seed the database with dummy data
 	// seeds.Seed(db) // Update the function call with the correct path
@@ -116,6 +114,7 @@ func defineBudgetRoutes(app *fiber.App, controller *controllers.BudgetController
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
 	authenticatedRoutes.Post("/api/budget/new", controller.CreateBudget)
 	authenticatedRoutes.Get("/api/budget/:id", controller.GetBudgetByID)
+	authenticatedRoutes.Get("/api/budgets/", controller.GetBudgetsByUserID)
 	authenticatedRoutes.Put("/api/budget/:id", controller.UpdateBudget)
 	authenticatedRoutes.Delete("/api/budget/delete/:id", controller.DeleteBudget)
 }
@@ -126,6 +125,7 @@ func defineIncomeRoutes(app *fiber.App, controller *controllers.IncomeController
 	authenticatedRoutes.Put("/api/incomes/:id", controller.UpdateIncome)
 	authenticatedRoutes.Delete("/api/income/:id", controller.DeleteIncome)
 	authenticatedRoutes.Get("/api/incomes/user", controller.GetIncomeByUserID)
+	authenticatedRoutes.Get("/api/incomes/date/:date", controller.GetIncomeByDate)
 }
 func defineReportRoutes(app *fiber.App, controller *controllers.ReportController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
