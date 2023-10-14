@@ -23,11 +23,12 @@ func (controller *CategoryController) CreateCategory(c *fiber.Ctx) error {
 		CategoryName  string `json:"category_name"`
 		IsUserDefined bool   `json:"is_user_defined"`
 	}
-
 	if err := c.BodyParser(&requestData); err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Invalid request data", nil)
 	}
-
+	userID := c.Locals("userID")
+	requestData.UserID = userID.(uint)
+	requestData.IsUserDefined = true
 	var user models.User
 	if err := controller.DB.Preload("Categories").First(&user, requestData.UserID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -54,6 +55,25 @@ func (controller *CategoryController) CreateCategory(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusOK, "Category created successfully", newCategory)
 }
 
+func (controller *CategoryController) DeleteCategory(c *fiber.Ctx) error {
+	categoryID := c.Params("id")
+	var category models.Category
+
+	// Find the category by ID
+	if err := controller.DB.First(&category, categoryID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return jsonResponse(c, fiber.StatusNotFound, "Category not found", nil)
+		}
+		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to retrieve category data", nil)
+	}
+
+	// Delete the category
+	if err := controller.DB.Delete(&category).Error; err != nil {
+		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to delete category", nil)
+	}
+
+	return jsonResponse(c, fiber.StatusOK, "Category deleted successfully", nil)
+}
 func (controller *CategoryController) GetCategoryByUserIDAndDateRange(c *fiber.Ctx) error {
 	userID := c.Query("user_id")
 	startDateStr := c.Query("start_date")
@@ -182,18 +202,4 @@ func (controller *CategoryController) UpdateCategory(c *fiber.Ctx) error {
 	}
 
 	return jsonResponse(c, fiber.StatusOK, "Category updated successfully", category)
-}
-
-func (controller *CategoryController) DeleteCategory(c *fiber.Ctx) error {
-	id := c.Params("id")
-	category := new(models.Category)
-	if err := controller.DB.First(category, id).Error; err != nil {
-		return err
-	}
-
-	if err := controller.DB.Delete(category).Error; err != nil {
-		return err
-	}
-
-	return jsonResponse(c, fiber.StatusNoContent, "Category deleted successfully", nil)
 }
