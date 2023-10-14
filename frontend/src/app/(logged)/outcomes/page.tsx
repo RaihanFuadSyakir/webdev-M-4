@@ -22,6 +22,7 @@ const Outcomes = () => {
   const [wallet, setWallet] = useState(0);
   const [date, setDate] = useState(''); // Add date state
   const [nominalError, setNominalError] = useState('');
+  const [categoryError, setCategoryError] = useState('');
   const [walletError, setWalletError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -60,7 +61,7 @@ const Outcomes = () => {
         return;
       }
       if (!category) {
-        setWalletError('Please select a category.');
+        setCategoryError('Please select a category.');
         setLoading(false);
         return;
       }
@@ -73,7 +74,7 @@ const Outcomes = () => {
         category_id: category,
         wallet_id: wallet,
       };
-      console.log(data);
+      console.log("menccboa");
       axiosInstance
         .post(`/outcome/new`, data, {
           withCredentials: true,
@@ -122,10 +123,12 @@ const Outcomes = () => {
         <div>
           <h2>Category</h2>
           <CategorySelect setSelectedCategory={setCategory} />
+          {categoryError && <div>{categoryError}</div>}
         </div>
         <div>
           <h2>Wallet</h2>
           <WalletSelect setSelectedWallet={setWallet} />
+          {walletError && <div>{walletError}</div>}
         </div>
         <div>
           <h2>Date</h2>

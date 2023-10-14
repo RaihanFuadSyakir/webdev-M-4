@@ -21,7 +21,7 @@ export interface Wallet {
 }
 
 export interface Outcome {
-  id: number | null;
+  id: number;
   date: string; // You can use a string for representing time
   total_outcome: number;
   description: string;
