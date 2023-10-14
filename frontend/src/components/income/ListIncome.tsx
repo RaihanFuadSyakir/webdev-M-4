@@ -1,8 +1,8 @@
-// ListOutcomes.js
+// ListIncomes.js
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
-import { Outcome, dbResponse } from '@/utils/type';
+import { Income, dbResponse } from '@/utils/type';
 import { Axios, AxiosResponse } from 'axios';
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
@@ -13,21 +13,21 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 
-const ListOutcomes = ({seed} : {seed: number}) => {
-  const [Outcomes, setOutcomes] = useState<Outcome[]>([]);
+const ListIncomes = ({seed} : {seed: number}) => {
+  const [Incomes, setIncomes] = useState<Income[]>([]);
     
-  // Fetch outcomes data when the component mounts
+  // Fetch Incomes data when the component mounts
   useEffect(() => {
     axiosInstance
-      .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
-      .then((response : AxiosResponse<dbResponse<Outcome[]>>) => {
-        const res : dbResponse<Outcome[]> = response.data;
+      .get(`/incomes/user`) // Replace with your actual endpoint
+      .then((response : AxiosResponse<dbResponse<Income[]>>) => {
+        const res : dbResponse<Income[]> = response.data;
         console.log(res,"db")
-        setOutcomes(res.data);
-        console.log(Outcomes);
+        setIncomes(res.data);
+        console.log(Incomes);
       })
       .catch((error) => {
-        console.error('Failed to fetch outcomes:', error);
+        console.error('Failed to fetch incomes:', error);
       });
   }, [seed]);
 
@@ -38,21 +38,19 @@ const ListOutcomes = ({seed} : {seed: number}) => {
           <TableHead>
             <TableRow>
               <TableCell align="center">Date</TableCell>
-              <TableCell align="center">Total Outcome</TableCell>
+              <TableCell align="center">Total Income</TableCell>
               <TableCell align="center">Description</TableCell>
-              <TableCell align="center">Category</TableCell>
               <TableCell align="center">Wallet</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {Outcomes.map((outcome) => (
-              <TableRow key={outcome.id}>
+            {Incomes.map((Income) => (
+              <TableRow key={Income.id}>
 
-                <TableCell component="th" scope="row">{outcome.date}</TableCell>
-                <TableCell align="right">{outcome.total_outcome}</TableCell>
-                <TableCell>{outcome.description}</TableCell>
-                <TableCell>{outcome.category?.category_name}</TableCell>
-                <TableCell>{outcome.wallet?.wallet_name}</TableCell>
+                <TableCell component="th" scope="row">{Income.date}</TableCell>
+                <TableCell align="right">{Income.total_income}</TableCell>
+                <TableCell>{Income.description}</TableCell>
+                <TableCell>{Income.wallet?.wallet_name}</TableCell>
 
               </TableRow>
             ))}
@@ -63,4 +61,4 @@ const ListOutcomes = ({seed} : {seed: number}) => {
   );
 };
 
-export default ListOutcomes;
+export default ListIncomes;

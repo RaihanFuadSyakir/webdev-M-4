@@ -39,6 +39,7 @@ export interface Income {
   description: string;
   wallet_id: number;
   user_id: number;
+  wallet : Wallet | undefined;
 }
 
 export interface Category {

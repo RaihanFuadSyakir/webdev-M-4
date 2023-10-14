@@ -38,6 +38,7 @@ func main() {
 	if err := migrations.AddTriggers(db); err != nil {
 		panic("Failed to ad triggers")
 	}
+
 	// // Seed the database with dummy data
 	// seeds.Seed(db) // Update the function call with the correct path
 
@@ -92,6 +93,7 @@ func defineWalletRoutes(app *fiber.App, controller *controllers.WalletController
 	authenticatedRoutes.Get("/api/wallet/user/", controller.GetWalletByUserID)
 	authenticatedRoutes.Get("/api/wallet/:id", controller.GetWallet)
 	authenticatedRoutes.Put("/api/wallet/:id", controller.UpdateWallet)
+	authenticatedRoutes.Delete("/api/wallet/:id", controller.DeleteWallet)
 }
 func defineOutcomeRoutes(app *fiber.App, controller *controllers.OutcomeController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
@@ -119,10 +121,11 @@ func defineBudgetRoutes(app *fiber.App, controller *controllers.BudgetController
 }
 func defineIncomeRoutes(app *fiber.App, controller *controllers.IncomeController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
-	authenticatedRoutes.Post("/api/income", controller.CreateIncome)
+	authenticatedRoutes.Post("/api/incomes/new", controller.CreateIncome)
 	authenticatedRoutes.Get("/api/income/:id", controller.GetIncomeByID)
-	authenticatedRoutes.Put("/api/income/:id", controller.UpdateIncome)
+	authenticatedRoutes.Put("/api/incomes/:id", controller.UpdateIncome)
 	authenticatedRoutes.Delete("/api/income/:id", controller.DeleteIncome)
+	authenticatedRoutes.Get("/api/incomes/user", controller.GetIncomeByUserID)
 }
 func defineReportRoutes(app *fiber.App, controller *controllers.ReportController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
