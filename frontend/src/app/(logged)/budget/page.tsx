@@ -13,7 +13,7 @@ const Budget = () => {
   const financialCards = ['Card 1', 'Card 2', 'Card 3']; // Sample card names
   return (
     <>
-      <Breadcrumb pageName="Buttons" />
+      <Breadcrumb pageName="Budget" />
 
       {/* <!-- Normal Button Items --> */}
       <div className="my-10 rounded-sm border border-stroke bg-white shadow-default">
@@ -21,7 +21,7 @@ const Budget = () => {
       </div>
 
       <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
-        <div>
+        <div className="m-5">
           <h1>Select Budget</h1>
           <BudgetSelect />
         </div>
