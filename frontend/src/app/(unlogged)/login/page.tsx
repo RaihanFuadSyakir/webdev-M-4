@@ -26,7 +26,7 @@ const Login: React.FC = () => {
   }
   const handleLogin = () => {
     try {
-      setLoading(() => {return true});
+      setLoading(() => {console.log("loading");return true});
       const formData = loginSchema.parse({ identifier, password });
       axiosInstance
         .post('/users/login', formData)
@@ -40,6 +40,7 @@ const Login: React.FC = () => {
           const res: dbResponse<User> | undefined = error.response?.data;
           updateError[2] = res!.msg;
           setErrors(updateError);
+          setLoading(() => {console.log("finished");return false});
         });
     } catch (error: any) {
       if (error instanceof ZodError) {
@@ -59,7 +60,7 @@ const Login: React.FC = () => {
       };
 
     } 
-    setLoading(() => {return false});
+    
   }
 
   return (
@@ -93,10 +94,10 @@ const Login: React.FC = () => {
           <Button
             variant="contained"
             onClick={handleLogin}
-            className={`${isLoading ? 'bg-white' :  'bg-cyan-700'}`}
+            className={`${!isLoading &&  'bg-cyan-700'}`}
             disabled={isLoading}
           >
-            {isLoading ? <CircularProgress color='primary' /> : "Login"}
+            {isLoading ? <CircularProgress color='primary' /> : <div>Login</div>}
           </Button>
         </div>
         {errors[2] !== '' &&
