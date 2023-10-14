@@ -1,8 +1,11 @@
+"use client"
 import Link from "next/link";
 import Breadcrumb from "@/components/template/Breadcrumbs/Breadcrumb";
 import CardSwitcher from "@/components/Card/CardSwitcher"
 import BudgetSelect from "@/components/Budget/BudgetSelect";
 import { Metadata } from "next";
+import ListBudget from "@/components/Budget/ListBudget";
+import { useState } from "react";
 export const metadata: Metadata = {
   title: "Buttons Page | Next.js E-commerce Dashboard Template",
   description: "This is Buttons page for TailAdmin Next.js",
@@ -10,20 +13,28 @@ export const metadata: Metadata = {
 };
 
 const Budget = () => {
-  const financialCards = ['Card 1', 'Card 2', 'Card 3']; // Sample card names
+  const [seed,setSeed] = useState(0);
   return (
     <>
       <Breadcrumb pageName="Budget" />
 
       {/* <!-- Normal Button Items --> */}
-      <div className="my-10 rounded-sm border border-stroke bg-white shadow-default">
+      {/* <div className="my-10 rounded-sm border border-stroke bg-white shadow-default">
         <CardSwitcher cards={financialCards} />
-      </div>
+      </div> */}
 
       <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
         <div className="m-5">
           <h1>Select Budget</h1>
           <BudgetSelect />
+        </div>
+
+      </div>
+
+      <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+        <div className="m-5">
+          <h1>Budget List</h1>
+          <ListBudget seed={seed}/>
         </div>
 
       </div>
