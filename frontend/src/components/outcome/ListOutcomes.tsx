@@ -58,6 +58,8 @@ const ListOutcomes = () => {
                 </TableCell>
                 <TableCell align="right">{outcome.total_outcome}</TableCell>
                 <TableCell>{outcome.description}</TableCell>
+                <TableCell>{outcome.category_id}</TableCell>
+                <TableCell>{outcome.wallet_id}</TableCell>
               </TableRow>
             ))}
           </TableBody>
