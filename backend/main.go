@@ -28,16 +28,17 @@ func main() {
 		panic("Failed to connect to the database")
 	}
 
-	// // Apply migrations
+	// // // Apply migrations
 	// if err := migrations.Delete(db); err != nil {
 	// 	panic("Failed to Delete Tables")
 	// }
 	// if err := migrations.Migrate(db); err != nil {
 	// 	panic("Failed to apply migrations")
 	// }
-
-	migrations.AddTriggers(db)
-
+	//add triggers
+	if err := migrations.AddTriggers(db); err != nil {
+		panic(err)
+	}
 
 	// // Seed the database with dummy data
 	// seeds.Seed(db) // Update the function call with the correct path
@@ -132,6 +133,6 @@ func defineIncomeRoutes(app *fiber.App, controller *controllers.IncomeController
 }
 func defineReportRoutes(app *fiber.App, controller *controllers.ReportController) {
 	authenticatedRoutes := app.Group("").Use(middleware.AuthMiddleware)
-	authenticatedRoutes.Get("/api/report/outcomes", controller.GetOutcomesByDateAndUser)
-
+	authenticatedRoutes.Get("/api/reports/current", controller.GetReportByUserID)
+	authenticatedRoutes.Get("/api/reports", controller.GetReportsByUserID)
 }

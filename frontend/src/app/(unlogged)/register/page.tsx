@@ -18,9 +18,6 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState({ value: '', error: '' });
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  console.log(username);
-  console.log(email);
-  console.log(password);
   const handleRegister = async () => {
     setLoading(true);
     try {
@@ -36,8 +33,9 @@ const Register: React.FC = () => {
           router.push('/login');
         })
         .catch((error: AxiosError<dbResponse<User>>) => {
-          const res: dbResponse<User> | undefined = error.response?.data;
-          setError(res!.msg);
+          const res: dbResponse<User> = error.response?.data!;
+          setError(res.msg);
+          setLoading(false);
         });
     } catch (error: any) {
       if (error instanceof ZodError) {
@@ -57,7 +55,6 @@ const Register: React.FC = () => {
           setPassword({ ...password, error: passwordError.message })
         }
       };
-    } finally {
       setLoading(false);
     }
   };
@@ -80,7 +77,8 @@ const Register: React.FC = () => {
           id={username.error !== '' ? "outlined-required" : "outlined-error-helper-text"}
           name="username"
           label="username"
-          defaultValue=""
+          value={username.value}
+          InputLabelProps={{ shrink: username.value !== '' }}
           onChange={handleOnChange}
           helperText={username.error !== '' && username.error}
           className='m-2'
@@ -92,7 +90,8 @@ const Register: React.FC = () => {
           name="email"
           label="email"
           type="email"
-          defaultValue=""
+          value={email.value}
+          InputLabelProps={{ shrink: email.value !== '' }}
           helperText={email.error !== '' && email.error}
           onChange={handleOnChange}
           className='m-2'
@@ -104,20 +103,22 @@ const Register: React.FC = () => {
           name="password"
           label="Password"
           type="password"
-          defaultValue=""
+          value={password.value}
+          InputLabelProps={{ shrink: password.value !== '' }}
           helperText={password.error !== '' && password.error}
           onChange={handleOnChange}
           className='m-2'
         />
         <div className='flex items-center justify-center'>
-          <Button
+        {isLoading ? <CircularProgress color='primary' /> : <Button
             variant="contained"
             onClick={handleRegister}
             className='bg-cyan-700'
             disabled={isLoading}
           >
-            {isLoading ? <CircularProgress color='primary' /> : "Register"}
-          </Button>
+            <div>Register</div>
+          </Button>}
+          
         </div>
         {error !== '' &&
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
