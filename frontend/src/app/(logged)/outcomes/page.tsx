@@ -1,9 +1,9 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BACKEND_URL } from '@/constants';
 import axiosInstance from '@/utils/fetchData';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { ZodError } from 'zod';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -27,8 +27,19 @@ const Outcomes = () => {
   const [walletError, setWalletError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [seed,setSeed] = useState(0);
-  console.log("category",category);
+  const [outcomes,setOutcomes] = useState<Outcome[]>([]);
+   // Fetch outcomes data when the component mounts
+   useEffect(() => {
+    axiosInstance
+      .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
+      .then((response : AxiosResponse<dbResponse<Outcome[]>>) => {
+        const res : dbResponse<Outcome[]> = response.data;
+        setOutcomes(res.data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch outcomes:', error);
+      });
+  }, []);
   const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === 'nominal') {
@@ -75,12 +86,11 @@ const Outcomes = () => {
         category_id: category,
         wallet_id: wallet,
       };
-      console.log("menccboa");
       axiosInstance
         .post(`/outcome/new`, data, {
           withCredentials: true,
         })
-        .then((response) => {
+        .then((response : AxiosResponse<dbResponse<Outcome>>) => {
           setError('');
           // Optionally, you can reset the form fields here
           setNominal(0);
@@ -88,7 +98,8 @@ const Outcomes = () => {
           setDescription('');
           setWallet(0);
           setDate(''); // Reset the date field
-          setSeed(Math.floor(Math.random()))
+          const newData = response.data.data
+          setOutcomes((prev)=> [...prev,newData])
         })
         .catch((error: AxiosError) => {
           console.log("axios",error)
@@ -150,7 +161,7 @@ const Outcomes = () => {
           Tambahkan
         </Button>
       </div>
-      <ListOutcomes seed={seed}/>
+      <ListOutcomes outcomes={outcomes}/>
     </div>
     </>
   );

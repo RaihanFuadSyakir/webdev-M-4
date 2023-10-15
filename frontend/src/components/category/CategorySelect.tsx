@@ -54,6 +54,7 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory }) => {
                 return [...prev, { id: category.id, name: category.category_name }]
               })
             })
+            
           }).catch((res_err: AxiosError<dbResponse<Category>>) => {
             console.log(JSON.stringify(res_err.response?.data))
           })
@@ -70,6 +71,19 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory }) => {
       setCategories([]);
     }
   }, [open]);
+  function createCategory(name: string) {
+    axiosInstance.post(`/categories`, {
+      category_name: name
+    })
+      .then((response : AxiosResponse<dbResponse<Category>>) => {
+        const data = response.data.data;
+        setSelectedCategory(data.id);
+        //console.log("create success");
+      })
+      .catch((res_err: AxiosError<dbResponse<Category>>) => {
+        console.log(JSON.stringify(res_err.response?.data));
+      })
+  }
   return (
     <div className='flex'>
       <Autocomplete
@@ -167,21 +181,11 @@ function sleep(duration: number): Promise<void> {
     }, duration);
   });
 }
-function createCategory(name: string) {
-  axiosInstance.post(`/categories`, {
-    category_name: name
-  })
-    .then(() => {
-      console.log("create success");
-    })
-    .catch((res_err: AxiosError<dbResponse<Category>>) => {
-      console.log(JSON.stringify(res_err.response?.data));
-    })
-}
+
 function deleteCategory(id: number) {
   axiosInstance.delete(`/categories/${id}`)
     .then(() => {
-      console.log("delete success");
+      //console.log("delete success");
     })
     .catch((res_err: AxiosError<dbResponse<Category>>) => {
       console.log(JSON.stringify(res_err.response?.data));

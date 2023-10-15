@@ -12,4 +12,5 @@ type User struct {
 	Outcomes    []Outcome    `json:"outcomes"`
 	Incomes     []Income     `json:"incomes"`
 	Budgets     []Budget     `json:"budgets"`
+	Reports     []Report     `json:"reports"`
 }

@@ -24,7 +24,6 @@ func (oc *OutcomeController) CreateOutcome(c *fiber.Ctx) error {
 	}
 	userID := c.Locals("userID")
 	outcome.UserID = userID.(uint)
-	fmt.Println("outcome 1")
 	// You might want to authenticate the user here and set the UserID accordingly.
 	// wallet.UserID = authenticatedUserID
 
@@ -32,8 +31,11 @@ func (oc *OutcomeController) CreateOutcome(c *fiber.Ctx) error {
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
 	fmt.Println("Outcome created successfully")
+	// Preload the Category and Wallet associations before returning the outcome
+	if err := oc.DB.Preload("Category").Preload("Wallet").First(&outcome, outcome.ID).Error; err != nil {
+		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
+	}
 	return jsonResponse(c, fiber.StatusCreated, "Outcome created successfully", outcome)
-
 }
 
 // GetOutcome retrieves a single outcome by its ID.
@@ -52,7 +54,7 @@ func (oc *OutcomeController) GetOutcome(c *fiber.Ctx) error {
 func (oc *OutcomeController) GetOutcomeByUserID(c *fiber.Ctx) error {
 	userID := c.Locals("userID") // Assuming "user_id" is the parameter name
 	user := new(models.User)
-	
+
 	if err := oc.DB.Preload("Outcomes").Find(user, userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return jsonResponse(c, fiber.StatusNotFound, "Outcome not found", nil)
