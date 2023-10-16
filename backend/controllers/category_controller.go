@@ -125,7 +125,7 @@ func (controller *CategoryController) GetCategoryByUserID(c *fiber.Ctx) error {
 }
 
 func (controller *CategoryController) GetCategoryByUserIDAndDate(c *fiber.Ctx) error {
-	userID := c.Params("user_id")
+	userID := c.Locals("userID")
 	dateStr := c.Params("date")
 
 	date, err := time.Parse("2006-01-02", dateStr)
@@ -153,7 +153,19 @@ func (controller *CategoryController) GetCategoryByUserIDAndDate(c *fiber.Ctx) e
 
 	return jsonResponse(c, fiber.StatusOK, "Categories retrieved successfully", filteredCategories)
 }
+func (controller *CategoryController) GetCategoriesOutcomesByUserID(c *fiber.Ctx) error {
+	userID := c.Locals("userID")
 
+	user := new(models.User)
+	if err := controller.DB.Preload("Categories.Outcomes").Find(user, userID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return jsonResponse(c, fiber.StatusNotFound, "User not found", nil)
+		}
+		return err
+	}
+
+	return jsonResponse(c, fiber.StatusOK, "Categories retrieved successfully", user.Categories)
+}
 func (controller *CategoryController) GetCategoryByID(c *fiber.Ctx) error {
 	id := c.Params("category_id")
 	category := new(models.Category)

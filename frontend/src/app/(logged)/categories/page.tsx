@@ -13,6 +13,7 @@ import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
 import ListCategories from '@/components/category/ListCategory';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
+import ListOutcomeByCategory from '@/components/category/ListOutcomeByCategory';
 
 export default function Categories() {
   const [SelectedCategory, setSelectedCategory] = useState(0);
@@ -33,12 +34,17 @@ export default function Categories() {
   return (
     <>
       <Breadcrumb pageName="Categories" />
-      <div className='bg-amber-100'>
-        <div>
-          <CategorySelect setSelectedCategory={setSelectedCategory} setNewCategories={setCategories} />
+      <div className='bg-amber-100 flex'>
+        <div className='w-1/3'>
+          <div className='w-full my-2 p-2'>
+            <CategorySelect setSelectedCategory={setSelectedCategory} setNewCategories={setCategories} />
+          </div>
+          <div className='w-full p-2'>
+            <ListCategories categories={categories} />
+          </div>
         </div>
-        <div>
-          <ListCategories categories={categories} />
+        <div className='w-auto m-2 p-2'>
+          <ListOutcomeByCategory />
         </div>
       </div>
     </>
