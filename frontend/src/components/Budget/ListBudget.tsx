@@ -1,9 +1,3 @@
-// Date        
-// Month       
-// TotalBudget 
-// Description
-
-// ListOutcomes.js
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
@@ -17,15 +11,50 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
+import BudgetUpdateModal from './BudgetUpdateModal';
 
 interface dataBudget{
     budgets : Budget[]
 }
 
 const ListBudget = ({budgets} : dataBudget) => {
-    const handleDelete = (selectedOption: number) => {
+  const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); 
+
+  const handleDelete = (selectedOption: number) => {
         deleteBudget(selectedOption);
+  }
+
+  const handleUpdate = (budget: Budget) => {
+    // setSelectedBudget(budget);
+    // setIsUpdateModalOpen(true);
+
+    if (!selectedBudget) {
+      console.error('No budget selected for update.');
+      return;
     }
+
+    // Simulated update data
+    const updatedBudgetData = {
+      ...selectedBudget,
+      description: 'Updated Description', // Update the description for demonstration
+    };
+
+    // Simulated API call to update the budget
+    axiosInstance
+      .put(`/budget/${selectedBudget.id}`, updatedBudgetData)
+      .then((response) => {
+        console.log('Budget updated successfully:', response.data);
+        // Update the budget in the UI or refetch the data
+        // For simplicity, we're just logging the response
+      })
+      .catch((error) => {
+        console.error('Error updating budget:', error);
+      });
+
+    // Close the modal after handling the update
+    setIsUpdateModalOpen(false);
+  };
 
   return (
     <div className='max-w-2xl'>
@@ -50,7 +79,21 @@ const ListBudget = ({budgets} : dataBudget) => {
                 <TableCell>
                   <Button
                     variant="outlined"
+                    color="primary"
+                    className="bg-blue-500 text-white rounded p-2 hover:bg-blue-700 hover:text-white"
+                    onClick={() => {
+                      setSelectedBudget(budget)
+                      setIsUpdateModalOpen(true)
+                    }}
+                  >
+                    Update
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
                     color="secondary"
+                    className='bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white mr-2'
                     onClick={() => handleDelete(budget.id)}
                   >
                     Delete
@@ -61,6 +104,15 @@ const ListBudget = ({budgets} : dataBudget) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {selectedBudget && (
+      <BudgetUpdateModal
+          isOpen={isUpdateModalOpen}
+          closeModal={() => setIsUpdateModalOpen(false)}
+          budget={selectedBudget} handleUpdate={function (): void {
+            throw new Error('Function not implemented.');
+          } }        />
+    )}
     </div>
   );
 };

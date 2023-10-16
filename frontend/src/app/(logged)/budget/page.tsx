@@ -36,22 +36,25 @@ const Budget = () => {
       {/* <div className="my-10 rounded-sm border border-stroke bg-white shadow-default">
         <CardSwitcher cards={financialCards} />
       </div> */}
+    <div className="flex">
+        <div className="flex-1 p-2">
+          <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+            <div className="m-5">
+              <h2 className="font-bold text-xl mb-2 text-black">Create Budget</h2>
+              <BudgetSelect setDataBudgets={setBudgets} budgets={budgets}/>
+            </div>
 
-      <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
-        <div className="m-5">
-          <h2 className="font-bold text-xl mb-2 text-black">Create Budget</h2>
-          <BudgetSelect setDataBudgets={setBudgets} budgets={budgets}/>
+          </div>
         </div>
-
-      </div>
-
-      {budgets && <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
-        <div className="m-5">
-          <h2 className="font-bold text-xl mb-2 text-black">Budget List</h2>
-          <ListBudget budgets={budgets}/>
-        </div>
-
-      </div>}
+        <div className="flex-1 p-2">
+          {budgets && <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+            <div className="m-5">
+              <h2 className="font-bold text-xl mb-2 text-black">Budget List</h2>
+              <ListBudget budgets={budgets}/>
+            </div>
+          </div>}
+        </div> 
+    </div>
     </>
   );
 };
