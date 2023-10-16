@@ -20,17 +20,17 @@ import { AxiosError, AxiosResponse } from 'axios';
 interface BudgetUpdateModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  budget: Budget | null;
-  setDataBudgets: React.Dispatch<React.SetStateAction<Budget[] | undefined>>;
+  budget: Budget;
+  setDataBudgets: React.Dispatch<React.SetStateAction<Budget[]>>;
 }
 
 const BudgetUpdateModal: React.FC<BudgetUpdateModalProps> = ({ isOpen, closeModal, budget, setDataBudgets }) => {
-const { date: budgetDate, month, total_budget: budgetTotalBudget, description: budgetDescription } = budget || {};
+const { date, month, total_budget, description} = budget;
 const [isModalOpen, setIsModalOpen] = useState(false);
-const [selectedMonth, setSelectedMonth] = useState('');
-const [selectedDate, setSelectedDate] = useState('');
-const [totalBudget, setTotalBudget] = useState('');
-const [description, setDescription] = useState('');
+const [newMonth, setSelectedMonth] = useState(month);
+const [newDate, setSelectedDate] = useState(date);
+const [newTotalBudget, setTotalBudget] = useState(total_budget);
+const [newDescription, setDescription] = useState(description);
 
     const handleMonthChange = (event: any) => {
         setSelectedMonth(event.target.value as string);
@@ -38,16 +38,19 @@ const [description, setDescription] = useState('');
 
       const handleUpdate = () => {
         try {
-          const validBudget = currencySchema.parse(parseFloat(totalBudget))
-          axiosInstance.put('/budget/',{
-            date: new Date(selectedDate),
-            month: selectedMonth,
+          const validBudget = currencySchema.parse(newTotalBudget)
+          axiosInstance.put(`/budget/${budget?.id}`,{
+            date: new Date(newDate),
+            month: newMonth,
             total_budget: validBudget,
             description: description,
           }).then((response : AxiosResponse<dbResponse<Budget>>)=>{
             const data = response.data.data;
             console.log(response.data.msg);
-            setDataBudgets((prev)=> [...prev!,data])
+            budget.date = data.date;
+            budget.month = data.month;
+            budget.total_budget = data.total_budget;
+            budget.description = data.description;
           }).catch((err_response : AxiosError<dbResponse<Budget>>) =>{
             console.log(err_response.response?.data.msg);
           })
@@ -65,7 +68,7 @@ const [description, setDescription] = useState('');
             <TextField
               type="date"
               name="date"
-              value={budgetDate}
+              value={newDate}
               fullWidth
               onChange={(e) => setSelectedDate(e.target.value)}
             />
@@ -75,7 +78,7 @@ const [description, setDescription] = useState('');
               <Select
                 labelId="month-select-label"
                 id="month-select"
-                value={selectedMonth}
+                value={newMonth}
                 onChange={handleMonthChange}
                 label="Month Selector"
               >
@@ -102,8 +105,8 @@ const [description, setDescription] = useState('');
               type="number"
               fullWidth
               margin="normal"
-              value={budgetTotalBudget}
-              onChange={(e) => setTotalBudget(e.target.value)}
+              value={newTotalBudget}
+              onChange={(e) => setTotalBudget(parseInt(e.target.value))}
             />
             <h2 className='w-[450px]'>Description</h2>
             <TextField
@@ -112,7 +115,7 @@ const [description, setDescription] = useState('');
               rows={4}
               fullWidth
               margin="normal"
-              value={description}
+              value={newDescription}
               onChange={(e) => setDescription(e.target.value)}
             />
           </DialogContent>

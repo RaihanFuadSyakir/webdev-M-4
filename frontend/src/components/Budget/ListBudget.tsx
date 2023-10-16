@@ -15,9 +15,10 @@ import BudgetUpdateModal from './BudgetUpdateModal';
 
 interface dataBudget{
     budgets : Budget[]
+    setDataBudgets: React.Dispatch<React.SetStateAction<Budget[]>>;
 }
 
-const ListBudget = ({budgets} : dataBudget) => {
+const ListBudget = ({budgets,setDataBudgets} : dataBudget) => {
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); 
 
@@ -109,9 +110,8 @@ const ListBudget = ({budgets} : dataBudget) => {
       <BudgetUpdateModal
           isOpen={isUpdateModalOpen}
           closeModal={() => setIsUpdateModalOpen(false)}
-          budget={selectedBudget} handleUpdate={function (): void {
-            throw new Error('Function not implemented.');
-          } }        />
+          budget={selectedBudget} 
+          setDataBudgets={setDataBudgets}/>
     )}
     </div>
   );

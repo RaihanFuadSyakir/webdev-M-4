@@ -22,7 +22,7 @@ import { Budget, dbResponse } from '@/utils/type';
 import { currencySchema } from '@/utils/validation';
 interface BudgetProps{
   budgets : Budget[] | undefined
-  setDataBudgets: React.Dispatch<React.SetStateAction<Budget[] | undefined>>;
+  setDataBudgets: React.Dispatch<React.SetStateAction<Budget[]>>;
 }
 const BudgetSelect: React.FC<BudgetProps> = ({budgets,setDataBudgets}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
