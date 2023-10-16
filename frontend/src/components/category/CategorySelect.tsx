@@ -13,6 +13,7 @@ import axiosInstance from '@/utils/fetchData';
 import { AxiosError, AxiosResponse } from "axios";
 interface props {
   setSelectedCategory: React.Dispatch<React.SetStateAction<number>>;
+  setNewCategories?: React.Dispatch<React.SetStateAction<Category[]>>
 }
 interface data {
   id?: number,
@@ -21,7 +22,7 @@ interface data {
 }
 
 const filter = createFilterOptions<data>();
-const CategorySelect: React.FC<props> = ({ setSelectedCategory }) => {
+const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories }) => {
   const router = useRouter()
   const [categories, setCategories] = useState<data[]>([]);
   const [currentCategory, setCurrentCategory] = useState<data | null>(null);
@@ -54,7 +55,6 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory }) => {
                 return [...prev, { id: category.id, name: category.category_name }]
               })
             })
-            
           }).catch((res_err: AxiosError<dbResponse<Category>>) => {
             console.log(JSON.stringify(res_err.response?.data))
           })
@@ -75,10 +75,13 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory }) => {
     axiosInstance.post(`/categories`, {
       category_name: name
     })
-      .then((response : AxiosResponse<dbResponse<Category>>) => {
+      .then((response: AxiosResponse<dbResponse<Category>>) => {
         const data = response.data.data;
         setSelectedCategory(data.id);
         //console.log("create success");
+        if (setNewCategories !== undefined) {
+          setNewCategories((prev) => [...prev, data]);
+        }
       })
       .catch((res_err: AxiosError<dbResponse<Category>>) => {
         console.log(JSON.stringify(res_err.response?.data));

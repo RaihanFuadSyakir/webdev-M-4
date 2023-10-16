@@ -1,34 +1,52 @@
 "use client"
 import CategorySelect from '@/components/category/CategorySelect'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BACKEND_URL } from '@/constants';
 import axiosInstance from '@/utils/fetchData';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { ZodError } from 'zod';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import { dbResponse } from '@/utils/type';
+import { Category, dbResponse } from '@/utils/type';
 import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
 import ListCategories from '@/components/category/ListCategory';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
+import ListOutcomeByCategory from '@/components/category/ListOutcomeByCategory';
 
 export default function Categories() {
-    const [SelectedCategory,setSelectedCategory] = useState(0);
-    const [seed,setSeed] = useState(0);
-    console.log(SelectedCategory);
+  const [SelectedCategory, setSelectedCategory] = useState(0);
+  const [categories, setCategories] = useState<Category[]>([]);
+  // Fetch outcomes data when the component mounts
+  useEffect(() => {
+    axiosInstance
+      .get(`${BACKEND_URL}/api/categories/user`) // Replace with your actual endpoint
+      .then((response: AxiosResponse<dbResponse<Category[]>>) => {
+        const res: dbResponse<Category[]> = response.data;
+        console.log(res, "db")
+        setCategories(res.data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch categories:', error);
+      });
+  }, []);
   return (
     <>
-    <Breadcrumb pageName="Categories" />
-    <div className='bg-amber-100'>
-      <div>
-        <CategorySelect setSelectedCategory={setSelectedCategory}/>
+      <Breadcrumb pageName="Categories" />
+      <div className='bg-amber-100 flex'>
+        <div className='w-1/3'>
+          <div className='w-full my-2 p-2'>
+            <CategorySelect setSelectedCategory={setSelectedCategory} setNewCategories={setCategories} />
+          </div>
+          <div className='w-full p-2'>
+            <ListCategories categories={categories} setNewCategories={setCategories} />
+          </div>
+        </div>
+        <div className='w-auto m-2 p-2'>
+          <ListOutcomeByCategory />
+        </div>
       </div>
-      <div>
-        <ListCategories seed={seed}/>
-      </div>
-    </div>
     </>
   )
 }
