@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"strings"
 	"time"
 
 	"github.com/finance-management/models"
@@ -69,6 +70,9 @@ func (controller *CategoryController) DeleteCategory(c *fiber.Ctx) error {
 
 	// Delete the category
 	if err := controller.DB.Delete(&category).Error; err != nil {
+		if strings.Contains(err.Error(), "violates foreign key constraint") {
+			return jsonResponse(c, fiber.StatusBadRequest, "This category is referenced by other records", nil)
+		}
 		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to delete category", nil)
 	}
 

@@ -40,7 +40,7 @@ export default function Categories() {
             <CategorySelect setSelectedCategory={setSelectedCategory} setNewCategories={setCategories} />
           </div>
           <div className='w-full p-2'>
-            <ListCategories categories={categories} />
+            <ListCategories categories={categories} setNewCategories={setCategories} />
           </div>
         </div>
         <div className='w-auto m-2 p-2'>
