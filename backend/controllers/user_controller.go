@@ -52,6 +52,28 @@ func (uc *UserController) RegisterUser(c *fiber.Ctx) error {
 		return jsonResponse(c, fiber.StatusInternalServerError, "Failed to register the user", nil)
 	}
 	existingUser.Password = ""
+	// Check if a report exists for the current month and year
+	currentDate := time.Now()
+	month := currentDate.Month()
+	year := currentDate.Year()
+	date := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+	existingReport := models.Report{}
+	if err := uc.DB.Where("user_id = ? AND date = ?", existingUser.ID, date).First(&existingReport).Error; err != nil {
+		if gorm.ErrRecordNotFound == err {
+			// Create a report if it doesn't exist
+			newReport := models.Report{
+				Date:         time.Date(year, month, 1, 0, 0, 0, 0, time.UTC),
+				UserID:       existingUser.ID,
+				TotalIncome:  0,
+				TotalOutcome: 0,
+			}
+			if err := uc.DB.Create(&newReport).Error; err != nil {
+				return jsonResponse(c, fiber.StatusInternalServerError, "Failed to create the initial report", nil)
+			}
+		} else {
+			return jsonResponse(c, fiber.StatusInternalServerError, "Failed to check the report", err)
+		}
+	}
 	return jsonResponse(c, fiber.StatusCreated, "User registered successfully", existingUser)
 }
 
@@ -111,7 +133,7 @@ func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 	// Check if the user with the provided username or email exists
 	var existingUser models.User
 	if err := uc.DB.Where("username = ? OR email = ?", loginRequest.Identifier, loginRequest.Identifier).First(&existingUser).Error; err != nil {
-		return jsonResponse(c, fiber.StatusUnauthorized, "Unauthorized", "Incorrect username/email or password")
+		return jsonResponse(c, fiber.StatusBadRequest, "Incorrect username/email or password", nil)
 	}
 
 	// Generate a new JWT token for the user

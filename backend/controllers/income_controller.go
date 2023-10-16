@@ -28,7 +28,7 @@ func (controller *IncomeController) CreateIncome(c *fiber.Ctx) error {
 	income.UserID = userID.(uint)
 	// Save the income to the database using GORM
 	if err := controller.DB.Create(&income).Error; err != nil {
-		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
+		return jsonResponse(c, fiber.StatusInternalServerError, err.Error(), nil)
 	}
 	fmt.Println("Income created successfully")
 	return jsonResponse(c, fiber.StatusCreated, "Income created successfully", income)

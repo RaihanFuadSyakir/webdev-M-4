@@ -27,7 +27,7 @@ export default function Dashboard() {
         <Link href='outcomes' className='m-2'>Outcomes</Link>
         <Link href='incomes' className='m-2'>Incomes</Link>
         <Link href='budget' className='m-2'>Budget</Link>
-        <Link href='category' className='m-2'>Category</Link>
+        <Link href='categories' className='m-2'>Category</Link>
       </div>
       <h1>Dashboard</h1>
       <h2>Hello {username}</h2>

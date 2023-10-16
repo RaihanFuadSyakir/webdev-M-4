@@ -28,8 +28,8 @@ export interface Outcome {
   category_id: number;
   wallet_id: number;
   user_id: number;
-  wallet : Wallet | undefined;
-  category : Category | undefined;
+  wallet? : Wallet;
+  category? : Category;
 }
 
 export interface Income {
