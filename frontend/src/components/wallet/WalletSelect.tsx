@@ -48,7 +48,7 @@ const WalletSelect: React.FC<Props> = ({ setSelectedWallet }) => {
         disablePortal
         id="combo-box-wallet"
         options={wallets}
-        sx={{ width: 300 }}
+        sx={{ maxWidth: 300 }}
         renderInput={(params) => <TextField {...params} label="Wallet" name="wallet" />}
         renderOption={(props, option) => {
           return (

@@ -31,6 +31,10 @@ func (controller *IncomeController) CreateIncome(c *fiber.Ctx) error {
 		return jsonResponse(c, fiber.StatusInternalServerError, err.Error(), nil)
 	}
 	fmt.Println("Income created successfully")
+	// Preload the Category and Wallet associations before returning the outcome
+	if err := controller.DB.Preload("Wallet").First(&income, income.ID).Error; err != nil {
+		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
+	}
 	return jsonResponse(c, fiber.StatusCreated, "Income created successfully", income)
 }
 
