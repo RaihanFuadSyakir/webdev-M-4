@@ -97,7 +97,8 @@ const Incomes = () => {
       { <div className='max-w-xl p-5 bg-white'>
         <div>
           <h2>Income</h2>
-          <TextField
+          <TextField className='w-full m-0'
+          fullWidth
             error={nominalError !== ''}
             id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
             label="Nominal"
@@ -126,13 +127,25 @@ const Incomes = () => {
         </div>
         <div>
           <h2>Deskripsi</h2>
-          <textarea name="description" id="deskripsi" rows={6} onChange={handleInput}></textarea>
+          <TextField
+            multiline
+            rows={6}
+            fullWidth
+            name="description"
+            id="deskripsi"
+            label="Deskripsi"
+            value={description}
+            onChange={handleInput}
+          />
         </div>
         <Button color="secondary" onClick={addIncome}>
           Tambahkan
         </Button>
       </div> }
-      <ListIncomes seed={seed}/>
+    </div>
+    <div className=' p-5 bg-white'>
+      {/* List of incomes component */}
+      <ListIncomes seed={seed} />
     </div>
     </>
   );

@@ -60,6 +60,7 @@ const BudgetSelect: React.FC<BudgetProps> = ({budgets,setDataBudgets}) => {
       console.error('Error creating budget:', error);
     }
   };
+  
   const getData = (e:any)=>{
       axiosInstance
         .get(`${BACKEND_URL}/api/budgets/`) // Replace with your actual endpoint

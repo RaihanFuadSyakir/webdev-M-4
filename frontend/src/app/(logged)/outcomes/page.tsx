@@ -121,6 +121,8 @@ const Outcomes = () => {
         <div>
           <h2>Outcome</h2>
           <TextField
+          className='w-full m-0'
+          fullWidth
             error={nominalError !== ''}
             id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
             label="Nominal"
