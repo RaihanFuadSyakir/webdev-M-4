@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 const Budget = () => {
   const [seed,setSeed] = useState(0);
-  const [budgets,setBudgets] = useState<Budget[]>();
+  const [budgets,setBudgets] = useState<Budget[]>([]);
   useEffect(()=>{
     axiosInstance.get('/budgets/')
     .then((response : AxiosResponse<dbResponse<Budget[]>>)=>{
@@ -50,7 +50,7 @@ const Budget = () => {
           {budgets && <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
             <div className="m-5">
               <h2 className="font-bold text-xl mb-2 text-black">Budget List</h2>
-              <ListBudget budgets={budgets}/>
+              <ListBudget budgets={budgets} setDataBudgets={setBudgets}/>
             </div>
           </div>}
         </div> 
