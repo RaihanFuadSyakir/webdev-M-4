@@ -26,7 +26,7 @@ const Login: React.FC = () => {
   }
   const handleLogin = () => {
     try {
-      setLoading(() => {console.log("loading");return true});
+      setLoading(true);
       const formData = loginSchema.parse({ identifier, password });
       axiosInstance
         .post('/users/login', formData)
@@ -40,7 +40,7 @@ const Login: React.FC = () => {
           const res: dbResponse<User> | undefined = error.response?.data;
           updateError[2] = res!.msg;
           setErrors(updateError);
-          setLoading(() => {console.log("finished");return false});
+          setLoading(false);
         });
     } catch (error: any) {
       if (error instanceof ZodError) {
@@ -73,7 +73,8 @@ const Login: React.FC = () => {
           id={errors[0] !== '' ? "outlined-required" : "outlined-error-helper-text"}
           name="identifier"
           label="username/email"
-          defaultValue=""
+          value={identifier}
+          InputLabelProps={{ shrink: identifier !== '' }}  
           onChange={handleOnChange}
           helperText={errors[0] !== '' && errors[0]}
           className='m-2'
@@ -85,20 +86,21 @@ const Login: React.FC = () => {
           name="password"
           label="Password"
           type="password"
-          defaultValue=""
+          value={password}
+          InputLabelProps={{ shrink: password !== '' }}
           helperText={errors[1] !== '' && errors[1]}
           onChange={handleOnChange}
           className='m-2'
         />
         <div className='flex items-center justify-center'>
-          <Button
+        {isLoading ? <CircularProgress color='primary' /> : <Button
             variant="contained"
             onClick={handleLogin}
             className={`${!isLoading &&  'bg-cyan-700'}`}
             disabled={isLoading}
           >
-            {isLoading ? <CircularProgress color='primary' /> : <div>Login</div>}
-          </Button>
+            <div>Login</div>
+          </Button>}
         </div>
         {errors[2] !== '' &&
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">

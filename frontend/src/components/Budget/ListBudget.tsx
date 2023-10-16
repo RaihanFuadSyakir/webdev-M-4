@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
 import { Budget, dbResponse } from '@/utils/type';
-import { Axios, AxiosResponse } from 'axios';
+import { Axios, AxiosError, AxiosResponse } from 'axios';
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -16,15 +16,16 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { Button } from '@mui/material';
 
 interface dataBudget{
     budgets : Budget[]
 }
 
 const ListBudget = ({budgets} : dataBudget) => {
-    
-    
-  // Fetch outcomes data when the component mounts
+    const handleDelete = (selectedOption: number) => {
+        deleteBudget(selectedOption);
+    }
 
   return (
     <div className='max-w-2xl'>
@@ -46,7 +47,15 @@ const ListBudget = ({budgets} : dataBudget) => {
                 <TableCell>{budget.month}</TableCell>
                 <TableCell align="right">{budget.total_budget}</TableCell>
                 <TableCell>{budget.description}</TableCell>
-
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => handleDelete(budget.id)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -55,5 +64,13 @@ const ListBudget = ({budgets} : dataBudget) => {
     </div>
   );
 };
-
+function deleteBudget(id: number) {
+    axiosInstance.delete(`/budget/delete/${id}`)
+      .then(() => {
+        console.log("delete success");
+      })
+      .catch((res_err: AxiosError<dbResponse<Budget>>) => {
+        console.log(JSON.stringify(res_err.response?.data));
+      })
+  }
 export default ListBudget;

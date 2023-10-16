@@ -8,15 +8,19 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import WalletList from '@/components/wallet/WalletList';
 import NewWalletForm from '@/components/wallet/NewWalletForm';
+import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 
 const WalletPage = () => {
 
 
   return (
+    <>
+    <Breadcrumb pageName="Wallet" />
     <div className="h-96 w-9 rounded flex flex-col">
       {/* <NewWalletForm/> */}
       <WalletList/>
     </div>
+    </>
   );
 };
 

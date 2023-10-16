@@ -28,12 +28,11 @@ func (controller *IncomeController) CreateIncome(c *fiber.Ctx) error {
 	income.UserID = userID.(uint)
 	// Save the income to the database using GORM
 	if err := controller.DB.Create(&income).Error; err != nil {
-		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
+		return jsonResponse(c, fiber.StatusInternalServerError, err.Error(), nil)
 	}
 	fmt.Println("Income created successfully")
 	return jsonResponse(c, fiber.StatusCreated, "Income created successfully", income)
 }
-
 
 // GetIncomeByID retrieves an income by its ID.
 func (controller *IncomeController) GetIncomeByID(c *fiber.Ctx) error {
@@ -46,7 +45,6 @@ func (controller *IncomeController) GetIncomeByID(c *fiber.Ctx) error {
 
 	return jsonResponse(c, fiber.StatusOK, "OK", income)
 }
-
 
 // GetIncomeByID retrieves an income by its date.
 func (controller *IncomeController) GetIncomeByDate(c *fiber.Ctx) error {
@@ -68,7 +66,6 @@ func (controller *IncomeController) GetIncomeByDate(c *fiber.Ctx) error {
 	return jsonResponse(c, fiber.StatusOK, "OK", incomes)
 }
 
-
 // UpdateIncome updates an existing income.
 func (controller *IncomeController) UpdateIncome(c *fiber.Ctx) error {
 	incomeID := c.Params("id")
@@ -88,7 +85,6 @@ func (controller *IncomeController) UpdateIncome(c *fiber.Ctx) error {
 
 	return jsonResponse(c, fiber.StatusOK, "Income updated successfully", income)
 }
-
 
 // DeleteIncome deletes an existing income.
 func (controller *IncomeController) DeleteIncome(c *fiber.Ctx) error {

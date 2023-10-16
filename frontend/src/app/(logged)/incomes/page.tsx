@@ -14,6 +14,7 @@ import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
 import CategorySelect from '@/components/category/CategorySelect';
 import ListIncomes from '@/components/income/ListIncome';
+import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 
 const Incomes = () => {
   const [nominal, setNominal] = useState(0);
@@ -90,8 +91,10 @@ const Incomes = () => {
   };
 
   return (
+    <>
+    <Breadcrumb pageName="Income" />
     <div className="flex">
-      { <div className='max-w-xl'>
+      { <div className='max-w-xl p-5 bg-white'>
         <div>
           <h2>Income</h2>
           <TextField
@@ -131,7 +134,7 @@ const Incomes = () => {
       </div> }
       <ListIncomes seed={seed}/>
     </div>
-    
+    </>
   );
 };
 
