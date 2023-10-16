@@ -22,75 +22,106 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import WalletSelect from '@/components/wallet/WalletSelect';
 
-
-const ListIncomes = ({ seed }: { seed: number }) => {
-  const [incomes, setIncomes] = useState<Income[]>([]);
-  const [editedIncome, setEditedIncome] = useState<Income | null>(null);
-  const [editedDate, setEditedDate] = useState<string>(''); // Use a string for the date input
-  const [editedTotalIncome, setEditedTotalIncome] = useState<number | null>(null);
-  const [editedWalletId, setEditedWalletId] = useState<number | null>(null);
-  const [wallets, setWallets] = useState(0);
-  const [editedDescription, setEditedDescription] = useState<string>('');
-
-  
-
-  const handleDelete = (selectedOption: number) => {
-    deleteIncome(selectedOption);
+interface Props{
+  incomes : Income[]
+  setIncomes: React.Dispatch<React.SetStateAction<Income[]>>;
+}
+const ListIncomes = ({incomes,setIncomes} : Props) => {
+  const [editStates,setEditStates] = useState(
+    incomes.map((income)=>({
+      isEditing : false,
+      id : income.id,
+      date : income.date,
+      total_income : income.total_income,
+      wallet_id : income.wallet_id,
+      description : income.description
+    }))
+  )
+  const [newWalletId,setNewWalletId] = useState(0);
+  const handleDelete = (index: number) => {
+    const newEditStates = [...editStates];
+    const updatedIncomes = [...incomes];
+    deleteIncome(newEditStates[index].id);
+    newEditStates.splice(index,1);
+    updatedIncomes.splice(index,1);
+    setEditStates(newEditStates);
+    setIncomes(updatedIncomes);
+  }
+  useEffect(()=>{
+    setEditStates(()=>(
+      incomes.map((income)=>({
+        isEditing : false,
+        id : income.id,
+        date : income.date,
+        total_income : income.total_income,
+        wallet_id : income.wallet_id,
+        description : income.description
+      }))
+    ))
+  },[incomes.length])
+  const enableEdit = (index : number) => {
+    const newEditStates = [...editStates];
+    newEditStates[index].isEditing = true;
+    setEditStates(newEditStates);
   }
 
-  const handleEdit = (income: Income) => {
-    setEditedIncome(income);
-    setEditedDate(income.date);
-    setEditedTotalIncome(income.total_income);
-    setEditedWalletId(income.wallet?.id || null);
+  const handleCancelEdit = (index : number) => {
+    const newEditStates = [...editStates];
+    newEditStates[index].isEditing = false;
+    setEditStates(newEditStates);
   }
 
-  const handleCancelEdit = () => {
-    setEditedIncome(null);
+  const handleDateOnChange = (index : number,newValue : string) =>{
+    const newEditStates = [...editStates];
+    newEditStates[index].date = newValue;
+    setEditStates(newEditStates);
   }
-
-  // Fetch Incomes data when the component mounts
-  useEffect(() => {
-    axiosInstance
-      .get(`/incomes/user`) // Replace with your actual endpoint
-      .then((response: AxiosResponse<dbResponse<Income[]>>) => {
-        const res: dbResponse<Income[]> = response.data;
-        setIncomes(res.data);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch incomes:', error);
-      });
-  }, [seed]);
-
-  const handleSaveEdit = () => {
-    if (editedIncome) {
+  const handleTotalIncomeOnChange = (index : number,newValue : string) =>{
+    try {
+      const parsedNominal = parseFloat(newValue)
+      const newEditStates = [...editStates];
+      newEditStates[index].total_income = parsedNominal;
+      setEditStates(newEditStates);
+    } catch (error) {
+      //
+    }
+    
+  }
+  const handleDescriptionOnChange = (index : number,newValue : string) =>{
+    const newEditStates = [...editStates];
+    newEditStates[index].description = newValue;
+    setEditStates(newEditStates);
+  }
+  const handleSaveEdit = (index : number) => {
       // Construct the edited income object
+      const newIncome = editStates[index];
       const editedIncomeData = {
-        id: editedIncome.id,
-        date: editedDate,
-        total_income: editedTotalIncome,
-        wallet_id: editedWalletId,
-        description: editedDescription,
+        date: new Date(newIncome.date),
+        total_income: newIncome.total_income,
+        wallet_id: newWalletId,
+        description: newIncome.description,
       };
       // Send a PUT or PATCH request to update the income on the server
-      axiosInstance.put(`/incomes/${editedIncome.id}`, editedIncomeData)
+      axiosInstance.put(`/incomes/${newIncome.id}`, editedIncomeData)
         .then(() => {
           console.log("edit success");
-          setEditedIncome(null); // Close the edit form after successful update
+          const newEditStates = [...editStates];
+          const updatedIncomes = [...incomes];
+          updatedIncomes[index].date = newIncome.date;
+          updatedIncomes[index].total_income = newIncome.total_income;
+          updatedIncomes[index].wallet_id = newWalletId;
+          updatedIncomes[index].description = newIncome.description;
+          setIncomes(updatedIncomes);
+          newEditStates[index].isEditing = false;
+          setEditStates(newEditStates);
         })
         .catch((res_err: AxiosError<dbResponse<Income>>) => {
           console.log(JSON.stringify(res_err.response?.data));
         });
-    }
   }
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedDate = e.target.value; // Make sure it matches the expected format
-
-    setEditedDate(formattedDate);
-  };
 
   return (
-    <div className='max-w-2xl'>
+    <div className=''>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -103,53 +134,64 @@ const ListIncomes = ({ seed }: { seed: number }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {incomes.map((income) => (
+            {incomes.map((income,index) => (
               <TableRow key={income.id}>
                 <TableCell component="th" scope="row">
-                  {
+                  {editStates[index]?.isEditing ? (
+                    <TextField
+                      type="date"
+                      name="date"
+                      value={editStates[index].date}
+                      onChange={(e)=>{handleDateOnChange(index,e.target.value)}}
+                    />) : 
                     income.date
-                  }</TableCell>
+                  }
+                </TableCell>
 
                 <TableCell>
-                {editedIncome === income ? (
+                {editStates[index]?.isEditing ? (
                   <TextField
                     type="number"
-                    value={editedTotalIncome}
-                    onChange={(e) => setEditedTotalIncome(parseFloat(e.target.value))}
+                    value={editStates[index].total_income}
+                    onChange={(e) => handleTotalIncomeOnChange(index,e.target.value)}
                   />
                 ) : (
                   income.total_income
                 )}
                 </TableCell>
                 <TableCell>
-                {editedIncome === income ? (
+                {editStates[index]?.isEditing ? (
                   <TextField
                     type="text"
-                    value={editedDescription}
-                    onChange={(e) => setEditedDescription(e.target.value)}
+                    value={editStates[index].description}
+                    onChange={(e) => handleDescriptionOnChange(index,e.target.value)}
                   />
                 ) : (
                   income.description
                 )}
                 </TableCell>
-                <TableCell>{income.wallet?.wallet_name} 
+                <TableCell>
+                  {editStates[index]?.isEditing ? (
+                    <WalletSelect setSelectedWallet={setNewWalletId} />
+                    ) : 
+                    (income.wallet?.wallet_name)}
                 </TableCell>
                 <TableCell>
-                {editedIncome === income ? (
+                {editStates[index]?.isEditing ? (
                     <>
-                      <Button variant="outlined" color="primary" onClick={handleSaveEdit}>
+                      <Button variant="outlined" color="primary" onClick={()=>handleSaveEdit(index)}>
                         Save
                       </Button>
-                      <Button variant="outlined" onClick={handleCancelEdit}>
+                      <Button variant="outlined" onClick={()=>{handleCancelEdit(index)}}>
                         Cancel
                       </Button>
                     </>
                 ) : (
                   <>
-                    <Button variant="outlined" color="secondary" onClick={() => handleDelete(income.id)}>
+                    <Button variant="outlined" color="secondary" onClick={() => handleDelete(index)}>
                       Delete
                     </Button>
-                    <Button variant="outlined" color="primary" onClick={() => handleEdit(income)}>
+                    <Button variant="outlined" color="primary" onClick={()=>enableEdit(index)}>
                       Edit
                     </Button>
                   </>
