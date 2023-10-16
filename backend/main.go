@@ -38,7 +38,6 @@ func main() {
 
 	migrations.AddTriggers(db)
 
-
 	// // Seed the database with dummy data
 	// seeds.Seed(db) // Update the function call with the correct path
 
