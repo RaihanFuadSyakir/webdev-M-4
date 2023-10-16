@@ -1,14 +1,14 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BACKEND_URL } from '@/constants';
 import axiosInstance from '@/utils/fetchData';
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { ZodError } from 'zod';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Outcome, Wallet, dbResponse } from '@/utils/type';
+import { Income, Outcome, Wallet, dbResponse } from '@/utils/type';
 import WalletSelect from '@/components/wallet/WalletSelect';
 import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -17,6 +17,7 @@ import ListIncomes from '@/components/income/ListIncome';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 
 const Incomes = () => {
+  const [incomes, setIncomes] = useState<Income[]>([]);
   const [nominal, setNominal] = useState(0);
   const [description, setDescription] = useState('');
   const [wallet, setWallet] = useState(0);
@@ -25,7 +26,18 @@ const Incomes = () => {
   const [walletError, setWalletError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [seed,setSeed] = useState(0);
+  // Fetch Incomes data when the component mounts
+  useEffect(() => {
+    axiosInstance
+      .get(`/incomes/user`) // Replace with your actual endpoint
+      .then((response: AxiosResponse<dbResponse<Income[]>>) => {
+        const res: dbResponse<Income[]> = response.data;
+        setIncomes(res.data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch incomes:', error);
+      });
+  }, []);
   const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === 'nominal') {
@@ -69,14 +81,15 @@ const Incomes = () => {
         .post(`/incomes/new`, data, {
           withCredentials: true,
         })
-        .then((response) => {
+        .then((response : AxiosResponse<dbResponse<Income>>) => {
           setError('');
           // Optionally, you can reset the form fields here
+          setIncomes((prev)=>[...prev,response.data.data]);
           setNominal(0);
           setDescription('');
           setWallet(0);
           setDate(''); // Reset the date field
-          setSeed(Math.floor(Math.random()))
+          
         })
         .catch((error: AxiosError) => {
           console.log("axios",error)
@@ -145,7 +158,7 @@ const Incomes = () => {
     </div>
     <div className=' p-5 bg-white'>
       {/* List of incomes component */}
-      <ListIncomes seed={seed} />
+      <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
     </div>
     </>
   );
