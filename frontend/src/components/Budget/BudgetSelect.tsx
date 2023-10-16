@@ -78,7 +78,7 @@ const BudgetSelect: React.FC<BudgetProps> = ({budgets,setDataBudgets}) => {
   };
 
   return (
-    <div>
+    <div className='text-center'>
       <Button 
         variant='contained' 
         color='success' 
