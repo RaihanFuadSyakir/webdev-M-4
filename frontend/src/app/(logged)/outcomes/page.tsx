@@ -117,7 +117,7 @@ const Outcomes = () => {
     <>
     <Breadcrumb pageName="Outcome" />
     <div className="flex">
-      <div className='max-w-xl p-5 bg-white'>
+      <div className='max-w-xl mt-2 p-5 bg-white rounded-sm'>
         <div>
           <h2>Outcome</h2>
           <TextField
@@ -163,7 +163,9 @@ const Outcomes = () => {
           Tambahkan
         </Button>
       </div>
+      <div className='p-2'>
       <ListOutcomes outcomes={outcomes}/>
+      </div>
     </div>
     </>
   );

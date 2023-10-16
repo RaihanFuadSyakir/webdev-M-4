@@ -34,31 +34,31 @@ const [newDescription, setDescription] = useState(description);
 
     const handleMonthChange = (event: any) => {
         setSelectedMonth(event.target.value as string);
-      };
+    };
 
-      const handleUpdate = () => {
-        try {
-          const validBudget = currencySchema.parse(newTotalBudget)
-          axiosInstance.put(`/budget/${budget?.id}`,{
-            date: new Date(newDate),
-            month: newMonth,
-            total_budget: validBudget,
-            description: description,
-          }).then((response : AxiosResponse<dbResponse<Budget>>)=>{
-            const data = response.data.data;
-            console.log(response.data.msg);
-            budget.date = data.date;
-            budget.month = data.month;
-            budget.total_budget = data.total_budget;
-            budget.description = data.description;
-          }).catch((err_response : AxiosError<dbResponse<Budget>>) =>{
-            console.log(err_response.response?.data.msg);
-          })
-          closeModal();
-        } catch (error) {
-          console.error('Error creating budget:', error);
-        }
-      };
+    const handleUpdate = () => {
+      try {
+        const validBudget = currencySchema.parse(newTotalBudget)
+        axiosInstance.put(`/budget/${budget?.id}`,{
+          date: new Date(newDate),
+          month: newMonth,
+          total_budget: validBudget,
+          description: newDescription,
+        }).then((response : AxiosResponse<dbResponse<Budget>>)=>{
+          const data = response.data.data;
+          console.log(response.data.msg);
+          budget.date = data.date;
+          budget.month = data.month;
+          budget.total_budget = data.total_budget;
+          budget.description = data.description;
+        }).catch((err_response : AxiosError<dbResponse<Budget>>) =>{
+          console.log(err_response.response?.data.msg);
+        })
+        closeModal();
+      } catch (error) {
+        console.error('Error creating budget:', error);
+      }
+    };
 
   return (
     <Dialog open={isOpen} onClose={closeModal}>
