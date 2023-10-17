@@ -8,41 +8,39 @@ import { ZodError } from 'zod';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Outcome, Wallet, dbResponse } from '@/utils/type';
+import { Income, Outcome, Wallet, dbResponse } from '@/utils/type';
 import WalletSelect from '@/components/wallet/WalletSelect';
 import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
 import CategorySelect from '@/components/category/CategorySelect';
-import ListOutcomes from '@/components/outcome/ListOutcomes';
+import ListIncomes from '@/components/income/ListIncome';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-const LineChart = () => {
+const LineChartIncome = () => {
+  const [incomes, setIncomes] = useState<Income[]>([]);
   const [nominal, setNominal] = useState(0);
-  const [category, setCategory] = useState(0);
   const [description, setDescription] = useState('');
   const [wallet, setWallet] = useState(0);
   const [date, setDate] = useState(''); // Add date state
   const [nominalError, setNominalError] = useState('');
-  const [categoryError, setCategoryError] = useState('');
   const [walletError, setWalletError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [outcomes,setOutcomes] = useState<Outcome[]>([]);
-   // Fetch outcomes data when the component mounts
-   useEffect(() => {
+  // Fetch Incomes data when the component mounts
+  useEffect(() => {
     axiosInstance
-      .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
-      .then((response : AxiosResponse<dbResponse<Outcome[]>>) => {
-        const res : dbResponse<Outcome[]> = response.data;
-        setOutcomes(res.data);
+      .get(`/incomes/user`) // Replace with your actual endpoint
+      .then((response: AxiosResponse<dbResponse<Income[]>>) => {
+        const res: dbResponse<Income[]> = response.data;
+        setIncomes(res.data);
       })
       .catch((error) => {
-        console.error('Failed to fetch outcomes:', error);
+        console.error('Failed to fetch incomes:', error);
       });
   }, []);
-
+  
   // Mengubah timestamp menjadi tanggal saja (misal: 2023-10-17 00:00:00 -> 17)
   const formatTimestampToDay = (timestamp) => {
     const date = new Date(timestamp);
@@ -50,17 +48,17 @@ const LineChart = () => {
   };
 
   // Fungsi untuk mengelompokkan data outcome berdasarkan tanggal
-  const groupOutcomesByDate = (outcomes: Outcome[]) => {
-    return outcomes.reduce((result: { [key: string]: number }, outcome: Outcome) => {
-      const date = outcome.date; // Ambil tanggal dari outcome
-      const totalOutcome = outcome.total_outcome;
+  const groupIncomesByDate = (incomes: Income[]) => {
+    return incomes.reduce((result: { [key: string]: number }, income: Income) => {
+      const date = income.date; // Ambil tanggal dari outcome
+      const totalIncome = income.total_income;
 
       // Jika tanggal sudah ada di result, tambahkan totalOutcome
       if (result[date]) {
-        result[date] += totalOutcome;
+        result[date] += totalIncome;
       } else {
         // Jika tanggal belum ada di result, tambahkan tanggal dengan totalOutcome
-        result[date] = totalOutcome;
+        result[date] = totalIncome;
       }
 
       return result;
@@ -68,17 +66,17 @@ const LineChart = () => {
   };
 
   // Mengelompokkan data outcome perhari dan mengubah label sumbu x ke tanggal
-  const groupedOutcomes = groupOutcomesByDate(outcomes);
+  const groupedIncomes = groupIncomesByDate(incomes);
 
   // Mengubah hasil pengelompokkan ke format yang bisa digunakan oleh chartOptions
-  const chartData = Object.keys(groupedOutcomes).map(date => ({
+  const chartData = Object.keys(groupedIncomes).map(date => ({
     date: formatTimestampToDay(date), // Mengubah label sumbu x ke tanggal
-    total_outcome: groupedOutcomes[date],
+    total_income: groupedIncomes[date],
   })).sort((a, b) => a.date - b.date); // Urutkan berdasarkan tanggal
 
   const chartOptions = {
     title: {
-      text: 'Outcome Data Visualization'
+      text: 'Income Data Visualization'
     },
     xAxis: {
       categories: chartData.map(item => item.date), // Menggunakan chartData yang sudah dielompokkan
@@ -88,12 +86,12 @@ const LineChart = () => {
     },
     yAxis: {
       title: {
-        text: 'Total Outcome'
+        text: 'Total Income'
       }
     },
     series: [{
-      name: 'Total Outcome',
-      data: chartData.map(item => item.total_outcome), // Menggunakan chartData yang sudah dielompokkan
+      name: 'Total Income',
+      data: chartData.map(item => item.total_income), // Menggunakan chartData yang sudah dielompokkan
       type: 'line',
       width: 800,
       height: 400
@@ -107,4 +105,4 @@ const LineChart = () => {
   );
 };
 
-export default LineChart;
+export default LineChartIncome;
