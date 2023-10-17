@@ -1,5 +1,6 @@
 "use client"
 import LineChart from '@/components/Dashboard/LineChart';
+import LineChartIncome from '@/components/Dashboard/LineChartIncome';
 import axiosInstance from '@/utils/fetchData';
 import { User, dbResponse } from '@/utils/type';
 import { AxiosResponse } from 'axios';
@@ -23,7 +24,7 @@ export default function Dashboard() {
       })
   }, [])
   return (
-    <div >
+    <div>
       <div className='bg-slate-700 flex text-white'>
         <Link href='outcomes' className='m-2'>Outcomes</Link>
         <Link href='incomes' className='m-2'>Incomes</Link>
@@ -32,14 +33,19 @@ export default function Dashboard() {
       </div>
       <h1>Dashboard</h1>
       <h2>Hello {username}</h2>
-      
-      <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <div style={{ width: '800px' }}> {/* Menambahkan gaya CSS untuk mengatur lebar */}
-          <LineChart />
+
+      <div className="flex bg-gray-100">
+        <div className="w-1/2 p-4 rounded-lg">
+          <div style={{ width: '100%', height: '300px' }}>
+            <LineChart />
+          </div>
+        </div>
+        <div className="w-1/2 p-4 rounded-lg">
+          <div style={{ width: '100%', height: '300px' }}>
+            <LineChartIncome />
+          </div>
         </div>
       </div>
     </div>
-    </div>
   );
-};
+}
