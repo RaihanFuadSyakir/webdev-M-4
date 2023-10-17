@@ -87,7 +87,6 @@ const Incomes = () => {
           setIncomes((prev)=>[...prev,response.data.data]);
           setNominal(0);
           setDescription('');
-          setWallet(0);
           setDate(''); // Reset the date field
           
         })

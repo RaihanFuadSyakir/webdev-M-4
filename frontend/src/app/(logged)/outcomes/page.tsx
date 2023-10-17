@@ -94,9 +94,7 @@ const Outcomes = () => {
           setError('');
           // Optionally, you can reset the form fields here
           setNominal(0);
-          setCategory(0);
           setDescription('');
-          setWallet(0);
           setDate(''); // Reset the date field
           const newData = response.data.data
           setOutcomes((prev) => [...prev, newData])
@@ -157,7 +155,7 @@ const Outcomes = () => {
           </div>
           <div>
             <h2>Deskripsi</h2>
-            <textarea name="description" id="deskripsi" className='' rows={6} onChange={handleInput}></textarea>
+            <textarea name="description" id="deskripsi" className='' rows={6} value={description} onChange={handleInput}></textarea>
           </div>
           <Button color="secondary" onClick={addOutcome}>
             Tambahkan
