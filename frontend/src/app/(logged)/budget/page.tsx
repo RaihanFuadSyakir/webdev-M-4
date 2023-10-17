@@ -40,7 +40,7 @@ const Budget = () => {
         <div className="flex-1 p-2">
           <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
             <div className="m-5">
-              <h2 className="font-bold text-xl mb-2 text-black">Create Budget</h2>
+              <h2 className="font-bold text-xl mb-2 text-black text-center">Create Budget</h2>
               <BudgetSelect setDataBudgets={setBudgets} budgets={budgets}/>
             </div>
 
