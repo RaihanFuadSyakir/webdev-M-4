@@ -101,7 +101,7 @@ func defineOutcomeRoutes(app *fiber.App, controller *controllers.OutcomeControll
 	authenticatedRoutes.Post("/api/outcome/new", controller.CreateOutcome)
 	authenticatedRoutes.Get("/api/outcome/:id", controller.GetOutcome)
 	authenticatedRoutes.Get("/api/outcomes/", controller.GetOutcomeByUserID)
-	authenticatedRoutes.Put("/api/outcome/:id", controller.UpdateOutcome)
+	authenticatedRoutes.Put("/api/outcomes/:id", controller.UpdateOutcome)
 	authenticatedRoutes.Delete("/api/outcome/delete/:id", controller.DeleteOutcome)
 }
 func defineDailyRecapRoutes(app *fiber.App, controller *controllers.DailyRecapController) {

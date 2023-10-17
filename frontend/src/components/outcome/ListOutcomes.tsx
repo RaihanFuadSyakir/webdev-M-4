@@ -11,51 +11,111 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Categories from '@/app/(logged)/categories/page';
+import Outcomes from '@/app/(logged)/outcomes/page';
+import WalletSelect from '../wallet/WalletSelect';
+import CategorySelect from '../category/CategorySelect';
 
 interface OutcomeProps {
   outcomes: Outcome[];
+  setOutcomes: React.Dispatch<React.SetStateAction<Outcome[]>>;
 }
 
-const ListOutcomes = ({ outcomes }: OutcomeProps) => {
-  const [editedOutcome, setEditedOutcome] = useState<Outcome | null>(null);
-  const [editedTotalOutcome, setEditedTotalOutcome] = useState<number | null>(null);
-  const [editedDescription, setEditedDescription] = useState<string>('');
+const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
+  const [editStates, setEditStates] = useState(
+    outcomes.map((outcome) => ({
+      isEditing: false,
+      id: outcome.id,
+      date: outcome.date,
+      total_outcome: outcome.total_outcome,
+      description: outcome.description,
+    }))
+  );
+  const [newWalletId, setNewWalletId] = useState(0);
+  const [newCategoryId, setNewCategoryId] = useState(0);
+  useEffect(() => {
+    setEditStates(() => (
+      outcomes.map((outcome) => ({
+        isEditing: false,
+        id: outcome.id,
+        date: outcome.date,
+        total_outcome: outcome.total_outcome,
+        description: outcome.description,
+      }))
+    ))
+  }, [outcomes.length])
 
-  const handleDelete = (selectedOption: number) => {
-    deleteOutcome(selectedOption);
+  const handleDelete = (index: number) => {
+    const newEditStates = [...editStates];
+    const updatedOutcomes = [...outcomes];
+    deleteOutcome(newEditStates[index].id);
+    newEditStates.splice(index, 1);
+    updatedOutcomes.splice(index, 1);
+    setEditStates(newEditStates);
+    setOutcomes(updatedOutcomes);
+  }
+
+  const enableEdit = (index: number) => {
+    const updatedStates = [...editStates];
+    updatedStates[index].isEditing = true;
+    setEditStates(updatedStates)
   };
 
-  const handleEdit = (outcome: Outcome) => {
-    setEditedOutcome(outcome);
-    setEditedTotalOutcome(outcome.total_outcome);
-    setEditedDescription(outcome.description);
+  const handleCancelEdit = (index: number) => {
+    const updatedStates = [...editStates];
+    updatedStates[index].isEditing = false;
+    setEditStates(updatedStates)
   };
-
-  const handleCancelEdit = () => {
-    setEditedOutcome(null);
-  };
-
-  const handleSaveEdit = () => {
-    if (editedOutcome) {
-      // Construct the edited outcome object
-      const editedOutcomeData = {
-        id: editedOutcome.id,
-        total_outcome: editedTotalOutcome,
-        description: editedDescription,
-      };
-
-      // Send a PUT or PATCH request to update the outcome on the server
-      axiosInstance
-        .put(`/outcome/${editedOutcome.id}`, editedOutcomeData)
-        .then(() => {
-          console.log('edit success');
-          setEditedOutcome(null); // Close the edit form after a successful update
-        })
-        .catch((res_err: AxiosError<dbResponse<Outcome>>) => {
-          console.log(JSON.stringify(res_err.response?.data));
-        });
+  const handleDateOnChange = (index: number, newValue: string) => {
+    const newEditStates = [...editStates];
+    newEditStates[index].date = newValue;
+    setEditStates(newEditStates);
+  }
+  const handleTotalOutcomeOnChange = (index: number, newValue: string) => {
+    try {
+      const parsedNominal = parseFloat(newValue)
+      const newEditStates = [...editStates];
+      newEditStates[index].total_outcome = parsedNominal;
+      setEditStates(newEditStates);
+    } catch (error) {
+      //
     }
-  };
+  }
+  const handleDescriptionOnChange = (index: number, newValue: string) => {
+    const newEditStates = [...editStates];
+    newEditStates[index].description = newValue;
+    setEditStates(newEditStates);
+  }
+  const handleSaveEdit = (index: number) => {
+    // Construct the edited outcome object
+    const newOutcome = editStates[index];
+    const editedOutcomeData = {
+      date: new Date(newOutcome.date),
+      total_outcome: newOutcome.total_outcome,
+      wallet_id: newWalletId,
+      description: newOutcome.description,
+      category_id: newCategoryId
+    };
+
+    // Send a PUT or PATCH request to update the outcome on the server
+    axiosInstance
+      .put(`/outcomes/${newOutcome.id}`, editedOutcomeData)
+      .then((response: AxiosResponse<dbResponse<Outcome>>) => {
+        console.log('edit success');
+        const newData = response.data.data;
+        const updatedOutcomes = [...outcomes];
+        updatedOutcomes[index] = newData;
+        setOutcomes(updatedOutcomes);
+        const updatedEditStates = [...editStates];
+        updatedEditStates[index].isEditing = false;
+        setEditStates(updatedEditStates);
+        console.log(editStates[index].isEditing);
+      })
+      .catch((res_err: AxiosError<dbResponse<Outcome>>) => {
+        console.log(JSON.stringify(res_err.response?.data));
+      });
+
+  }
 
   return (
     <div className="max-w-2xl">
@@ -72,18 +132,26 @@ const ListOutcomes = ({ outcomes }: OutcomeProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {outcomes.map((outcome) => (
+            {outcomes.map((outcome, index) => (
               <TableRow key={outcome.id}>
                 <TableCell component="th" scope="row">
-                  {outcome.date}
+                  {editStates[index]?.isEditing ? (
+                    <TextField
+                      type="date"
+                      name="date"
+                      value={editStates[index].date}
+                      onChange={(e) => { handleDateOnChange(index, e.target.value) }}
+                    />) :
+                    outcome.date
+                  }
                 </TableCell>
                 <TableCell>
-                  {editedOutcome === outcome ? (
+                  {editStates[index]?.isEditing ? (
                     <TextField
                       type="number"
-                      value={editedTotalOutcome}
+                      value={editStates[index].total_outcome}
                       onChange={(e) =>
-                        setEditedTotalOutcome(parseFloat(e.target.value))
+                        handleTotalOutcomeOnChange(index, e.target.value)
                       }
                     />
                   ) : (
@@ -91,31 +159,41 @@ const ListOutcomes = ({ outcomes }: OutcomeProps) => {
                   )}
                 </TableCell>
                 <TableCell>
-                  {editedOutcome === outcome ? (
+                  {editStates[index]?.isEditing ? (
                     <TextField
                       type="text"
-                      value={editedDescription}
-                      onChange={(e) => setEditedDescription(e.target.value)}
+                      value={editStates[index].description}
+                      onChange={(e) => handleDescriptionOnChange(index, e.target.value)}
                     />
                   ) : (
                     outcome.description
                   )}
                 </TableCell>
-                <TableCell>{outcome.category?.category_name}</TableCell>
-                <TableCell>{outcome.wallet?.wallet_name}</TableCell>
                 <TableCell>
-                  {editedOutcome === outcome ? (
+                  {editStates[index]?.isEditing ? (
+                    <CategorySelect setSelectedCategory={setNewCategoryId} />
+                  ) : (
+                    outcome.category?.category_name)
+                  }</TableCell>
+                <TableCell>
+                  {editStates[index]?.isEditing ?
+                    (<WalletSelect setSelectedWallet={setNewWalletId} />
+                    ) : (
+                      outcome.wallet?.wallet_name)
+                  }</TableCell>
+                <TableCell>
+                  {editStates[index]?.isEditing ? (
                     <>
                       <Button
                         variant="outlined"
                         color="primary"
-                        onClick={handleSaveEdit}
+                        onClick={() => handleSaveEdit(index)}
                       >
                         Save
                       </Button>
                       <Button
                         variant="outlined"
-                        onClick={handleCancelEdit}
+                        onClick={() => handleCancelEdit(index)}
                       >
                         Cancel
                       </Button>
@@ -125,14 +203,14 @@ const ListOutcomes = ({ outcomes }: OutcomeProps) => {
                       <Button
                         variant="outlined"
                         color="secondary"
-                        onClick={() => handleDelete(outcome.id)}
+                        onClick={() => handleDelete(index)}
                       >
                         Delete
                       </Button>
                       <Button
                         variant="outlined"
                         color="primary"
-                        onClick={() => handleEdit(outcome)}
+                        onClick={() => enableEdit(index)}
                       >
                         Edit
                       </Button>
@@ -146,7 +224,7 @@ const ListOutcomes = ({ outcomes }: OutcomeProps) => {
       </TableContainer>
     </div>
   );
-};
+}
 
 function deleteOutcome(id: number) {
   axiosInstance
