@@ -112,21 +112,54 @@ const Incomes = () => {
             <h2>Income</h2>
             <TextField className='w-full m-0'
             fullWidth
-            name="description"
-            id="deskripsi"
-            label="Deskripsi"
-            value={description}
-            onChange={handleInput}
-          />
-        </div>
+            error={nominalError !== ''}
+              id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
+              label="Nominal"
+              name="nominal"
+              sx={{ m: 1, width: 'auto' }}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+              }}
+              helperText={nominalError}
+              value={nominal}
+              onChange={handleInput}
+            />
+          </div>
+          <div>
+            <h2>Wallet</h2>
+            <WalletSelect setSelectedWallet={setWallet} />
+          </div>
+          <div>
+            <h2>Date</h2>
+            <TextField
+              type="date"
+              name="date"
+              value={date}
+              onChange={handleInput}
+            />
+          </div>
+          <div>
+            <h2>Deskripsi</h2>
+            <TextField
+              multiline
+              rows={6}
+              fullWidth
+              name="description"
+              id="deskripsi"
+              label="Deskripsi"
+              value={description}
+              onChange={handleInput}
+            />
+          </div>
         <Button color="secondary" onClick={addIncome}>
           Tambahkan
         </Button>
       </div> }
-    </div>
-    <div className=' p-5 bg-white'>
-      {/* List of incomes component */}
-      <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
+
+      <div className='p-2'>
+        {/* List of incomes component */}
+        <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
+      </div>
     </div>
     </>
   );
