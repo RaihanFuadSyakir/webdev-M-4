@@ -74,7 +74,7 @@ const LineChart = () => {
   const chartData = Object.keys(groupedOutcomes).map(date => ({
     date: formatTimestampToDay(date), // Mengubah label sumbu x ke tanggal
     total_outcome: groupedOutcomes[date],
-  }));
+  })).sort((a, b) => a.date - b.date); // Urutkan berdasarkan tanggal
 
   const chartOptions = {
     title: {

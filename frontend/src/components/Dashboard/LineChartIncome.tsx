@@ -72,7 +72,7 @@ const LineChartIncome = () => {
   const chartData = Object.keys(groupedIncomes).map(date => ({
     date: formatTimestampToDay(date), // Mengubah label sumbu x ke tanggal
     total_income: groupedIncomes[date],
-  }));
+  })).sort((a, b) => a.date - b.date); // Urutkan berdasarkan tanggal
 
   const chartOptions = {
     title: {
