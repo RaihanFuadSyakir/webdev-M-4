@@ -86,7 +86,9 @@ func (oc *OutcomeController) UpdateOutcome(c *fiber.Ctx) error {
 	if err := oc.DB.Save(&outcome).Error; err != nil {
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
-
+	if err := oc.DB.Preload("Wallet").Preload("Category").First(&outcome, outcome.ID).Error; err != nil {
+		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
+	}
 	return jsonResponse(c, fiber.StatusOK, "Outcome updated successfully", outcome)
 }
 

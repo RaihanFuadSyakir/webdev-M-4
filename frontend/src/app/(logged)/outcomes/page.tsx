@@ -27,13 +27,13 @@ const Outcomes = () => {
   const [walletError, setWalletError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [outcomes,setOutcomes] = useState<Outcome[]>([]);
-   // Fetch outcomes data when the component mounts
-   useEffect(() => {
+  const [outcomes, setOutcomes] = useState<Outcome[]>([]);
+  // Fetch outcomes data when the component mounts
+  useEffect(() => {
     axiosInstance
       .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
-      .then((response : AxiosResponse<dbResponse<Outcome[]>>) => {
-        const res : dbResponse<Outcome[]> = response.data;
+      .then((response: AxiosResponse<dbResponse<Outcome[]>>) => {
+        const res: dbResponse<Outcome[]> = response.data;
         setOutcomes(res.data);
       })
       .catch((error) => {
@@ -78,8 +78,8 @@ const Outcomes = () => {
         return;
       }
       // Create a data object to send in the POST request
-      
-      const data= {
+
+      const data = {
         date: new Date(date),
         total_outcome: nominal,
         description: description,
@@ -90,7 +90,7 @@ const Outcomes = () => {
         .post(`/outcome/new`, data, {
           withCredentials: true,
         })
-        .then((response : AxiosResponse<dbResponse<Outcome>>) => {
+        .then((response: AxiosResponse<dbResponse<Outcome>>) => {
           setError('');
           // Optionally, you can reset the form fields here
           setNominal(0);
@@ -99,14 +99,14 @@ const Outcomes = () => {
           setWallet(0);
           setDate(''); // Reset the date field
           const newData = response.data.data
-          setOutcomes((prev)=> [...prev,newData])
+          setOutcomes((prev) => [...prev, newData])
         })
         .catch((error: AxiosError) => {
-          console.log("axios",error)
+          console.log("axios", error)
           setError('Failed to add outcome.');
         });
     } catch (error) {
-      console.log("try",error)
+      console.log("try", error)
       // Handle validation errors or other errors if needed
     } finally {
       setLoading(false);
@@ -115,56 +115,56 @@ const Outcomes = () => {
 
   return (
     <>
-    <Breadcrumb pageName="Outcome" />
-    <div className="flex">
-      <div className='max-w-xl p-5 bg-white'>
-        <div>
-          <h2>Outcome</h2>
-          <TextField
-          className='w-full m-0'
-          fullWidth
-            error={nominalError !== ''}
-            id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
-            label="Nominal"
-            name="nominal"
-            sx={{ m: 1, width: 'auto' }}
-            InputProps={{
-              startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
-            }}
-            helperText={nominalError}
-            value={nominal}
-            onChange={handleInput}
-          />
+      <Breadcrumb pageName="Outcome" />
+      <div className="flex">
+        <div className='max-w-xl p-5 bg-white'>
+          <div>
+            <h2>Outcome</h2>
+            <TextField
+              className='w-full m-0'
+              fullWidth
+              error={nominalError !== ''}
+              id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
+              label="Nominal"
+              name="nominal"
+              sx={{ m: 1, width: 'auto' }}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+              }}
+              helperText={nominalError}
+              value={nominal}
+              onChange={handleInput}
+            />
+          </div>
+          <div>
+            <h2>Category</h2>
+            <CategorySelect setSelectedCategory={setCategory} />
+            {categoryError && <div>{categoryError}</div>}
+          </div>
+          <div>
+            <h2>Wallet</h2>
+            <WalletSelect setSelectedWallet={setWallet} />
+            {walletError && <div>{walletError}</div>}
+          </div>
+          <div>
+            <h2>Date</h2>
+            <TextField
+              type="date"
+              name="date"
+              value={date}
+              onChange={handleInput}
+            />
+          </div>
+          <div>
+            <h2>Deskripsi</h2>
+            <textarea name="description" id="deskripsi" className='' rows={6} onChange={handleInput}></textarea>
+          </div>
+          <Button color="secondary" onClick={addOutcome}>
+            Tambahkan
+          </Button>
         </div>
-        <div>
-          <h2>Category</h2>
-          <CategorySelect setSelectedCategory={setCategory} />
-          {categoryError && <div>{categoryError}</div>}
-        </div>
-        <div>
-          <h2>Wallet</h2>
-          <WalletSelect setSelectedWallet={setWallet} />
-          {walletError && <div>{walletError}</div>}
-        </div>
-        <div>
-          <h2>Date</h2>
-          <TextField
-            type="date"
-            name="date"
-            value={date}
-            onChange={handleInput}
-          />
-        </div>
-        <div>
-          <h2>Deskripsi</h2>
-          <textarea name="description" id="deskripsi" className='' rows={6} onChange={handleInput}></textarea>
-        </div>
-        <Button color="secondary" onClick={addOutcome}>
-          Tambahkan
-        </Button>
+        <ListOutcomes outcomes={outcomes} setOutcomes={setOutcomes} />
       </div>
-      <ListOutcomes outcomes={outcomes}/>
-    </div>
     </>
   );
 };
