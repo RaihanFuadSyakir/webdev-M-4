@@ -1,4 +1,5 @@
 "use client"
+import LineChart from '@/components/Dashboard/LineChart';
 import axiosInstance from '@/utils/fetchData';
 import { User, dbResponse } from '@/utils/type';
 import { AxiosResponse } from 'axios';
@@ -31,6 +32,14 @@ export default function Dashboard() {
       </div>
       <h1>Dashboard</h1>
       <h2>Hello {username}</h2>
+      
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-md">
+        <div style={{ width: '800px' }}> {/* Menambahkan gaya CSS untuk mengatur lebar */}
+          <LineChart />
+        </div>
+      </div>
+    </div>
     </div>
   );
 };
