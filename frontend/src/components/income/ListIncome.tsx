@@ -3,10 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
 import { Income, dbResponse } from '@/utils/type';
-
 import { Axios, AxiosError, AxiosResponse } from 'axios';
-
-
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -14,13 +11,15 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField'; // Import the TextField component
+import TextField from '@mui/material/TextField'; 
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import WalletSelect from '@/components/wallet/WalletSelect';
+import {format} from 'date-fns'
+import numeral from 'numeral';
 
 interface Props{
   incomes : Income[]
@@ -121,7 +120,7 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
   }
 
   return (
-    <div className=''>
+    <div className='text-center'>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -136,19 +135,20 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
           <TableBody>
             {incomes.map((income,index) => (
               <TableRow key={income.id}>
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" align="center">
                   {editStates[index]?.isEditing ? (
                     <TextField
                       type="date"
                       name="date"
                       value={editStates[index].date}
                       onChange={(e)=>{handleDateOnChange(index,e.target.value)}}
-                    />) : 
-                    income.date
+                    />
+                    ) : (
+                      format(new Date(income.date), 'dd/MM/yyyy'))
                   }
                 </TableCell>
 
-                <TableCell>
+                <TableCell align="center">
                 {editStates[index]?.isEditing ? (
                   <TextField
                     type="number"
@@ -156,10 +156,10 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
                     onChange={(e) => handleTotalIncomeOnChange(index,e.target.value)}
                   />
                 ) : (
-                  income.total_income
+                  numeral(income.total_income).format('0,0')
                 )}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                 {editStates[index]?.isEditing ? (
                   <TextField
                     type="text"
@@ -170,28 +170,45 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
                   income.description
                 )}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {editStates[index]?.isEditing ? (
                     <WalletSelect setSelectedWallet={setNewWalletId} />
                     ) : 
                     (income.wallet?.wallet_name)}
                 </TableCell>
-                <TableCell>
+                <TableCell className='flex justify-evenly'>
                 {editStates[index]?.isEditing ? (
                     <>
-                      <Button variant="outlined" color="primary" onClick={()=>handleSaveEdit(index)}>
+                      <Button 
+                        variant="outlined" 
+                        color="primary" 
+                        onClick={()=>handleSaveEdit(index)}
+                      >
                         Save
                       </Button>
-                      <Button variant="outlined" onClick={()=>{handleCancelEdit(index)}}>
+                      <Button 
+                        variant="outlined" 
+                        onClick={()=>{handleCancelEdit(index)}}
+                      >
                         Cancel
                       </Button>
                     </>
                 ) : (
                   <>
-                    <Button variant="outlined" color="secondary" onClick={() => handleDelete(index)}>
+                    <Button 
+                      variant="outlined" 
+                      color="secondary" 
+                      className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
+                      onClick={() => handleDelete(index)}
+                    >
                       Delete
                     </Button>
-                    <Button variant="outlined" color="primary" onClick={()=>enableEdit(index)}>
+                    <Button 
+                      variant="outlined" 
+                      color="primary" 
+                      className="bg-blue-500 text-white rounded hover:bg-blue-700 hover:text-white"
+                      onClick={()=>enableEdit(index)}
+                    >
                       Edit
                     </Button>
                   </>

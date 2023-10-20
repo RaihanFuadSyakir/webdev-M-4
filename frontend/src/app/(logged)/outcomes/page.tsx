@@ -15,6 +15,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import CategorySelect from '@/components/category/CategorySelect';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
+import numeral from 'numeral';
 
 const Outcomes = () => {
   const [nominal, setNominal] = useState(0);
@@ -44,7 +45,8 @@ const Outcomes = () => {
     const { name, value } = e.target;
     if (name === 'nominal') {
       try {
-        const parsedNominal = currencySchema.parse(parseInt(value));
+        // const parsedNominal = currencySchema.parse(parseInt(value));
+        const parsedNominal = numeral(value).value() ?? 0;
         setNominal(parsedNominal);
         setNominalError('');
       } catch (error) {
@@ -117,22 +119,21 @@ const Outcomes = () => {
     <>
       <Breadcrumb pageName="Outcome" />
       <div className="flex">
-        <div className='max-w-xl p-5 bg-white'>
+        <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm'>
           <div>
-            <h2>Outcome</h2>
+            <h2>Nominal</h2>
             <TextField
               className='w-full m-0'
               fullWidth
               error={nominalError !== ''}
               id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
-              label="Nominal"
               name="nominal"
               sx={{ m: 1, width: 'auto' }}
               InputProps={{
                 startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
               }}
               helperText={nominalError}
-              value={nominal}
+              value={numeral(nominal).format('0,0')}
               onChange={handleInput}
             />
           </div>
@@ -157,13 +158,24 @@ const Outcomes = () => {
           </div>
           <div>
             <h2>Deskripsi</h2>
-            <textarea name="description" id="deskripsi" className='' rows={6} onChange={handleInput}></textarea>
+            <TextField 
+              multiline 
+              rows={5} 
+              fullWidth 
+              name='description' 
+              id='deskripsi' 
+              label="Deskripsi" 
+              value={description} 
+              onChange={handleInput}
+            />
           </div>
           <Button color="secondary" onClick={addOutcome}>
             Tambahkan
           </Button>
         </div>
+        <div className='flex-1 p-2'>
         <ListOutcomes outcomes={outcomes} setOutcomes={setOutcomes} />
+        </div>
       </div>
     </>
   );

@@ -32,6 +32,7 @@
     "jsvectormap": "^1.5.3",
     "mdi-material-ui": "^7.7.0",
     "next": "13.4.12",
+    "numeral": "^2.0.6",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-dom": "18.2.0",
@@ -40,6 +41,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/numeral": "^2.0.4",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3"
