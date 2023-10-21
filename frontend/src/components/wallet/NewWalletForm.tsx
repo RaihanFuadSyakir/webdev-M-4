@@ -21,9 +21,29 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
     // Populate form fields when in edit mode
     if (editingWallet) {
       setWalletName(editingWallet.wallet_name);
-      setTotalBalance(editingWallet.total_balance.toString());
+    
+      setTotalBalance(formatRupiah(editingWallet.total_balance.toString()));
     }
   }, [editingWallet]);
+
+  const formatRupiah = (angka: string) => {
+    var reverse = angka
+      .toString()
+      .split('')
+      .reverse()
+      .join('');
+    var ribuan = reverse.match(/\d{1,3}/g);
+    var hasil = ribuan?.join('.').split('').reverse().join('');
+    return hasil;
+  };
+
+
+  const handleInputChange = (e) => {
+    // Menghapus karakter selain angka
+    const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
+    
+    setTotalBalance(formatRupiah(sanitizedValue));
+  };
 
   const handleFormSubmit = async () => {
     try {
@@ -32,12 +52,11 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         return;
       }
   
-      const formattedTotalBalance = `Rp ${parseFloat(totalBalance).toLocaleString('id-ID')}`; // Format angka ke format mata uang lokal
-      console.log(formattedTotalBalance); // Tampilkan di console untuk memastikan bahwa formatnya sudah benar
+      const totalBalanceFix = totalBalance.replace(/[^a-zA-Z0-9]/g, '');
 
       const data = {
         wallet_name: walletName,
-        total_balance: parseFloat(totalBalance),
+        total_balance: parseFloat(totalBalanceFix),
       };
   
       if (editingWallet) {
@@ -74,13 +93,14 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
       <TextField
         label="Total Balance (Rp)"
         name="totalBalance"
-        type="number"
+        type="text"
         value={totalBalance}
+        onKeyUp={handleInputChange}
         onChange={(e) => setTotalBalance(e.target.value)}
         fullWidth
         margin="normal"
         InputProps={{
-          startAdornment: <div>Rp</div>, // Gunakan div untuk menampilkan "Rp" di sebelah input
+          startAdornment: <div>Rp </div>, // Gunakan div untuk menampilkan "Rp" di sebelah input
         }}
       />
       <Button
