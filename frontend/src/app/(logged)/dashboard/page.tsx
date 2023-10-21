@@ -1,6 +1,7 @@
 "use client"
 import LineChart from '@/components/Dashboard/LineChart';
 import LineChartIncome from '@/components/Dashboard/LineChartIncome';
+import BarChartReport from '@/components/Dashboard/BarChartReport';
 import axiosInstance from '@/utils/fetchData';
 import { User, dbResponse } from '@/utils/type';
 import { AxiosResponse } from 'axios';
@@ -8,6 +9,7 @@ import { AxiosResponse } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 export default function Dashboard() {
   const router = useRouter()
   const [username, setUsername] = useState('');
@@ -34,18 +36,27 @@ export default function Dashboard() {
       <h1>Dashboard</h1>
       <h2>Hello {username}</h2>
 
-      <div className="flex bg-gray-100">
-        <div className="w-1/2 p-4 rounded-lg">
-          <div style={{ width: '100%', height: '300px' }}>
+      <div className="flex flex-col bg-gray-100">
+        <div className="p-4 rounded-lg mb-4 mx-auto">
+          <BarChartReport />
+        </div>
+        <div className="flex mb-10">
+          <div className="p-4 rounded-lg flex-1">
             <LineChart />
           </div>
-        </div>
-        <div className="w-1/2 p-4 rounded-lg">
-          <div style={{ width: '100%', height: '300px' }}>
+          <div className="p-4 rounded-lg ml-4 flex-1">
             <LineChartIncome />
           </div>
         </div>
+        <div className="flex">
+          <div className="p-4 rounded-lg ml-4 flex-1">
+            <PieChartWallet />
+          </div>
+        </div>
       </div>
+
+
+
     </div>
   );
 }
