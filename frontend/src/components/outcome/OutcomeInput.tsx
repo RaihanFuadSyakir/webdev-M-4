@@ -8,35 +8,37 @@ import { ZodError } from 'zod';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Income, Outcome, Wallet, dbResponse } from '@/utils/type';
+import { Outcome, Wallet, dbResponse } from '@/utils/type';
 import WalletSelect from '@/components/wallet/WalletSelect';
 import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
 import CategorySelect from '@/components/category/CategorySelect';
-import ListIncomes from '@/components/income/ListIncome';
+import ListOutcomes from '@/components/outcome/ListOutcomes';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import numeral from 'numeral';
 
-const Incomes = () => {
-  const [incomes, setIncomes] = useState<Income[]>([]);
+const OutcomeInput = () => {
   const [nominal, setNominal] = useState(0);
+  const [category, setCategory] = useState(0);
   const [description, setDescription] = useState('');
   const [wallet, setWallet] = useState(0);
   const [date, setDate] = useState(''); // Add date state
   const [nominalError, setNominalError] = useState('');
+  const [categoryError, setCategoryError] = useState('');
   const [walletError, setWalletError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  // Fetch Incomes data when the component mounts
+  const [outcomes, setOutcomes] = useState<Outcome[]>([]);
+  // Fetch outcomes data when the component mounts
   useEffect(() => {
     axiosInstance
-      .get(`/incomes/user`) // Replace with your actual endpoint
-      .then((response: AxiosResponse<dbResponse<Income[]>>) => {
-        const res: dbResponse<Income[]> = response.data;
-        setIncomes(res.data);
+      .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
+      .then((response: AxiosResponse<dbResponse<Outcome[]>>) => {
+        const res: dbResponse<Outcome[]> = response.data;
+        setOutcomes(res.data);
       })
       .catch((error) => {
-        console.error('Failed to fetch incomes:', error);
+        console.error('Failed to fetch outcomes:', error);
       });
   }, []);
   const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -52,6 +54,8 @@ const Incomes = () => {
           setNominalError(error.issues[0].message);
         }
       }
+    } else if (name === 'category') {
+      // setCategory(value);
     } else if (name === 'description') {
       setDescription(value);
     } else if (name === 'wallet') {
@@ -61,7 +65,7 @@ const Incomes = () => {
     }
   };
 
-  const addIncome = async () => {
+  const addOutcome = async () => {
     setLoading(true);
     try {
       // Check if wallet is selected
@@ -70,35 +74,41 @@ const Incomes = () => {
         setLoading(false);
         return;
       }
+      if (!category) {
+        setCategoryError('Please select a category.');
+        setLoading(false);
+        return;
+      }
       // Create a data object to send in the POST request
-      
-      const data= {
+
+      const data = {
         date: new Date(date),
-        total_income: nominal,
+        total_outcome: nominal,
         description: description,
+        category_id: category,
         wallet_id: wallet,
       };
-      console.log(data);
       axiosInstance
-        .post(`/incomes/new`, data, {
+        .post(`/outcome/new`, data, {
           withCredentials: true,
         })
-        .then((response : AxiosResponse<dbResponse<Income>>) => {
+        .then((response: AxiosResponse<dbResponse<Outcome>>) => {
           setError('');
           // Optionally, you can reset the form fields here
-          setIncomes((prev)=>[...prev,response.data.data]);
           setNominal(0);
+          setCategory(0);
           setDescription('');
           setWallet(0);
           setDate(''); // Reset the date field
-          
+          const newData = response.data.data
+          setOutcomes((prev) => [...prev, newData])
         })
         .catch((error: AxiosError) => {
-          console.log("axios",error)
-          setError('Failed to add income.');
+          console.log("axios", error)
+          setError('Failed to add outcome.');
         });
     } catch (error) {
-      console.log("try",error)
+      console.log("try", error)
       // Handle validation errors or other errors if needed
     } finally {
       setLoading(false);
@@ -107,12 +117,10 @@ const Incomes = () => {
 
   return (
     <>
-    <Breadcrumb pageName="Income" />
-    <div className="flex">
-      { <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
+        <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
           <div>
             <h2>Nominal</h2>
-            <TextField 
+            <TextField
               className='w-full m-0'
               fullWidth
               error={nominalError !== ''}
@@ -128,8 +136,14 @@ const Incomes = () => {
             />
           </div>
           <div>
+            <h2>Category</h2>
+            <CategorySelect setSelectedCategory={setCategory} />
+            {categoryError && <div>{categoryError}</div>}
+          </div>
+          <div>
             <h2>Wallet</h2>
             <WalletSelect setSelectedWallet={setWallet} />
+            {walletError && <div>{walletError}</div>}
           </div>
           <div>
             <h2>Date</h2>
@@ -142,36 +156,27 @@ const Incomes = () => {
           </div>
           <div>
             <h2>Deskripsi</h2>
-            <TextField
-              multiline
-              rows={5}
-              fullWidth
-              name="description"
-              id="deskripsi"
-              value={description}
+            <TextField 
+              multiline 
+              rows={5} 
+              fullWidth 
+              name='description' 
+              id='deskripsi' 
+              value={description} 
               onChange={handleInput}
             />
           </div>
-        <Button 
-          onClick={addIncome}
-          variant="contained"
-          color="primary"
-          className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2 mt-2'>            
-          Save
-        </Button>
-      </div> }
-
-      <div className='flex-1 p-2'>
-        <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
-          <div className="m-5">
-            <h2 className="font-bold text-xl mb-2 text-black">Income List</h2>
-              <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
-          </div>
+          <Button
+            onClick={addOutcome}
+            variant="contained"
+            color="primary"
+            className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2 mt-2'
+          >
+            Save
+          </Button>
         </div>
-      </div>
-    </div>
     </>
   );
 };
 
-export default Incomes;
+export default OutcomeInput;

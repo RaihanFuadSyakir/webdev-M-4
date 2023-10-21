@@ -90,7 +90,7 @@ const Login: React.FC = () => {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
-              my: 15,
+              my: 10,
               mx: 4,
               display: 'flex',
               flexDirection: 'column',

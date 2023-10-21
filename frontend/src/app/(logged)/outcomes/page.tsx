@@ -119,7 +119,7 @@ const Outcomes = () => {
     <>
       <Breadcrumb pageName="Outcome" />
       <div className="flex">
-        <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm'>
+        <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
           <div>
             <h2>Nominal</h2>
             <TextField
@@ -164,17 +164,26 @@ const Outcomes = () => {
               fullWidth 
               name='description' 
               id='deskripsi' 
-              label="Deskripsi" 
               value={description} 
               onChange={handleInput}
             />
           </div>
-          <Button color="secondary" onClick={addOutcome}>
-            Tambahkan
+          <Button
+            onClick={addOutcome}
+            variant="contained"
+            color="primary"
+            className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2 mt-2'
+          >
+            Save
           </Button>
         </div>
-        <div className='flex-1 p-2'>
-        <ListOutcomes outcomes={outcomes} setOutcomes={setOutcomes} />
+        <div className='flex-1 p-2'>          
+          <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+            <div className="m-5">
+              <h2 className="font-bold text-xl mb-2 text-black">Outcome List</h2>
+              <ListOutcomes outcomes={outcomes} setOutcomes={setOutcomes} />
+            </div>
+          </div>
         </div>
       </div>
     </>

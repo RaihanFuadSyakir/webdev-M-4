@@ -206,7 +206,7 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                       <Button
                         variant="outlined"
                         color="secondary"
-                        className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
+                        className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white mr-1'
                         onClick={() => handleDelete(index)}
                       >
                         Delete
@@ -214,7 +214,7 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                       <Button
                         variant="outlined"
                         color="primary"
-                        className="bg-blue-500 text-white rounded hover:bg-blue-700 hover:text-white"
+                        className="bg-blue-500 text-white rounded hover:bg-blue-700 hover:text-white ml-1"
                         onClick={() => enableEdit(index)}
                       >
                         Edit

@@ -17,7 +17,7 @@ import ListIncomes from '@/components/income/ListIncome';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import numeral from 'numeral';
 
-const Incomes = () => {
+const IncomeInput = () => {
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [nominal, setNominal] = useState(0);
   const [description, setDescription] = useState('');
@@ -107,8 +107,6 @@ const Incomes = () => {
 
   return (
     <>
-    <Breadcrumb pageName="Income" />
-    <div className="flex">
       { <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
           <div>
             <h2>Nominal</h2>
@@ -160,18 +158,8 @@ const Incomes = () => {
           Save
         </Button>
       </div> }
-
-      <div className='flex-1 p-2'>
-        <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
-          <div className="m-5">
-            <h2 className="font-bold text-xl mb-2 text-black">Income List</h2>
-              <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
-          </div>
-        </div>
-      </div>
-    </div>
     </>
   );
 };
 
-export default Incomes;
+export default IncomeInput;
