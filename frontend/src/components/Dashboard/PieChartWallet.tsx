@@ -1,5 +1,4 @@
 "use client"
-// ChartComponent.js
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { AxiosResponse } from 'axios';
@@ -24,9 +23,12 @@ const PieChartWallet = () => {
       });
   }, []);
 
-  // Prepare data for the pie chart
+  // Calculate total balance
+  const totalBalance = wallets.reduce((acc, wallet) => acc + wallet.total_balance, 0);
+
+  // Prepare data for the pie chart with percentages and labels
   const chartData = wallets.map((wallet) => ({
-    name: wallet.wallet_name,
+    name: `${wallet.wallet_name} (${((wallet.total_balance / totalBalance) * 100).toFixed(2)}%)`, // Include percentage in the label
     y: wallet.total_balance,
   }));
 
