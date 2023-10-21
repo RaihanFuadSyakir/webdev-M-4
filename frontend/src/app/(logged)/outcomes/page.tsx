@@ -96,9 +96,7 @@ const Outcomes = () => {
           setError('');
           // Optionally, you can reset the form fields here
           setNominal(0);
-          setCategory(0);
           setDescription('');
-          setWallet(0);
           setDate(''); // Reset the date field
           const newData = response.data.data
           setOutcomes((prev) => [...prev, newData])
