@@ -5,6 +5,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { Wallet, dbResponse } from '@/utils/type';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+// import InputAdornment from '@mui/material/InputAdornment';
 
 interface NewWalletFormProps {
   onWalletAdded: () => void;
@@ -20,9 +21,29 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
     // Populate form fields when in edit mode
     if (editingWallet) {
       setWalletName(editingWallet.wallet_name);
-      setTotalBalance(editingWallet.total_balance.toString());
+    
+      setTotalBalance(formatRupiah(editingWallet.total_balance.toString()));
     }
   }, [editingWallet]);
+
+  const formatRupiah = (angka: string) => {
+    var reverse = angka
+      .toString()
+      .split('')
+      .reverse()
+      .join('');
+    var ribuan = reverse.match(/\d{1,3}/g);
+    var hasil = ribuan?.join('.').split('').reverse().join('');
+    return hasil;
+  };
+
+
+  const handleInputChange = (e) => {
+    // Menghapus karakter selain angka
+    const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
+    
+    setTotalBalance(formatRupiah(sanitizedValue));
+  };
 
   const handleFormSubmit = async () => {
     try {
@@ -30,12 +51,14 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         // Handle validation error
         return;
       }
+  
+      const totalBalanceFix = totalBalance.replace(/[^a-zA-Z0-9]/g, '');
 
       const data = {
         wallet_name: walletName,
-        total_balance: parseFloat(totalBalance),
+        total_balance: parseFloat(totalBalanceFix),
       };
-
+  
       if (editingWallet) {
         // If in edit mode, send PUT request
         await axiosInstance.put(`/wallet/${editingWallet.id}`, data);
@@ -45,7 +68,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         await axiosInstance.post('/wallet/new', data);
         onWalletAdded();
       }
-
+  
       // Reset input fields
       setWalletName('');
       setTotalBalance('');
@@ -53,7 +76,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
       // Handle error
       console.error("Failed to save wallet:", error);
     }
-  };
+  };  
 
   return (
     <div className="rounded mb-4 p-2 text-black">
@@ -70,11 +93,15 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
       <TextField
         label="Total Balance (Rp)"
         name="totalBalance"
-        type="number"
+        type="text"
         value={totalBalance}
+        onKeyUp={handleInputChange}
         onChange={(e) => setTotalBalance(e.target.value)}
         fullWidth
         margin="normal"
+        InputProps={{
+          startAdornment: <div>Rp </div>, // Gunakan div untuk menampilkan "Rp" di sebelah input
+        }}
       />
       <Button
         className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
