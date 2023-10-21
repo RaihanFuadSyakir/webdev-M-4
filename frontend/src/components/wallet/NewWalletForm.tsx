@@ -5,6 +5,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { Wallet, dbResponse } from '@/utils/type';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+// import InputAdornment from '@mui/material/InputAdornment';
 
 interface NewWalletFormProps {
   onWalletAdded: () => void;
@@ -30,12 +31,15 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         // Handle validation error
         return;
       }
+  
+      const formattedTotalBalance = `Rp ${parseFloat(totalBalance).toLocaleString('id-ID')}`; // Format angka ke format mata uang lokal
+      console.log(formattedTotalBalance); // Tampilkan di console untuk memastikan bahwa formatnya sudah benar
 
       const data = {
         wallet_name: walletName,
         total_balance: parseFloat(totalBalance),
       };
-
+  
       if (editingWallet) {
         // If in edit mode, send PUT request
         await axiosInstance.put(`/wallet/${editingWallet.id}`, data);
@@ -45,7 +49,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         await axiosInstance.post('/wallet/new', data);
         onWalletAdded();
       }
-
+  
       // Reset input fields
       setWalletName('');
       setTotalBalance('');
@@ -53,7 +57,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
       // Handle error
       console.error("Failed to save wallet:", error);
     }
-  };
+  };  
 
   return (
     <div className="rounded mb-4 p-2 text-black">
@@ -75,6 +79,9 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         onChange={(e) => setTotalBalance(e.target.value)}
         fullWidth
         margin="normal"
+        InputProps={{
+          startAdornment: <div>Rp</div>, // Gunakan div untuk menampilkan "Rp" di sebelah input
+        }}
       />
       <Button
         className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"

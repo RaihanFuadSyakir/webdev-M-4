@@ -52,7 +52,7 @@ const WalletList = () => {
           <div key={wallet.id} className='flex items-center justify-between border p-4 rounded border-gray-300'>
             <div>
               <h3 className='font-semibold text-lg text-black'>{wallet.wallet_name}</h3>
-              <p className='text-black'>Total Balance: {wallet.total_balance}</p>
+              <p className='text-black'>Total ggg Balance: {wallet.total_balance}</p>
             </div>
             <div className='flex gap-2'>
               <button
