@@ -146,7 +146,6 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories
         sx={{ width: 300 }}
         renderInput={(params) => <TextField
           {...params}
-          label="Category"
           InputProps={{
             ...params.InputProps,
             endAdornment: (

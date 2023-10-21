@@ -49,7 +49,7 @@ const WalletSelect: React.FC<Props> = ({ setSelectedWallet }) => {
         id="combo-box-wallet"
         options={wallets}
         sx={{ maxWidth: 300 }}
-        renderInput={(params) => <TextField {...params} label="Wallet" name="wallet" />}
+        renderInput={(params) => <TextField {...params} name="wallet" />}
         renderOption={(props, option) => {
           return (
             <li {...props} key={option.id}>
