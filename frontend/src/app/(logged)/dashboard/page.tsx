@@ -3,6 +3,7 @@ import LineChart from '@/components/Dashboard/LineChart';
 import LineChartIncome from '@/components/Dashboard/LineChartIncome';
 import IncomeInput from '@/components/income/IncomeInput';
 import OutcomeInput from '@/components/outcome/OutcomeInput';
+import BarChartReport from '@/components/Dashboard/BarChartReport';
 import axiosInstance from '@/utils/fetchData';
 import { User, dbResponse } from '@/utils/type';
 import { Button } from '@mui/material';
@@ -11,13 +12,23 @@ import { AxiosResponse } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 import ReactCardFlip from 'react-card-flip';
 
+// ... imports ...
+
 export default function Dashboard() {
-  const router = useRouter()
-  const [username, setUsername] = useState('');
+  const [activeButton, setActiveButton] = useState('all');
+  const [selectedChart, setSelectedChart] = useState('all');
   const [showIncomeInput, setShowIncomeInput] = useState(true);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [username, setUsername] = useState('');
+  const router = useRouter();
+
+  const handleLinkClick = (chart) => {
+    setSelectedChart(chart);
+    setActiveButton(chart);
+  };
 
   const handleFlipIncome = () => {
     setIsFlipped(true);
@@ -27,18 +38,64 @@ export default function Dashboard() {
     setIsFlipped(false);
   };
 
-  console.log(username);
   useEffect(() => {
     axiosInstance.get('/users/personal')
       .then((response: AxiosResponse<dbResponse<User>>) => {
         setUsername(response.data.data.username);
-        console.log(response);
       })
       .catch((error) => {
         console.log(error);
-        router.push('/login')
-      })
-  }, [])
+        router.push('/login');
+      });
+  }, []);
+
+  const renderSelectedChart = () => {
+    switch (selectedChart) {
+      case 'all':
+        return (
+          <>
+            <div className="p-2 rounded-lg mb-4 mx-auto">
+              <BarChartReport />
+            </div>
+            <div className="flex">
+              <div className="p-2 rounded-lg flex-1">
+                <LineChart />
+              </div>
+              <div className="p-2 rounded-lg ml-4 flex-1">
+                <LineChartIncome />
+              </div>
+            </div>
+            <div className="flex">
+              <div className="p-2 rounded-lg ml-4 flex-1">
+                <PieChartWallet />
+              </div>
+            </div>
+          </>
+        );
+      case 'wallet':
+        return (
+          <div className="p-2 rounded-lg mx-auto">
+            <PieChartWallet />
+          </div>
+        );
+      case 'outcomes':
+        return (
+          <div className="p-2 rounded-lg mx-auto">
+            <LineChart />
+          </div>
+        );
+      case 'incomes':
+        return (
+          <div className="p-2 rounded-lg mx-auto">
+            <LineChartIncome />
+          </div>
+        );
+      // Add other cases for different charts if needed
+      default:
+        return null;
+    }
+  };
+
   return (
     <div>
       <div className='flex-initial mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
@@ -75,17 +132,34 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className="flex bg-gray-100">
-        <div className="w-1/2 p-4 rounded-lg">
-          <div style={{ width: '100%', height: '300px' }}>
-            <LineChart />
-          </div>
-        </div>
-        <div className="w-1/2 p-4 rounded-lg">
-          <div style={{ width: '100%', height: '300px' }}>
-            <LineChartIncome />
-          </div>
-        </div>
+      <div className='bg-slate-700 flex justify-center text-white'>
+        <button
+          onClick={() => handleLinkClick('all')}
+          className={`m-2 text-white ${activeButton === 'all' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500 hover:text-white`}
+        >  All  
+        </button>
+        <button
+          onClick={() => handleLinkClick('wallet')}
+          className={`m-2 text-white ${activeButton === 'wallet' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500 hover:text-white`}
+        >  Wallet  
+        </button>
+        <button
+          onClick={() => handleLinkClick('outcomes')}
+          className={`m-2 text-white ${activeButton === 'outcomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500 hover:text-white`}
+        >  Outcome  
+        </button>
+        <button
+          onClick={() => handleLinkClick('incomes')}
+          className={`m-2 text-white ${activeButton === 'incomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500 hover:text-white`}
+        >  Income  
+        </button>
+        <button onClick={() => handleLinkClick('budget')} className='m-2'>Budget</button>
+        <button onClick={() => handleLinkClick('categories')} className='m-2'>Categories</button>
+      </div>
+      <h2 style={{ textAlign:'center', fontSize: '2rem', color: '#ffff', fontStyle: 'italic', marginBottom: '1rem' }}>Hello {username} !</h2>
+
+      <div className="flex flex-col bg-gray-100">
+        {renderSelectedChart()}
       </div>
     </div>
   );

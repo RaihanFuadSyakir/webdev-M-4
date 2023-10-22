@@ -16,7 +16,7 @@ const WalletPage = () => {
   return (
     <>
     <Breadcrumb pageName="Wallet" />
-    <div className="h-96 w-9 rounded flex flex-col">
+    <div className="rounded flex flex-col">
       {/* <NewWalletForm/> */}
       <WalletList/>
     </div>
