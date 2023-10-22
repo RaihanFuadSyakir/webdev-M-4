@@ -4,37 +4,35 @@ import React, { useEffect, useState } from 'react';
 import { BACKEND_URL } from '@/constants';
 import axiosInstance from '@/utils/fetchData';
 import { AxiosError, AxiosResponse } from 'axios';
-import { ZodError } from 'zod';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import { Income, Outcome, Wallet, dbResponse } from '@/utils/type';
-import WalletSelect from '@/components/wallet/WalletSelect';
-import { currencySchema } from '@/utils/validation';
-import InputAdornment from '@mui/material/InputAdornment';
-import CategorySelect from '@/components/category/CategorySelect';
-import ListIncomes from '@/components/income/ListIncome';
-import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 const LineChartIncome = () => {
   const [incomes, setIncomes] = useState<Income[]>([]);
-  const [nominal, setNominal] = useState(0);
-  const [description, setDescription] = useState('');
-  const [wallet, setWallet] = useState(0);
-  const [date, setDate] = useState(''); // Add date state
-  const [nominalError, setNominalError] = useState('');
-  const [walletError, setWalletError] = useState('');
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   // Fetch Incomes data when the component mounts
   useEffect(() => {
     axiosInstance
       .get(`/incomes/user`) // Replace with your actual endpoint
       .then((response: AxiosResponse<dbResponse<Income[]>>) => {
         const res: dbResponse<Income[]> = response.data;
-        setIncomes(res.data);
+        // Mendapatkan tanggal saat ini
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1; // Ingat bahwa bulan dimulai dari 0 (Januari) hingga 11 (Desember)
+      
+      // Filter data income untuk bulan dan tahun saat ini
+      const filteredIncomes = res.data.filter((income) => {
+        const incomeDate = new Date(income.date);
+        const incomeYear = incomeDate.getFullYear();
+        const incomeMonth = incomeDate.getMonth() + 1; // Sama seperti currentDate.getMonth()
+        
+        // Mengembalikan true jika income berada di bulan dan tahun saat ini
+        return incomeYear === currentYear && incomeMonth === currentMonth;
+      });
+      
+      // Mengatur state incomes dengan data income yang sudah difilter
+      setIncomes(filteredIncomes);
       })
       .catch((error) => {
         console.error('Failed to fetch incomes:', error);
@@ -76,7 +74,7 @@ const LineChartIncome = () => {
 
   const chartOptions = {
     title: {
-      text: 'Income Data Visualization'
+      text: 'Income This Month'
     },
     xAxis: {
       categories: chartData.map(item => item.date), // Menggunakan chartData yang sudah dielompokkan

@@ -4,17 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { BACKEND_URL } from '@/constants';
 import axiosInstance from '@/utils/fetchData';
 import { AxiosError, AxiosResponse } from 'axios';
-import { ZodError } from 'zod';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import { Outcome, Wallet, dbResponse } from '@/utils/type';
-import WalletSelect from '@/components/wallet/WalletSelect';
-import { currencySchema } from '@/utils/validation';
-import InputAdornment from '@mui/material/InputAdornment';
-import CategorySelect from '@/components/category/CategorySelect';
-import ListOutcomes from '@/components/outcome/ListOutcomes';
-import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
@@ -33,10 +23,20 @@ const LineChart = () => {
    // Fetch outcomes data when the component mounts
    useEffect(() => {
     axiosInstance
-      .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
-      .then((response : AxiosResponse<dbResponse<Outcome[]>>) => {
-        const res : dbResponse<Outcome[]> = response.data;
-        setOutcomes(res.data);
+      .get(`${BACKEND_URL}/api/outcomes/`)
+      .then((response: AxiosResponse<dbResponse<Outcome[]>>) => {
+        const res: dbResponse<Outcome[]> = response.data;
+        // Filter outcomes for the current month (assuming date field is in 'YYYY-MM-DD' format)
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentYear = currentDate.getFullYear();
+        const filteredOutcomes = res.data.filter((outcome) => {
+          const outcomeDate = new Date(outcome.date);
+          const outcomeMonth = outcomeDate.getMonth() + 1;
+          const outcomeYear = outcomeDate.getFullYear();
+          return outcomeMonth === currentMonth && outcomeYear === currentYear;
+        });
+        setOutcomes(filteredOutcomes);
       })
       .catch((error) => {
         console.error('Failed to fetch outcomes:', error);
@@ -78,7 +78,7 @@ const LineChart = () => {
 
   const chartOptions = {
     title: {
-      text: 'Outcome Data Visualization'
+      text: 'Outcome This Month'
     },
     xAxis: {
       categories: chartData.map(item => item.date), // Menggunakan chartData yang sudah dielompokkan

@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/fetchData';
-import { AxiosError, AxiosResponse } from 'axios';
 import { Wallet, dbResponse } from '@/utils/type';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -91,7 +90,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         disabled={!!editingWallet} // Disable the field in edit mode
       />
       <TextField
-        label="Total Balance (Rp)"
+        label="Total Balance"
         name="totalBalance"
         type="text"
         value={totalBalance}

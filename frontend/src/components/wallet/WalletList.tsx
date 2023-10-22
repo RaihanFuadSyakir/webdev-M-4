@@ -3,6 +3,8 @@ import axiosInstance from '@/utils/fetchData';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Wallet, dbResponse } from '@/utils/type';
 import NewWalletForm from './NewWalletForm';
+import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow, Paper, Button } from '@mui/material';
+
 
 const WalletList = () => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
@@ -45,38 +47,53 @@ const WalletList = () => {
   };
 
   return (
-    <div className='bg-white h-auto w-96 m-4 rounded p-4 flex flex-col gap-4'>
-      <NewWalletForm
-        onWalletAdded={fetchWallets}
-        onWalletEdited={() => {
-          fetchWallets();
-          setEditingWallet(null); // Reset editing state after successful update
-        }}
-        editingWallet={editingWallet}
-      />
-      <div>
-        {wallets.map((wallet) => (
-          <div key={wallet.id} className='flex items-center justify-between border p-4 rounded border-gray-300'>
-            <div>
-              <h3 className='font-semibold text-lg text-black'>{wallet.wallet_name}</h3>
-              <p className='text-black'>Total Balance: {formatCurrency(wallet.total_balance)}</p>
-            </div>
-            <div className='flex gap-2'>
-              <button
-                className='bg-yellow-500 text-white rounded p-2 hover:bg-yellow-700 hover:text-white mr-2'
-                onClick={() => setEditingWallet(wallet)}
-              >
-                Edit
-              </button>
-              <button
-                className='bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white'
-                onClick={() => handleDeleteWallet(wallet.id)}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+    <div className='flex'>
+      <div className='flex-initial w-1/3 m-4 rounded p-4 flex flex-col gap-4 bg-white'>
+        <NewWalletForm
+          onWalletAdded={fetchWallets}
+          onWalletEdited={() => {
+            fetchWallets();
+            setEditingWallet(null); // Reset editing state after successful update
+          }}
+          editingWallet={editingWallet}
+        />
+      </div>
+      <div className='flex-initial h-100 w-2/3 m-4 rounded p-4 flex flex-col gap-4 bg-white'>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow >
+                <TableCell style={{ fontWeight: 'bold' }}>Wallet Name</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Total Balance</TableCell>
+                <TableCell style={{ fontWeight: 'bold' }}>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {wallets.map((wallet) => (
+                <TableRow key={wallet.id}>
+                  <TableCell>{wallet.wallet_name}</TableCell>
+                  <TableCell>{formatCurrency(wallet.total_balance)}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      className='bg-yellow-500 text-white rounded p-2 hover:bg-yellow-700 hover:text-white mr-2'
+                      onClick={() => setEditingWallet(wallet)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      className='bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white'
+                      onClick={() => handleDeleteWallet(wallet.id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );
