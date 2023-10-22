@@ -143,6 +143,7 @@ const Login: React.FC = () => {
                 fullWidth
                 className={`${!isLoading &&  'bg-sky-400'}`}
                 disabled={isLoading}
+                onClick={handleLogin}
                 sx={{ mt: 3, mb: 2 }}
               >
                 Log in
