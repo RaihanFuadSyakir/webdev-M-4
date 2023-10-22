@@ -7,7 +7,7 @@ import { User, dbResponse } from '@/utils/type';
 import { AxiosResponse } from 'axios';
 // No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 
 // ... imports ...
@@ -18,7 +18,7 @@ export default function Dashboard() {
   const [username, setUsername] = useState('');
   const router = useRouter();
 
-  const handleLinkClick = (chart) => {
+  const handleLinkClick = (chart: SetStateAction<string>) => {
     setSelectedChart(chart);
     setActiveButton(chart);
   };
