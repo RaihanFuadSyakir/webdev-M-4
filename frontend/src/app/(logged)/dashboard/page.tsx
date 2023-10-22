@@ -10,8 +10,6 @@ import { useRouter } from 'next/navigation';
 import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 
-// ... imports ...
-
 export default function Dashboard() {
   const [activeButton, setActiveButton] = useState('all');
   const [selectedChart, setSelectedChart] = useState('all');
@@ -86,22 +84,22 @@ export default function Dashboard() {
       <div className='bg-slate-700 flex justify-center text-white'>
         <button
           onClick={() => handleLinkClick('all')}
-          className={`m-2 text-white ${activeButton === 'all' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500 hover:text-white`}
+          className={`m-2 text-blue ${activeButton === 'all' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
         >  All  
         </button>
         <button
           onClick={() => handleLinkClick('wallet')}
-          className={`m-2 text-white ${activeButton === 'wallet' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500 hover:text-white`}
+          className={`m-2 text-blue ${activeButton === 'wallet' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
         >  Wallet  
         </button>
         <button
           onClick={() => handleLinkClick('outcomes')}
-          className={`m-2 text-white ${activeButton === 'outcomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500 hover:text-white`}
+          className={`m-2 text-blue ${activeButton === 'outcomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
         >  Outcome  
         </button>
         <button
           onClick={() => handleLinkClick('incomes')}
-          className={`m-2 text-white ${activeButton === 'incomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500 hover:text-white`}
+          className={`m-2 text-blue ${activeButton === 'incomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
         >  Income  
         </button>
         <button onClick={() => handleLinkClick('budget')} className='m-2'>Budget</button>
