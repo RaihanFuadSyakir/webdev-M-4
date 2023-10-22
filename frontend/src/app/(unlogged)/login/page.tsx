@@ -90,7 +90,7 @@ const Login: React.FC = () => {
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
             sx={{
-              my: 15,
+              my: 10,
               mx: 4,
               display: 'flex',
               flexDirection: 'column',
@@ -143,6 +143,7 @@ const Login: React.FC = () => {
                 fullWidth
                 className={`${!isLoading &&  'bg-sky-400'}`}
                 disabled={isLoading}
+                onClick={handleLogin}
                 sx={{ mt: 3, mb: 2 }}
               >
                 Log in
