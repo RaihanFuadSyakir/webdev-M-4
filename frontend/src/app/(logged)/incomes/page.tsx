@@ -108,7 +108,7 @@ const Incomes = () => {
     <>
     <Breadcrumb pageName="Income" />
     <div className="flex">
-      { <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm'>
+      { <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
           <div>
             <h2>Nominal</h2>
             <TextField 
@@ -147,18 +147,26 @@ const Incomes = () => {
               fullWidth
               name="description"
               id="deskripsi"
-              label="Deskripsi"
               value={description}
               onChange={handleInput}
             />
           </div>
-        <Button color="secondary" onClick={addIncome}>
-          Tambahkan
+        <Button 
+          onClick={addIncome}
+          variant="contained"
+          color="primary"
+          className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2 mt-2'>            
+          Save
         </Button>
       </div> }
 
       <div className='flex-1 p-2'>
-        <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
+        <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+          <div className="m-5">
+            <h2 className="font-bold text-xl mb-2 text-black">Income List</h2>
+              <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
+          </div>
+        </div>
       </div>
     </div>
     </>

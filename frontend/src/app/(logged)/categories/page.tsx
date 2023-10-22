@@ -34,7 +34,7 @@ export default function Categories() {
   return (
     <>
       <Breadcrumb pageName="Categories" />
-      <div className='bg-amber-100 flex'>
+      <div className="flex mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default">
         <div className='w-1/3'>
           <div className='w-full my-2 p-2'>
             <CategorySelect setSelectedCategory={setSelectedCategory} setNewCategories={setCategories} />

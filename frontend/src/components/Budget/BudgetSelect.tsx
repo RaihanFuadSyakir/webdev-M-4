@@ -20,6 +20,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios'; // Import Axios
 import axiosInstance from '@/utils/fetchData';
 import { Budget, dbResponse } from '@/utils/type';
 import { currencySchema } from '@/utils/validation';
+
 interface BudgetProps{
   budgets : Budget[] | undefined
   setDataBudgets: React.Dispatch<React.SetStateAction<Budget[]>>;

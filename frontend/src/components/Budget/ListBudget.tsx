@@ -11,7 +11,10 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import BudgetUpdateModal from './BudgetUpdateModal';
+import {format} from 'date-fns'
+import numeral from 'numeral';
 
 interface dataBudget{
     budgets : Budget[]
@@ -57,67 +60,85 @@ const ListBudget = ({budgets,setDataBudgets} : dataBudget) => {
     setIsUpdateModalOpen(false);
   };
 
-  return (
-    <div className='max-w-2xl'>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Date</TableCell>
-              <TableCell align="center">Month</TableCell>
-              <TableCell align="center">Total Budget</TableCell>
-              <TableCell align="center">Description</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {budgets.map((budget) => (
-              <TableRow key={budget.id}>
+  const columns: GridColDef[] = [
+    {
+      field: 'date',
+      headerName: 'Date',
+      width: 120,
+      valueFormatter: (params) => {
+        return format(new Date(params.value), 'MM/dd/yyyy');
+      },
+    },
+    { field: 'month', headerName: 'Month', width: 120 },
+    { 
+      field: 'total_budget', 
+      headerName: 'Total Budget', 
+      width: 120,
+      valueFormatter: (params) => numeral(params.value).format('0,0')
 
-                <TableCell component="th" scope="row">{budget.date}</TableCell>
-                <TableCell>{budget.month}</TableCell>
-                <TableCell align="right">{budget.total_budget}</TableCell>
-                <TableCell>{budget.description}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    className="bg-blue-500 text-white rounded p-2 hover:bg-blue-700 hover:text-white"
-                    onClick={() => {
-                      setSelectedBudget(budget)
-                      setIsUpdateModalOpen(true)
-                    }}
-                  >
-                    Update
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    className='bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white mr-2'
-                    onClick={() => handleDelete(budget.id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+    },
+    { field: 'description', headerName: 'Description', width: 200 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 200,
+      renderCell: (params) => (
+        <div>
+          <Button
+            variant="outlined"
+            color="primary"
+            className="bg-blue-500 text-white rounded p-2 hover:bg-blue-700 hover:text-white"
+            onClick={() => {
+              const budgetId = params.row.id as number;
+              const budget = budgets.find((b) => b.id === budgetId);
+              setSelectedBudget(budget);
+              setIsUpdateModalOpen(true);
+            }}
+          >
+            Update
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            className="bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white ml-2"
+            onClick={() => handleDelete(params.row.id as number)}
+          >
+            Delete
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="max-w-3xl">
+      <DataGrid
+        rows={budgets}
+        columns={columns}
+        autoHeight
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        checkboxSelection={false}
+      />
 
       {selectedBudget && (
-      <BudgetUpdateModal
+        <BudgetUpdateModal
           isOpen={isUpdateModalOpen}
           closeModal={() => setIsUpdateModalOpen(false)}
-          budget={selectedBudget} 
-          setDataBudgets={setDataBudgets}/>
-    )}
+          budget={selectedBudget}
+          setDataBudgets={setDataBudgets}
+        />
+      )}
     </div>
   );
+  
 };
 function deleteBudget(id: number) {
-    axiosInstance.delete(`/budget/delete/${id}`)
+    axiosInstance
+      .delete(`/budget/delete/${id}`)
       .then(() => {
         console.log("delete success");
       })

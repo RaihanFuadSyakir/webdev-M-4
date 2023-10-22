@@ -1,24 +1,39 @@
 "use client"
 import LineChart from '@/components/Dashboard/LineChart';
 import LineChartIncome from '@/components/Dashboard/LineChartIncome';
+import IncomeInput from '@/components/income/IncomeInput';
+import OutcomeInput from '@/components/outcome/OutcomeInput';
 import BarChartReport from '@/components/Dashboard/BarChartReport';
 import axiosInstance from '@/utils/fetchData';
 import { User, dbResponse } from '@/utils/type';
+import { Button } from '@mui/material';
 import { AxiosResponse } from 'axios';
 // No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
+import ReactCardFlip from 'react-card-flip';
 
 export default function Dashboard() {
   const [activeButton, setActiveButton] = useState('all');
   const [selectedChart, setSelectedChart] = useState('all');
+  const [showIncomeInput, setShowIncomeInput] = useState(true);
+  const [isFlipped, setIsFlipped] = useState(false);
   const [username, setUsername] = useState('');
   const router = useRouter();
 
   const handleLinkClick = (chart: SetStateAction<string>) => {
     setSelectedChart(chart);
     setActiveButton(chart);
+  };
+
+  const handleFlipIncome = () => {
+    setIsFlipped(true);
+  };
+
+  const handleFlipOutcome = () => {
+    setIsFlipped(false);
   };
 
   useEffect(() => {
@@ -81,6 +96,40 @@ export default function Dashboard() {
 
   return (
     <div>
+      <div className='flex-initial mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
+        <div className='flex'>
+          <div>
+            <div className='text-center'>
+              <Button 
+                onClick={handleFlipOutcome} 
+                className='m-2 bg-blue-400 text-white hover:bg-blue-700'
+                color='primary'
+              >
+                Income
+              </Button>
+              <Button 
+                onClick={handleFlipIncome}  
+                className='m-2 bg-red-400 text-white hover:bg-red-700'
+                color='secondary'
+              >
+                Outcome
+              </Button>
+            </div>
+            <div>
+              <ReactCardFlip isFlipped={isFlipped}>
+                <div key='front'>
+                  <h1 className='text-center font-bold text-xl'>Quick Income</h1>
+                  <IncomeInput />
+                </div>
+                <div key='back'>
+                  <h1 className='text-center font-bold text-xl'>Quick Outcome</h1>
+                  <OutcomeInput />
+                </div>
+              </ReactCardFlip>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className='bg-slate-700 flex justify-center text-white'>
         <button
           onClick={() => handleLinkClick('all')}
