@@ -15,6 +15,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import CategorySelect from '@/components/category/CategorySelect';
 import ListIncomes from '@/components/income/ListIncome';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
+import numeral from 'numeral';
 
 const Incomes = () => {
   const [incomes, setIncomes] = useState<Income[]>([]);
@@ -42,7 +43,8 @@ const Incomes = () => {
     const { name, value } = e.target;
     if (name === 'nominal') {
       try {
-        const parsedNominal = currencySchema.parse(parseInt(value));
+        // const parsedNominal = currencySchema.parse(parseInt(value));
+        const parsedNominal = numeral(value).value() ?? 0;
         setNominal(parsedNominal);
         setNominalError('');
       } catch (error) {
@@ -106,21 +108,21 @@ const Incomes = () => {
     <>
     <Breadcrumb pageName="Income" />
     <div className="flex">
-      { <div className='max-w-xl mt-2 p-5 bg-white rounded-sm '>
+      { <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
           <div>
-            <h2>Income</h2>
-            <TextField className='w-full m-0'
-            fullWidth
-            error={nominalError !== ''}
+            <h2>Nominal</h2>
+            <TextField 
+              className='w-full m-0'
+              fullWidth
+              error={nominalError !== ''}
               id={nominalError !== '' ? "outlined-required" : "outlined-error-helper-text"}
-              label="Nominal"
               name="nominal"
               sx={{ m: 1, width: 'auto' }}
               InputProps={{
                 startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
               }}
               helperText={nominalError}
-              value={nominal}
+              value={numeral(nominal).format('0,0')}
               onChange={handleInput}
             />
           </div>
@@ -141,23 +143,30 @@ const Incomes = () => {
             <h2>Deskripsi</h2>
             <TextField
               multiline
-              rows={6}
+              rows={5}
               fullWidth
               name="description"
               id="deskripsi"
-              label="Deskripsi"
               value={description}
               onChange={handleInput}
             />
           </div>
-        <Button color="secondary" onClick={addIncome}>
-          Tambahkan
+        <Button 
+          onClick={addIncome}
+          variant="contained"
+          color="primary"
+          className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2 mt-2'>            
+          Save
         </Button>
       </div> }
 
-      <div className='p-2'>
-        {/* List of incomes component */}
-        <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
+      <div className='flex-1 p-2'>
+        <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
+          <div className="m-5">
+            <h2 className="font-bold text-xl mb-2 text-black">Income List</h2>
+              <ListIncomes incomes={incomes} setIncomes={setIncomes}/>
+          </div>
+        </div>
       </div>
     </div>
     </>

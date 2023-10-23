@@ -17,7 +17,7 @@ import ListOutcomes from '@/components/outcome/ListOutcomes';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import numeral from 'numeral';
 
-const Outcomes = () => {
+const OutcomeInput = () => {
   const [nominal, setNominal] = useState(0);
   const [category, setCategory] = useState(0);
   const [description, setDescription] = useState('');
@@ -96,7 +96,9 @@ const Outcomes = () => {
           setError('');
           // Optionally, you can reset the form fields here
           setNominal(0);
+          setCategory(0);
           setDescription('');
+          setWallet(0);
           setDate(''); // Reset the date field
           const newData = response.data.data
           setOutcomes((prev) => [...prev, newData])
@@ -115,8 +117,6 @@ const Outcomes = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Outcome" />
-      <div className="flex">
         <div className='flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
           <div>
             <h2>Nominal</h2>
@@ -175,17 +175,8 @@ const Outcomes = () => {
             Save
           </Button>
         </div>
-        <div className='flex-1 p-2'>          
-          <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
-            <div className="m-5">
-              <h2 className="font-bold text-xl mb-2 text-black">Outcome List</h2>
-              <ListOutcomes outcomes={outcomes} setOutcomes={setOutcomes} />
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 };
 
-export default Outcomes;
+export default OutcomeInput;

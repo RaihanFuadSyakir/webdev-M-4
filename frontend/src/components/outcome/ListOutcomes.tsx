@@ -15,6 +15,8 @@ import Categories from '@/app/(logged)/categories/page';
 import Outcomes from '@/app/(logged)/outcomes/page';
 import WalletSelect from '../wallet/WalletSelect';
 import CategorySelect from '../category/CategorySelect';
+import {format} from 'date-fns';
+import numeral from 'numeral';
 
 interface OutcomeProps {
   outcomes: Outcome[];
@@ -118,7 +120,7 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
   }
 
   return (
-    <div className="max-w-2xl">
+    <div className="text-center">
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -134,18 +136,19 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
           <TableBody>
             {outcomes.map((outcome, index) => (
               <TableRow key={outcome.id}>
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" align="center">
                   {editStates[index]?.isEditing ? (
                     <TextField
                       type="date"
                       name="date"
                       value={editStates[index].date}
                       onChange={(e) => { handleDateOnChange(index, e.target.value) }}
-                    />) :
-                    outcome.date
+                    />
+                    ) : (
+                    format(new Date(outcome.date), 'dd/MM/yyyy'))
                   }
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {editStates[index]?.isEditing ? (
                     <TextField
                       type="number"
@@ -155,10 +158,10 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                       }
                     />
                   ) : (
-                    outcome.total_outcome
+                    numeral(outcome.total_outcome).format('0,0')
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {editStates[index]?.isEditing ? (
                     <TextField
                       type="text"
@@ -169,19 +172,19 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                     outcome.description
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {editStates[index]?.isEditing ? (
                     <CategorySelect setSelectedCategory={setNewCategoryId} />
                   ) : (
                     outcome.category?.category_name)
                   }</TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {editStates[index]?.isEditing ?
                     (<WalletSelect setSelectedWallet={setNewWalletId} />
                     ) : (
                       outcome.wallet?.wallet_name)
                   }</TableCell>
-                <TableCell>
+                <TableCell className='flex justify-evenly'>
                   {editStates[index]?.isEditing ? (
                     <>
                       <Button
@@ -203,6 +206,7 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                       <Button
                         variant="outlined"
                         color="secondary"
+                        className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white mr-1'
                         onClick={() => handleDelete(index)}
                       >
                         Delete
@@ -210,6 +214,7 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                       <Button
                         variant="outlined"
                         color="primary"
+                        className="bg-blue-500 text-white rounded hover:bg-blue-700 hover:text-white ml-1"
                         onClick={() => enableEdit(index)}
                       >
                         Edit
