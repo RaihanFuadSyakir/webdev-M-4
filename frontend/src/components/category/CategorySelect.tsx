@@ -88,10 +88,10 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories
       })
   }
   return (
-    <div className='flex'>
       <Autocomplete
         id="choose-category"
         open={open}
+        sx={{ maxWidth: 300 }}
         onOpen={() => {
           setOpen(true);
         }}
@@ -143,7 +143,6 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories
           // Regular option
           return option.name!;
         }}
-        sx={{ width: 300 }}
         renderInput={(params) => <TextField
           {...params}
           InputProps={{
@@ -171,7 +170,6 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories
           );
         }}
       />
-    </div>
   );
 };
 
