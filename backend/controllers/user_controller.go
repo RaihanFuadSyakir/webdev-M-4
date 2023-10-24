@@ -135,6 +135,10 @@ func (uc *UserController) LoginUser(c *fiber.Ctx) error {
 	if err := uc.DB.Where("username = ? OR email = ?", loginRequest.Identifier, loginRequest.Identifier).First(&existingUser).Error; err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Incorrect username/email or password", nil)
 	}
+	// Compare the plain text password
+	if existingUser.Password != loginRequest.Password {
+		return jsonResponse(c, fiber.StatusBadRequest, "Incorrect username/email or password", nil)
+	}
 
 	// Generate a new JWT token for the user
 	tokenString, err := generateJWTToken(existingUser.ID)
