@@ -70,7 +70,7 @@ export interface dbResponse<T> {
 }
 export interface Report {
   id: number
-  date: Date
+  date: string
   total_income: number
   total_outcome: number
   UserID: number
