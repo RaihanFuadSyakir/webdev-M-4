@@ -27,14 +27,14 @@ func main() {
 		panic("Failed to connect to the database")
 	}
 
-	// // // Apply migrations
+	// // Apply migrations
 	// if err := migrations.Delete(db); err != nil {
 	// 	panic("Failed to Delete Tables")
 	// }
 	// if err := migrations.Migrate(db); err != nil {
 	// 	panic("Failed to apply migrations")
 	// }
-	//add triggers
+	// // add triggers
 	// if err := migrations.AddTriggers(db); err != nil {
 	// 	panic(err)
 	// }

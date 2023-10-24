@@ -95,16 +95,18 @@ func Seed(db *gorm.DB) {
 		}
 		db.CreateInBatches(&incomes, len(incomes))
 
-		// Create budgets for the user in a batch
+		// Create budgets for the user
 		budgets := []models.Budget{}
 		for j := 0; j < 10; j++ {
 			date := time.Now().AddDate(0, -j, 0) // Generate dates for the last 10 months
 			budget := models.Budget{
-				Date:        date,
-				Month:       date.Format("January 2006"),
-				TotalBudget: float64(j*300 + 150),
-				Description: "Budget #" + strconv.Itoa(j+1),
-				UserID:      user.ID,
+				Month:         uint(date.Month()),
+				Year:          uint(date.Year()),
+				TotalBudget:   float64(j*300 + 150),
+				CurrentBudget: 0.0, // You can set an initial value here
+				Description:   "Budget #" + strconv.Itoa(j+1),
+				UserID:        user.ID,
+				CategoryID:    categories[j%2].ID, // Assign a category to the budget
 			}
 			budgets = append(budgets, budget)
 		}
