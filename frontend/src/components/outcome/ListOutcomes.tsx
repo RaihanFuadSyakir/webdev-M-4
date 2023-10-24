@@ -122,7 +122,7 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
   return (
     <div className="text-center">
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell align="center">Date</TableCell>
@@ -158,7 +158,7 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                       }
                     />
                   ) : (
-                    numeral(outcome.total_outcome).format('0,0')
+                    `Rp. ${numeral(outcome.total_outcome).format('0,0')}`
                   )}
                 </TableCell>
                 <TableCell align="center">
