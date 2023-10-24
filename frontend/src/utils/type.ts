@@ -28,8 +28,8 @@ export interface Outcome {
   category_id: number;
   wallet_id: number;
   user_id: number;
-  wallet? : Wallet;
-  category? : Category;
+  wallet?: Wallet;
+  category?: Category;
 }
 
 export interface Income {
@@ -39,7 +39,7 @@ export interface Income {
   description: string;
   wallet_id: number;
   user_id: number;
-  wallet : Wallet | undefined;
+  wallet: Wallet | undefined;
 }
 
 export interface Category {
@@ -48,13 +48,15 @@ export interface Category {
   is_user_defined: boolean;
   user_id: number;
   category_outcomes: Outcome[];
+  category_budgets: Category[];
 }
 
 export interface Budget {
   id: number;
-  date: string; // You can use a string for representing time
-  month: string;
+  month: number;
+  year: number;
   total_budget: number;
+  current_budget: number;
   description: string;
   wallet_id: number;
   user_id: number;
