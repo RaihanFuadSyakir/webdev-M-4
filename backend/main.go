@@ -85,7 +85,6 @@ func defineCategoryRoutes(app *fiber.App, controller *controllers.CategoryContro
 	authenticatedRoutes.Delete("/api/categories/:id", controller.DeleteCategory)
 	authenticatedRoutes.Get("/api/categories/user/", controller.GetCategoryByUserID)
 	authenticatedRoutes.Get("/api/categories/outcomes", controller.GetCategoriesOutcomesByUserID)
-	authenticatedRoutes.Get("/api/report/", controller.GetCategoryByUserIDAndDateRange)
 }
 
 func defineWalletRoutes(app *fiber.App, controller *controllers.WalletController) {
