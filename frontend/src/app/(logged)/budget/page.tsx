@@ -14,6 +14,7 @@ import { Button, DialogActions, FormControl, InputLabel, MenuItem, Select, TextF
 import { currencySchema } from "@/utils/validation";
 import { BACKEND_URL } from "@/constants";
 import DateTable from "@/components/Budget/DateTable";
+import CategorySelect from "@/components/category/CategorySelect";
 
 const Budgets = () => {
   const [seed, setSeed] = useState(0);
@@ -22,27 +23,29 @@ const Budgets = () => {
   const [date, setDate] = useState('');
   const [total_budget, settotal_budget] = useState('');
   const [description, setDescription] = useState('');
-
+  const [selectedCategory, setSelectedCategory] = useState(0);
   useEffect(() => {
     axiosInstance.get('/budgets/')
       .then((response: AxiosResponse<dbResponse<Budget[]>>) => {
         const data = response.data.data;
-        setBudgets(data)
+        setBudgets(data);
       })
       .catch((err_res: AxiosError<dbResponse<Budget[]>>) => {
-        console.log(JSON.stringify(err_res.response?.data))
+        console.log(JSON.stringify(err_res.response?.data));
       })
   }, [])
 
   const handleCreateBudget = () => {
     try {
       const validBudget = currencySchema.parse(parseFloat(total_budget))
+      const splitDate = date.split('-');
       // Make a POST request to your API endpoint with the input data
       axiosInstance.post('/budget/new', {
-        date: new Date(date),
-        month: selectedMonth,
+        month: parseInt(splitDate[1]),
+        year: parseInt(splitDate[0]),
         total_budget: validBudget,
         description: description,
+        category_id: selectedCategory
       }).then((response: AxiosResponse<dbResponse<Budget>>) => {
         const data = response.data.data;
         console.log(response.data.msg);
@@ -85,6 +88,7 @@ const Budgets = () => {
               fullWidth
               onChange={(e) => setDate(e.target.value)} />
           </div>
+          <CategorySelect setSelectedCategory={setSelectedCategory} />
           <div>
             <h2>Total Budget</h2>
             <TextField

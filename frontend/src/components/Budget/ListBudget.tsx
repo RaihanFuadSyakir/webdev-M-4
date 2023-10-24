@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
-import { Budget, dbResponse } from '@/utils/type';
+import { Budget, Category, dbResponse } from '@/utils/type';
 import { Axios, AxiosError, AxiosResponse } from 'axios';
 import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
@@ -11,22 +11,25 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
 import BudgetUpdateModal from './BudgetUpdateModal';
-import {format} from 'date-fns'
+import { format } from 'date-fns'
 import numeral from 'numeral';
 
-interface dataBudget{
-    budgets : Budget[]
-    setDataBudgets: React.Dispatch<React.SetStateAction<Budget[]>>;
+interface dataBudget {
+  budgets: Budget[]
+  setDataBudgets: React.Dispatch<React.SetStateAction<Budget[]>>;
 }
-
-const ListBudget = ({budgets,setDataBudgets} : dataBudget) => {
+const months = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+const ListBudget = ({ budgets, setDataBudgets }: dataBudget) => {
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); 
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   const handleDelete = (selectedOption: number) => {
-        deleteBudget(selectedOption);
+    deleteBudget(selectedOption);
   }
 
   const handleUpdate = (budget: Budget) => {
@@ -62,22 +65,28 @@ const ListBudget = ({budgets,setDataBudgets} : dataBudget) => {
 
   const columns: GridColDef[] = [
     {
-      field: 'date',
-      headerName: 'Date',
-      width: 120,
-      valueFormatter: (params) => {
-        return format(new Date(params.value), 'MM/dd/yyyy');
-      },
+      field: 'month',
+      headerName: 'Month',
+      width: 110,
+      valueFormatter: (params) => months[params.value - 1]
     },
-    { field: 'month', headerName: 'Month', width: 120 },
-    { 
-      field: 'total_budget', 
-      headerName: 'Total Budget', 
-      width: 120,
-      valueFormatter: (params) => numeral(params.value).format('0,0')
+    {
+      field: 'year',
+      headerName: 'year',
+      width: 80,
+    },
+    {
+      field: 'total_budget',
+      headerName: 'Total Budget',
+      width: 110,
+      valueFormatter: (params) => `Rp. ${numeral(params.value).format('0,0')}`
 
     },
-    { field: 'description', headerName: 'Description', width: 200 },
+    { field: 'description', headerName: 'Description', width: 120 },
+    {
+      field: 'category', headerName: 'Category', width: 120,
+      valueFormatter: (params: GridValueFormatterParams<Category>) => params.value.category_name
+    },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -91,7 +100,7 @@ const ListBudget = ({budgets,setDataBudgets} : dataBudget) => {
             onClick={() => {
               const budgetId = params.row.id as number;
               const budget = budgets.find((b) => b.id === budgetId);
-              setSelectedBudget(budget);
+              setSelectedBudget(budget!);
               setIsUpdateModalOpen(true);
             }}
           >
@@ -134,16 +143,16 @@ const ListBudget = ({budgets,setDataBudgets} : dataBudget) => {
       )}
     </div>
   );
-  
+
 };
 function deleteBudget(id: number) {
-    axiosInstance
-      .delete(`/budget/delete/${id}`)
-      .then(() => {
-        console.log("delete success");
-      })
-      .catch((res_err: AxiosError<dbResponse<Budget>>) => {
-        console.log(JSON.stringify(res_err.response?.data));
-      })
-  }
+  axiosInstance
+    .delete(`/budget/delete/${id}`)
+    .then(() => {
+      console.log("delete success");
+    })
+    .catch((res_err: AxiosError<dbResponse<Budget>>) => {
+      console.log(JSON.stringify(res_err.response?.data));
+    })
+}
 export default ListBudget;
