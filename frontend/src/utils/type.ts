@@ -60,10 +60,18 @@ export interface Budget {
   description: string;
   wallet_id: number;
   user_id: number;
+  category: Category;
 }
 export interface dbResponse<T> {
   ok: boolean;
   status: number;
   msg: string;
   data: T
+}
+export interface Report {
+  id: number
+  date: Date
+  total_income: number
+  total_outcome: number
+  UserID: number
 }

@@ -156,7 +156,7 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
                     onChange={(e) => handleTotalIncomeOnChange(index,e.target.value)}
                   />
                 ) : (
-                  numeral(income.total_income).format('0,0')
+                  `Rp. ${numeral(income.total_income).format('0,0')}`
                 )}
                 </TableCell>
                 <TableCell align="center">

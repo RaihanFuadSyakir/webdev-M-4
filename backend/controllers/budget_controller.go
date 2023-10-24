@@ -24,6 +24,7 @@ func (controller *BudgetController) CreateBudget(c *fiber.Ctx) error {
 	}
 	userID := c.Locals("userID")
 	budget.UserID = userID.(uint)
+	budget.CurrentBudget = budget.TotalBudget
 	if err := controller.DB.Create(&budget).Error; err != nil {
 		fmt.Println(err)
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
@@ -41,6 +42,11 @@ func (controller *BudgetController) GetBudgetsByUserID(c *fiber.Ctx) error {
 			return jsonResponse(c, fiber.StatusNotFound, "Budget not found", nil)
 		}
 		return err
+	}
+	for i := range user.Budgets {
+		if err := controller.DB.Preload("Category").Find(&user.Budgets[i]).Error; err != nil {
+			return err
+		}
 	}
 	return jsonResponse(c, fiber.StatusOK, "OK", user.Budgets)
 }
