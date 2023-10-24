@@ -6,4 +6,5 @@ type Category struct {
 	IsUserDefined bool      `json:"is_user_defined"`
 	UserID        uint      `json:"user_id" gorm:"foreignKey:UserID"`
 	Outcomes      []Outcome `json:"category_outcomes"`
+	Budgets       []Budget  `json:"category_budgets"`
 }
