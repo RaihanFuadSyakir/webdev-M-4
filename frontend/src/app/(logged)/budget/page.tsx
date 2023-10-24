@@ -10,20 +10,24 @@ import { useEffect, useState } from "react";
 import { Budget, dbResponse } from "@/utils/type";
 import axiosInstance from "@/utils/fetchData";
 import { AxiosError, AxiosResponse } from "axios";
-import { Button, DialogActions, FormControl, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { Button, DialogActions, FormControl, InputAdornment, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import { currencySchema } from "@/utils/validation";
 import { BACKEND_URL } from "@/constants";
 import DateTable from "@/components/Budget/DateTable";
 import CategorySelect from "@/components/category/CategorySelect";
+import numeral from "numeral";
 
 const Budgets = () => {
   const [seed, setSeed] = useState(0);
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [date, setDate] = useState('');
-  const [total_budget, settotal_budget] = useState('');
+  const [total_budget, settotal_budget] = useState(0);
   const [description, setDescription] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(0);
+
+  const numeralTotalBudget = numeral(total_budget).format('0,0');
+
   useEffect(() => {
     axiosInstance.get('/budgets/')
       .then((response: AxiosResponse<dbResponse<Budget[]>>) => {
@@ -37,7 +41,7 @@ const Budgets = () => {
 
   const handleCreateBudget = () => {
     try {
-      const validBudget = currencySchema.parse(parseFloat(total_budget))
+      const validBudget = currencySchema.parse(total_budget)
       const splitDate = date.split('-');
       // Make a POST request to your API endpoint with the input data
       axiosInstance.post('/budget/new', {
@@ -57,6 +61,14 @@ const Budgets = () => {
       console.error('Error creating budget:', error);
     }
   };
+
+  const handleTotalBudgetChange = (e : any) => {
+    const newValue = numeral(e.target.value).value();
+
+    if(!isNaN(newValue!)){
+      settotal_budget(newValue!);
+    }
+  }
 
   const getData = (e: any) => {
     axiosInstance
@@ -80,7 +92,7 @@ const Budgets = () => {
       <div className="flex">
         {<div className="flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default">
           <div>
-            <h2>Date</h2>
+            <h2 className="mb-2">Date</h2>
             <TextField
               type="month"
               name="date"
@@ -88,21 +100,26 @@ const Budgets = () => {
               fullWidth
               onChange={(e) => setDate(e.target.value)} />
           </div>
-          <CategorySelect setSelectedCategory={setSelectedCategory} />
+          <div className="my-2">
+            <h2 className="mb-2">Category</h2>
+            <CategorySelect setSelectedCategory={setSelectedCategory} />
+          </div>
           <div>
             <h2>Total Budget</h2>
             <TextField
-              label="Total Budget"
-              type="number"
+              type="text"
               fullWidth
               margin="normal"
-              value={total_budget}
-              onChange={(e) => settotal_budget(e.target.value)} />
+              value={numeralTotalBudget}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+              }}
+              onChange={handleTotalBudgetChange} 
+              />
           </div>
           <div>
             <h2 className='w-[450px]'>Description</h2>
             <TextField
-              label="Description"
               multiline
               rows={4}
               fullWidth
