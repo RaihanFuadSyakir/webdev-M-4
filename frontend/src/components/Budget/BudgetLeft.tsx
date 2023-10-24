@@ -18,7 +18,7 @@ export default function BudgetLeft() {
             .catch((err_res: AxiosError<dbResponse<Budget>>) => {
                 console.log(JSON.stringify(err_res.response?.data.msg));
             })
-    })
+    }, [])
     return (
         <div>
             <div className='flex'>
