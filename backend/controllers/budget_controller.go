@@ -29,6 +29,9 @@ func (controller *BudgetController) CreateBudget(c *fiber.Ctx) error {
 		fmt.Println(err)
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
+	if err := controller.DB.Preload("Category").Find(&budget, budget.ID).Error; err != nil {
+		return err
+	}
 	return jsonResponse(c, fiber.StatusCreated, "Budget created successfully", budget)
 }
 

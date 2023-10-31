@@ -18,7 +18,7 @@ export default function BudgetLeft() {
             .catch((err_res: AxiosError<dbResponse<Budget>>) => {
                 console.log(JSON.stringify(err_res.response?.data.msg));
             })
-    })
+    }, [])
     return (
         <div>
             <div className='flex'>
@@ -28,16 +28,14 @@ export default function BudgetLeft() {
             <div>{budgets?.map((budget) => (
                 <>
                     <div className='flex'>
-                        <div>
-                            {`${months[budget.month]} ${budget.year}`}
-                        </div>
-                        <div>
+                        <p>
                             {budget.current_budget < 0 ?
                                 `You've exceed Budget by Rp.${budget.current_budget * -1}`
                                 :
                                 `You've saved budget by Rp.${budget.current_budget}`
                             }
-                        </div>
+                            <span>{` at ${months[budget.month - 1]} ${budget.year}`}</span>
+                        </p>
                     </div>
 
 

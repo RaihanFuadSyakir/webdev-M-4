@@ -72,7 +72,7 @@ const ListBudget = ({ budgets, setDataBudgets }: dataBudget) => {
     },
     {
       field: 'year',
-      headerName: 'year',
+      headerName: 'Year',
       width: 80,
     },
     {
@@ -82,7 +82,7 @@ const ListBudget = ({ budgets, setDataBudgets }: dataBudget) => {
       valueFormatter: (params) => `Rp. ${numeral(params.value).format('0,0')}`
 
     },
-    { field: 'description', headerName: 'Description', width: 120 },
+    { field: 'description', headerName: 'Description', width: 140 },
     {
       field: 'category', headerName: 'Category', width: 120,
       valueFormatter: (params: GridValueFormatterParams<Category>) => params.value.category_name
