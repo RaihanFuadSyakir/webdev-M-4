@@ -1,0 +1,12 @@
+# Ignore development-specific files and directories
+.vscode/
+.idea/
+*.log
+*.out
+*.iml
+
+# Ignore test-related files
+test/
+tests/
+
+# Ignore any other files or directories that are not needed in the image
