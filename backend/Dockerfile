@@ -14,10 +14,10 @@ RUN go mod download
 COPY . .
 
 # Build your Golang application
-RUN go build -o main .
+RUN go build
 
 # Expose the port your Golang app will listen on
 EXPOSE 5000
 
 # Define the command to start your Golang application
-CMD ["./main"]
+CMD ["./finance-management"]

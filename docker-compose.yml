@@ -1,24 +1,36 @@
 version: '3'
 services:
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: admin
+    volumes:
+      - database_data:/var/lib/postgresql/data
   backend:
     build:
       context: ./backend
     ports:
       - "5000:5000"
     depends_on:
-      - postgres
+      - db
+    environment:
+      DB_HOST: db # Use the service name "db" as the hostname
+      DB_PORT: "5432"
     volumes:
-      - ./backend/.env:/app/.env  # Mount .env from the root directory to /app/.env in the container
+      - ./backend/.env:/app/.env # Mount .env from the root directory to /app/.env in the container
   frontend:
     build:
       context: ./frontend
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/.env:/app/.env  # Mount .env from the root directory to /app/.env in the container
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      - ./frontend/.env:/app/.env # Mount .env from the root directory to /app/.env in the container
+
+volumes:
+  database_data:
+    driver: local

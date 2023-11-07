@@ -16,13 +16,11 @@ RUN npm config set fetch-retry-maxtimeout 1200000
 RUN npm config set fetch-timeout 1800000
 
 # Install dependencies
+RUN npm install -D @swc/cli @swc/core
 RUN npm install --loglevel verbose
 
 # Copy the frontend source code to the container
 COPY . .
-
-# Build your TypeScript application
-RUN npm run build
 
 # Expose the port your frontend app will run on
 EXPOSE 3000
