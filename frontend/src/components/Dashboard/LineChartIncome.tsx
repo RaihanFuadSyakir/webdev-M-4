@@ -40,7 +40,7 @@ const LineChartIncome = () => {
   }, []);
   
   // Mengubah timestamp menjadi tanggal saja (misal: 2023-10-17 00:00:00 -> 17)
-  const formatTimestampToDay = (timestamp) => {
+  const formatTimestampToDay = (timestamp: string | number | Date) => {
     const date = new Date(timestamp);
     return date.getDate(); // Mengambil tanggal dari timestamp
   };

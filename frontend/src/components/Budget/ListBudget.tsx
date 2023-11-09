@@ -12,7 +12,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 import { DataGrid, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
-import BudgetUpdateModal from './BudgetUpdateModal';
 import { format } from 'date-fns'
 import numeral from 'numeral';
 
@@ -133,14 +132,7 @@ const ListBudget = ({ budgets, setDataBudgets }: dataBudget) => {
         checkboxSelection={false}
       />
 
-      {selectedBudget && (
-        <BudgetUpdateModal
-          isOpen={isUpdateModalOpen}
-          closeModal={() => setIsUpdateModalOpen(false)}
-          budget={selectedBudget}
-          setDataBudgets={setDataBudgets}
-        />
-      )}
+      
     </div>
   );
 

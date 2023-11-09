@@ -3,7 +3,6 @@ import LineChart from '@/components/Dashboard/LineChart';
 import LineChartIncome from '@/components/Dashboard/LineChartIncome';
 import IncomeInput from '@/components/income/IncomeInput';
 import OutcomeInput from '@/components/outcome/OutcomeInput';
-import BarChartReport from '@/components/Dashboard/BarChartReport';
 import axiosInstance from '@/utils/fetchData';
 import { User, dbResponse } from '@/utils/type';
 import { Button } from '@mui/material';
@@ -11,7 +10,7 @@ import { AxiosResponse } from 'axios';
 // No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 import ReactCardFlip from 'react-card-flip';
 
@@ -25,7 +24,7 @@ export default function Dashboard() {
   const [username, setUsername] = useState('');
   const router = useRouter();
 
-  const handleLinkClick = (chart) => {
+  const handleLinkClick = (chart: SetStateAction<string>) => {
     setSelectedChart(chart);
     setActiveButton(chart);
   };
@@ -55,7 +54,7 @@ export default function Dashboard() {
         return (
           <>
             <div className="p-2 rounded-lg mb-4 mx-auto">
-              <BarChartReport />
+              
             </div>
             <div className="flex">
               <div className="p-2 rounded-lg flex-1">
@@ -98,6 +97,7 @@ export default function Dashboard() {
 
   return (
     <div>
+      <link rel="manifest" href="/manifest.json"></link>
       <div className='flex-initial mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
         <div className='flex'>
           <div>
