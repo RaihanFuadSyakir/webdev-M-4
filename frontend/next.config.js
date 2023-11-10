@@ -1,23 +1,10 @@
 /** @type {import('next').NextConfig} */
 
 const withPWA = require('next-pwa')({
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-});
-const nextConfig = {
-    ...withPWA
-}
+  dest: 'public',
+  buildExcludes: [/middleware-manifest.json$/]
+})
 
-module.exports = nextConfig
-
-// const withPWA  = require("next-pwa");
-// module.exports = withPWA({
-//  //...before
-//   pwa: {
-//     dest: "public",
-//     register: true,
-//     skipWaiting: true,
-//   },
-//   //...after
-// });
+module.exports = withPWA({
+  // next.js config
+})
