@@ -12,56 +12,30 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 import { DataGrid, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
-import BudgetUpdateModal from './BudgetUpdateModal';
 import { format } from 'date-fns'
 import numeral from 'numeral';
 
 interface dataBudget {
-  budgets: Budget[]
+  budgets: Budget[];
   setDataBudgets: React.Dispatch<React.SetStateAction<Budget[]>>;
+  setSelectedBudget: React.Dispatch<React.SetStateAction<Budget | null>>;
+  setSelectedMonth: React.Dispatch<React.SetStateAction<string>>;
+  setTotalBudget: React.Dispatch<React.SetStateAction<number>>;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedCategory: React.Dispatch<React.SetStateAction<number>>;
 }
+
 const months = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
-const ListBudget = ({ budgets, setDataBudgets }: dataBudget) => {
+
+const ListBudget = ({budgets, setDataBudgets, setSelectedMonth, setTotalBudget, setDescription, setSelectedCategory }: dataBudget) => {
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   const handleDelete = (selectedOption: number) => {
     deleteBudget(selectedOption);
   }
-
-  const handleUpdate = (budget: Budget) => {
-    // setSelectedBudget(budget);
-    // setIsUpdateModalOpen(true);
-
-    if (!selectedBudget) {
-      console.error('No budget selected for update.');
-      return;
-    }
-
-    // Simulated update data
-    const updatedBudgetData = {
-      ...selectedBudget,
-      description: 'Updated Description', // Update the description for demonstration
-    };
-
-    // Simulated API call to update the budget
-    axiosInstance
-      .put(`/budget/${selectedBudget.id}`, updatedBudgetData)
-      .then((response) => {
-        console.log('Budget updated successfully:', response.data);
-        // Update the budget in the UI or refetch the data
-        // For simplicity, we're just logging the response
-      })
-      .catch((error) => {
-        console.error('Error updating budget:', error);
-      });
-
-    // Close the modal after handling the update
-    setIsUpdateModalOpen(false);
-  };
 
   const columns: GridColDef[] = [
     {
@@ -82,9 +56,14 @@ const ListBudget = ({ budgets, setDataBudgets }: dataBudget) => {
       valueFormatter: (params) => `Rp. ${numeral(params.value).format('0,0')}`
 
     },
-    { field: 'description', headerName: 'Description', width: 140 },
+    { 
+      field: 'description', 
+      headerName: 'Description', 
+      width: 140 },
     {
-      field: 'category', headerName: 'Category', width: 120,
+      field: 'category', 
+      headerName: 'Category', 
+      width: 120,
       valueFormatter: (params: GridValueFormatterParams<Category>) => params.value.category_name
     },
     {
@@ -99,9 +78,13 @@ const ListBudget = ({ budgets, setDataBudgets }: dataBudget) => {
             className="bg-blue-500 text-white rounded p-2 hover:bg-blue-700 hover:text-white"
             onClick={() => {
               const budgetId = params.row.id as number;
-              const budget = budgets.find((b) => b.id === budgetId);
+              const budget = budgets.find((b: { id: number; }) => b.id === budgetId);
               setSelectedBudget(budget!);
-              setIsUpdateModalOpen(true);
+              // Use the passed functions to update state in Budgets.tsx
+              setSelectedMonth(`${budget?.year}-${budget?.month.toString().padStart(2, '0')}`);
+              setTotalBudget(budget?.total_budget || 0);
+              setDescription(budget?.description || '');
+              setSelectedCategory(budget?.category_id || 0);
             }}
           >
             Update
@@ -132,15 +115,6 @@ const ListBudget = ({ budgets, setDataBudgets }: dataBudget) => {
         }}
         checkboxSelection={false}
       />
-
-      {selectedBudget && (
-        <BudgetUpdateModal
-          isOpen={isUpdateModalOpen}
-          closeModal={() => setIsUpdateModalOpen(false)}
-          budget={selectedBudget}
-          setDataBudgets={setDataBudgets}
-        />
-      )}
     </div>
   );
 
