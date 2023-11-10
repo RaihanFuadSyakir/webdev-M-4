@@ -38,7 +38,7 @@ const Login: React.FC = () => {
         .then((response) => {
           const removeError = ['', '', '']
           setErrors(removeError);
-          router.push('/dashboard');
+          router.push('/finance-management/dashboard');
         })
         .catch((error: AxiosError<dbResponse<User>>) => {
           const updateError = [...errors]

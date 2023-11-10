@@ -30,7 +30,7 @@ const Register: React.FC = () => {
         .post('/users', formData)
         .then((response) => {
           setError('');
-          router.push('/login');
+          router.push('/finance-management/login');
         })
         .catch((error: AxiosError<dbResponse<User>>) => {
           const res: dbResponse<User> = error.response?.data!;
