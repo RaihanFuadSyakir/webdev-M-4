@@ -88,8 +88,15 @@ const ListCategories = ({ categories,setNewCategories}: CategoryProps) => {
                 </div>
                 <div>{inputStates[index]?.error !== '' && inputStates[index]?.error}</div>
                 </TableCell>
-                <TableCell component="th" scope="row" align='right'>
-                <Button variant="outlined" color="error" onClick={()=> handleDelete(index)}>Delete</Button>
+                <TableCell component="th" scope="row" align='center'>
+                <Button 
+                  variant="outlined" 
+                  color="secondary" 
+                  className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
+                  onClick={() => handleDelete(index)}
+                >
+                  Delete
+                </Button>
                 </TableCell>
               </TableRow>
             ))}
