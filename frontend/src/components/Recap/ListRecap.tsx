@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Outcome, Income, dbResponse } from '@/utils/type';
 import axiosInstance from '@/utils/fetchData';
@@ -17,6 +18,8 @@ import {
   FormControl,
   InputLabel,
   SelectChangeEvent,
+  Stack,
+  Chip,
 } from '@mui/material';
 
 interface RecapProps {
@@ -167,16 +170,23 @@ const ListRecap = ({ incomes, outcomes }: RecapProps) => {
   });
   return (
     <div className="max-w-6xl">
-      <FormControl>
-        <Select value={selectedMonth.toString()} onChange={handleMonthChange}>
-          <MenuItem value={-1}>All Months</MenuItem>
-          {months.map((month) => (
-            <MenuItem key={month} value={month}>
-              {new Date(2023, month, 1).toLocaleString('default', { month: 'long' })}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <div className='flex pb-5 justify-between'>
+        <FormControl>
+          <Select value={selectedMonth.toString()} onChange={handleMonthChange}>
+            <MenuItem value={-1}>All Months</MenuItem>
+            {months.map((month) => (
+              <MenuItem key={month} value={month}>
+                {new Date(2023, month, 1).toLocaleString('default', { month: 'long' })}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Stack direction="row" spacing={2} className='p-3'>
+          <span className='pl-2'>Total Outcome</span><Chip label={totalOutcome} color="error" />
+          <span className='pl-2'>Total Income</span><Chip label={totalIncome} color="success" />
+          <span className='pl-2'>Total Savings</span><Chip label={totalSavings} color="primary" />
+        </Stack>
+      </div>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={rows}

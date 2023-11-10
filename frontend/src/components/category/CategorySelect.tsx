@@ -159,9 +159,9 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories
           return (
             <li {...props} key={option.id}>
               <div className='flex justify-between align-middle'>
-                <div>{option.name}</div>
-                <div>
-                  <IconButton aria-label="delete" className='m-2' onClick={() => handleDelete(option.id!)}>
+                <div className='flex-1 w-55 mt-3'>{option.name}</div>
+                <div className='flex-none'>
+                  <IconButton aria-label="delete" className='m-2 mr-1 grid justify-items-end' onClick={() => handleDelete(option.id!)}>
                     <DeleteIcon fontSize="inherit" />
                   </IconButton>
                 </div>
