@@ -69,7 +69,7 @@ const Budgets = () => {
   
         // Simulated API call to update the budget
         axiosInstance
-          .put(`/budget/${selectedBudget.id}`, updatedBudgetData)
+          .put(`/budget/${selectedBudget?.id}`, updatedBudgetData)
           .then((response) => {
             console.log('Budget updated successfully:', response.data);
             // Update the budget in the UI or refetch the data

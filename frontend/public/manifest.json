@@ -4,8 +4,8 @@
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
-    "name": "testing",
-    "short_name": "testing",
+    "name": "M4-PWA3",
+    "short_name": "M4-PWA3",
     "description": "-",
     "icons": [
         {
