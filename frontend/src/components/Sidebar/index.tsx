@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,9 +10,9 @@ interface SidebarProps {
   setSidebarOpen: (arg: boolean) => void;
 }
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+const Sidebar = () => {
+  const [sidebarOpen,setSidebarOpen] = useState(false)
   const pathname = usePathname();
-
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
 

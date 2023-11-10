@@ -53,7 +53,7 @@ export default function Dashboard() {
       })
       .catch((error) => {
         console.log(error);
-        router.push('/login');
+        router.push('/finance-management/login');
       });
   }, []);
 
