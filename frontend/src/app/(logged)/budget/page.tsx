@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import Breadcrumb from "@/components/template/Breadcrumbs/Breadcrumb";
-import CardSwitcher from "@/components/Card/CardSwitcher"
-import BudgetSelect from "@/components/Budget/BudgetSelect";
 import { Metadata } from "next";
 import ListBudget from "@/components/Budget/ListBudget";
 import { useEffect, useState } from "react";
@@ -25,8 +23,10 @@ const Budgets = () => {
   const [total_budget, settotal_budget] = useState(0);
   const [description, setDescription] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(0);
+  const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
 
   const numeralTotalBudget = numeral(total_budget).format('0,0');
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
 
   useEffect(() => {
     axiosInstance.get('/budgets/')
@@ -39,26 +39,78 @@ const Budgets = () => {
       })
   }, [])
 
-  const handleCreateBudget = () => {
-    try {
-      const validBudget = currencySchema.parse(total_budget)
-      const splitDate = date.split('-');
-      // Make a POST request to your API endpoint with the input data
-      axiosInstance.post('/budget/new', {
-        month: parseInt(splitDate[1]),
-        year: parseInt(splitDate[0]),
-        total_budget: validBudget,
-        description: description,
-        category_id: selectedCategory
-      }).then((response: AxiosResponse<dbResponse<Budget>>) => {
+  const fetchBudgets = () => {
+    axiosInstance
+      .get('/budgets/')
+      .then((response) => {
         const data = response.data.data;
-        console.log(response.data.msg);
-        setBudgets((prev) => [...prev!, data])
-      }).catch((err_response: AxiosError<dbResponse<Budget>>) => {
-        console.log(err_response.response?.data.msg);
+        setBudgets(data);
       })
+      .catch((err_res) => {
+        console.log(JSON.stringify(err_res.response?.data));
+      });
+  };
+
+  const handleCreateOrUpdateBudget = () => {
+    try {
+      const validBudget = currencySchema.parse(total_budget);
+      const splitDate = date.split('-');
+  
+      if (isUpdateMode) {
+        // Update existing budget
+        const updatedBudgetData = {
+          ...selectedBudget,
+          month: parseInt(splitDate[1]),
+          year: parseInt(splitDate[0]),
+          total_budget: validBudget,
+          description: description,
+          category_id: selectedCategory,
+        };
+  
+        // Simulated API call to update the budget
+        axiosInstance
+          .put(`/budget/${selectedBudget.id}`, updatedBudgetData)
+          .then((response) => {
+            console.log('Budget updated successfully:', response.data);
+            // Update the budget in the UI or refetch the data
+            // For simplicity, we're just logging the response
+            // You might want to update the state or refetch the data here
+            fetchBudgets(); // Refetch the data after update
+            setSelectedBudget(null); // Clear selectedBudget after update
+            setIsUpdateMode(false);
+          })
+          .catch((error) => {
+            console.error('Error updating budget:', error);
+          });
+      } else {
+        // Create new budget
+        axiosInstance
+          .post('/budget/new', {
+            month: parseInt(splitDate[1]),
+            year: parseInt(splitDate[0]),
+            total_budget: validBudget,
+            description: description,
+            category_id: selectedCategory,
+          })
+          .then((response) => {
+            const data = response.data.data;
+            console.log(response.data.msg);
+            setBudgets((prev) => [...prev!, data]);
+            setIsUpdateMode(false);
+          })
+          .catch((err_response) => {
+            console.log(err_response.response?.data.msg);
+          });
+      }
+  
+      // Reset the form after handling the update or create
+      setDate('');
+      settotal_budget(0);
+      setDescription('');
+      setSelectedCategory(0);
+
     } catch (error) {
-      console.error('Error creating budget:', error);
+      console.error('Error creating/updating budget:', error);
     }
   };
 
@@ -128,18 +180,26 @@ const Budgets = () => {
               onChange={(e) => setDescription(e.target.value)} />
           </div>
           <Button
-            onClick={handleCreateBudget}
+            onClick={handleCreateOrUpdateBudget}
             variant="contained"
             color="primary"
             className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2'>
-            Save
+            {isUpdateMode ? 'Update' : 'Save'}
           </Button>
         </div>}
         <div className="flex-1 p-2">
           {budgets && <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default">
             <div className="m-5">
               <h2 className="font-bold text-xl mb-2 text-black">Budget List</h2>
-              <ListBudget budgets={budgets} setDataBudgets={setBudgets} />
+              <ListBudget 
+                budgets={budgets}
+                setDataBudgets={setBudgets}
+                setSelectedBudget={setSelectedBudget}  
+                setSelectedMonth={setSelectedMonth}
+                setTotalBudget={settotal_budget}
+                setDescription={setDescription}
+                setSelectedCategory={setSelectedCategory}
+              />
             </div>
           </div>}
         </div>

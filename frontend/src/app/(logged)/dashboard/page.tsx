@@ -5,15 +5,18 @@ import IncomeInput from '@/components/income/IncomeInput';
 import OutcomeInput from '@/components/outcome/OutcomeInput';
 import BarChartReport from '@/components/Dashboard/BarChartReport';
 import axiosInstance from '@/utils/fetchData';
-import { User, dbResponse } from '@/utils/type';
+import { BACKEND_URL } from '@/constants';
+import { Income, Outcome, User, dbResponse } from '@/utils/type';
 import { Button } from '@mui/material';
 import { AxiosResponse } from 'axios';
 // No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 import ReactCardFlip from 'react-card-flip';
+import ListIncomes from '@/components/income/ListIncome';
+import ListOutcomes from '@/components/outcome/ListOutcomes';
 
 // ... imports ...
 
@@ -24,8 +27,13 @@ export default function Dashboard() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [username, setUsername] = useState('');
   const router = useRouter();
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  const [outcomes, setOutcomes] = useState<Outcome[]>([]);
 
-  const handleLinkClick = (chart) => {
+  const limitedOutcomes = outcomes.slice(-5);
+  const limitedIncomes = incomes.slice(-5);
+
+  const handleLinkClick = (chart: SetStateAction<string>) => {
     setSelectedChart(chart);
     setActiveButton(chart);
   };
@@ -48,6 +56,31 @@ export default function Dashboard() {
         router.push('/login');
       });
   }, []);
+
+    // Fetch Incomes data when the component mounts
+    useEffect(() => {
+      axiosInstance
+        .get(`/incomes/user`) // Replace with your actual endpoint
+        .then((response: AxiosResponse<dbResponse<Income[]>>) => {
+          const res: dbResponse<Income[]> = response.data;
+          setIncomes(res.data);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch incomes:', error);
+        });
+    }, []);
+
+    useEffect(() => {
+      axiosInstance
+        .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
+        .then((response: AxiosResponse<dbResponse<Outcome[]>>) => {
+          const res: dbResponse<Outcome[]> = response.data;
+          setOutcomes(res.data);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch outcomes:', error);
+        });
+    }, []);
 
   const renderSelectedChart = () => {
     switch (selectedChart) {
@@ -120,12 +153,28 @@ export default function Dashboard() {
             <div>
               <ReactCardFlip isFlipped={isFlipped}>
                 <div key='front'>
-                  <h1 className='text-center font-bold text-xl'>Quick Income</h1>
-                  <IncomeInput />
+                  <div className='flex'>
+                    <div className='p-2'>
+                      <h1 className='text-center font-bold text-xl'>Quick Income</h1>
+                      <IncomeInput />
+                    </div>
+                    <div className='p-2 ml-26'>
+                    <h1 className='text-center font-bold text-xl pb-2'>Recent Income</h1>
+                      <ListIncomes incomes={limitedIncomes} setIncomes={setIncomes}/>
+                    </div>
+                  </div>
                 </div>
                 <div key='back'>
-                  <h1 className='text-center font-bold text-xl'>Quick Outcome</h1>
-                  <OutcomeInput />
+                  <div className='flex'>
+                    <div className='p-2'>
+                      <h1 className='text-center font-bold text-xl'>Quick Outcome</h1>
+                      <OutcomeInput />
+                    </div>
+                    <div className='p-2 ml-15'>
+                    <h1 className='text-center font-bold text-xl pb-2'>Recent Outcome</h1>
+                      <ListOutcomes outcomes={limitedOutcomes} setOutcomes={setOutcomes} />
+                    </div>
+                  </div>
                 </div>
               </ReactCardFlip>
             </div>
