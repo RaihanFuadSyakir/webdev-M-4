@@ -34,7 +34,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
       .join('');
     var ribuan = reverse.match(/\d{1,3}/g);
     var hasil = ribuan?.join('.').split('').reverse().join('');
-    return hasil;
+    return hasil!;
   };
 
 
