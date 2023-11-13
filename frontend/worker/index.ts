@@ -24,8 +24,6 @@ self.addEventListener('install', (event) => {
           '/finance-management/recap',
           '/finance-management/report',
           '/finance-management/wallets',
-
-          // add more routes and pages here
         ]);
       })
     );
