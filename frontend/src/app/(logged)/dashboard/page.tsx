@@ -1,24 +1,46 @@
 "use client"
 import LineChart from '@/components/Dashboard/LineChart';
 import LineChartIncome from '@/components/Dashboard/LineChartIncome';
+import IncomeInput from '@/components/income/IncomeInput';
+import OutcomeInput from '@/components/outcome/OutcomeInput';
 import BarChartReport from '@/components/Dashboard/BarChartReport';
 import axiosInstance from '@/utils/fetchData';
-import { User, dbResponse } from '@/utils/type';
+import { BACKEND_URL } from '@/constants';
+import { Income, Outcome, User, dbResponse } from '@/utils/type';
+import { Button } from '@mui/material';
 import { AxiosResponse } from 'axios';
 // No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
 import { useRouter } from 'next/navigation';
 import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
+import ReactCardFlip from 'react-card-flip';
+import ListIncomes from '@/components/income/ListIncome';
+import ListOutcomes from '@/components/outcome/ListOutcomes';
+import CategoryOutcome from '@/components/Dashboard/CategoryOutcome';
 
 export default function Dashboard() {
   const [activeButton, setActiveButton] = useState('all');
   const [selectedChart, setSelectedChart] = useState('all');
+  const [showIncomeInput, setShowIncomeInput] = useState(true);
+  const [isFlipped, setIsFlipped] = useState(false);
   const [username, setUsername] = useState('');
   const router = useRouter();
+  const [incomes, setIncomes] = useState<Income[]>([]);
+  const [outcomes, setOutcomes] = useState<Outcome[]>([]);
 
+  const limitedOutcomes = outcomes.slice(-5);
+  const limitedIncomes = incomes.slice(-5);
   const handleLinkClick = (chart: SetStateAction<string>) => {
     setSelectedChart(chart);
     setActiveButton(chart);
+  };
+
+  const handleFlipIncome = () => {
+    setIsFlipped(true);
+  };
+
+  const handleFlipOutcome = () => {
+    setIsFlipped(false);
   };
 
   useEffect(() => {
@@ -32,6 +54,31 @@ export default function Dashboard() {
       });
   }, []);
 
+    // Fetch Incomes data when the component mounts
+    useEffect(() => {
+      axiosInstance
+        .get(`/incomes/user`) // Replace with your actual endpoint
+        .then((response: AxiosResponse<dbResponse<Income[]>>) => {
+          const res: dbResponse<Income[]> = response.data;
+          setIncomes(res.data);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch incomes:', error);
+        });
+    }, []);
+
+    useEffect(() => {
+      axiosInstance
+        .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
+        .then((response: AxiosResponse<dbResponse<Outcome[]>>) => {
+          const res: dbResponse<Outcome[]> = response.data;
+          setOutcomes(res.data);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch outcomes:', error);
+        });
+    }, []);
+
   const renderSelectedChart = () => {
     switch (selectedChart) {
       case 'all':
@@ -39,6 +86,9 @@ export default function Dashboard() {
           <>
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <BarChartReport />
+            </div>
+            <div className="p-2 rounded-lg mb-4 mx-auto">
+              <CategoryOutcome />
             </div>
             <div className="flex">
               <div className="p-2 rounded-lg flex-1">
@@ -81,6 +131,56 @@ export default function Dashboard() {
 
   return (
     <div>
+      <div className='flex-initial mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
+        <div className='flex'>
+          <div>
+            <div className='text-center'>
+              <Button 
+                onClick={handleFlipOutcome} 
+                className='m-2 bg-blue-400 text-white hover:bg-blue-700'
+                color='primary'
+              >
+                Income
+              </Button>
+              <Button 
+                onClick={handleFlipIncome}  
+                className='m-2 bg-red-400 text-white hover:bg-red-700'
+                color='secondary'
+              >
+                Outcome
+              </Button>
+            </div>
+            <div>
+              <ReactCardFlip isFlipped={isFlipped}>
+                <div key='front'>
+                  <div className='flex'>
+                    <div className='p-2'>
+                      <h1 className='text-center font-bold text-xl'>Quick Income</h1>
+                      <IncomeInput />
+                    </div>
+                    <div className='p-2 ml-26'>
+                    <h1 className='text-center font-bold text-xl pb-2'>Recent Income</h1>
+                      <ListIncomes incomes={limitedIncomes} setIncomes={setIncomes}/>
+                    </div>
+                  </div>
+                </div>
+                <div key='back'>
+                  <div className='flex'>
+                    <div className='p-2'>
+                      <h1 className='text-center font-bold text-xl'>Quick Outcome</h1>
+                      <OutcomeInput />
+                    </div>
+                    <div className='p-2 ml-15'>
+                    <h1 className='text-center font-bold text-xl pb-2'>Recent Outcome</h1>
+                      <ListOutcomes outcomes={limitedOutcomes} setOutcomes={setOutcomes} />
+                    </div>
+                  </div>
+                </div>
+              </ReactCardFlip>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className='bg-slate-700 flex justify-center text-white'>
         <button
           onClick={() => handleLinkClick('all')}
