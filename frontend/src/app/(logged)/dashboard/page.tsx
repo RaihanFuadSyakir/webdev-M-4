@@ -10,13 +10,13 @@ import { Income, Outcome, User, dbResponse } from '@/utils/type';
 import { Button } from '@mui/material';
 import { AxiosResponse } from 'axios';
 // No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 import ReactCardFlip from 'react-card-flip';
 import ListIncomes from '@/components/income/ListIncome';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
+import CategoryOutcome from '@/components/Dashboard/CategoryOutcome';
 
 export default function Dashboard() {
   const [activeButton, setActiveButton] = useState('all');
@@ -86,6 +86,9 @@ export default function Dashboard() {
           <>
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <BarChartReport />
+            </div>
+            <div className="p-2 rounded-lg mb-4 mx-auto">
+              <CategoryOutcome />
             </div>
             <div className="flex">
               <div className="p-2 rounded-lg flex-1">

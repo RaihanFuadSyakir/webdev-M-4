@@ -37,7 +37,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
   };
 
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: { target: { value: string; }; }) => {
     // Menghapus karakter selain angka
     const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
     
@@ -84,7 +84,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         label="Wallet Name"
         name="walletName"
         value={walletName}
-        onChange={(e) => setWalletName(e.target.value)}
+        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setWalletName(e.target.value)}
         fullWidth
         margin="normal"
         disabled={!!editingWallet} // Disable the field in edit mode
@@ -95,7 +95,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         type="text"
         value={totalBalance}
         onKeyUp={handleInputChange}
-        onChange={(e) => setTotalBalance(e.target.value)}
+        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setTotalBalance(e.target.value)}
         fullWidth
         margin="normal"
         InputProps={{
