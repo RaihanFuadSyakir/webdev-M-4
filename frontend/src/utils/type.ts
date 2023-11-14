@@ -52,6 +52,7 @@ export interface Category {
 }
 
 export interface Budget {
+  category_id: any;
   id: number;
   month: number;
   year: number;
