@@ -4,6 +4,7 @@ import LineChartIncome from '@/components/Dashboard/LineChartIncome';
 import IncomeInput from '@/components/income/IncomeInput';
 import OutcomeInput from '@/components/outcome/OutcomeInput';
 import BarChartReport from '@/components/Dashboard/BarChartReport';
+import Warning from '@/components/Dashboard/Budget';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
 import { Income, Outcome, User, dbResponse } from '@/utils/type';
@@ -97,6 +98,9 @@ export default function Dashboard() {
               <div className="p-2 rounded-lg ml-4 flex-1">
                 <LineChartIncome />
               </div>
+            </div>
+            <div className="p-2 rounded-lg mb-4 mx-auto">
+              <Warning />
             </div>
             <div className="flex">
               <div className="p-2 rounded-lg ml-4 flex-1">
