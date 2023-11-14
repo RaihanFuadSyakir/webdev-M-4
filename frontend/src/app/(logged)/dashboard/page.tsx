@@ -85,6 +85,14 @@ export default function Dashboard() {
       case 'all':
         return (
           <>
+            <div className="flex">
+              <div className="p-2 rounded-lg ml-4 flex-1">
+                <LineChartIncome />
+              </div>
+            </div>
+            <div className="p-2 rounded-lg mb-4 mx-auto">
+              <Warning />
+            </div>
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <BarChartReport />
             </div>
@@ -95,15 +103,7 @@ export default function Dashboard() {
               <div className="p-2 rounded-lg flex-1">
                 <LineChart />
               </div>
-              <div className="p-2 rounded-lg ml-4 flex-1">
-                <LineChartIncome />
-              </div>
-            </div>
-            <div className="p-2 rounded-lg mb-4 mx-auto">
-              <Warning />
-            </div>
-            <div className="flex">
-              <div className="p-2 rounded-lg ml-4 flex-1">
+              <div className="p-2 rounded-lg flex-1">
                 <PieChartWallet />
               </div>
             </div>
@@ -121,10 +121,15 @@ export default function Dashboard() {
             <LineChart />
           </div>
         );
-      case 'incomes':
-        return (
-          <div className="p-2 rounded-lg mx-auto">
-            <LineChartIncome />
+      case 'budget':
+        return(
+          <div className="flex">
+              <div className="p-2 rounded-lg ml-4 flex-1">
+                <LineChartIncome />
+                <div className="p-2 rounded-lg mb-4">
+                  <Warning />
+                </div>
+              </div>
           </div>
         );
       // Add other cases for different charts if needed
@@ -201,13 +206,11 @@ export default function Dashboard() {
           className={`m-2 text-blue ${activeButton === 'outcomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
         >  Outcome  
         </button>
-        <button
-          onClick={() => handleLinkClick('incomes')}
-          className={`m-2 text-blue ${activeButton === 'incomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
-        >  Income  
+        <button 
+          onClick={() => handleLinkClick('budget')} 
+          className={`m-2 text-blue ${activeButton === 'budget' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
+          >Budget & Category
         </button>
-        <button onClick={() => handleLinkClick('budget')} className='m-2'>Budget</button>
-        <button onClick={() => handleLinkClick('categories')} className='m-2'>Categories</button>
       </div>
       <h2 style={{ textAlign:'center', fontSize: '2rem', color: '#ffff', fontStyle: 'italic', marginBottom: '1rem' }}>Hello {username} !</h2>
 
