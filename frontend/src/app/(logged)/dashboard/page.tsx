@@ -85,11 +85,6 @@ export default function Dashboard() {
       case 'all':
         return (
           <>
-            <div className="flex">
-              <div className="p-2 rounded-lg ml-4 flex-1">
-                <LineChartIncome />
-              </div>
-            </div>
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <Warning />
             </div>
