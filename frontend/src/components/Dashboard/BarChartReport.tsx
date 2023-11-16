@@ -74,7 +74,7 @@ const BarChartReport = () => {
       height: 400,
     },
     title: {
-      text: 'Monthly Cashflow Overview',
+      text: 'Cashflow Overview',
     },
     xAxis: {
       categories: sortedData.map((entry) => entry.date),
