@@ -16,7 +16,7 @@ const BudgetInfo = () => {
         const res: dbResponse<Budget[]> = response.data;
         setBudgets(res.data);
       })
-      .catch((error) => {
+      .catch((error: AxiosError) => {
         console.error('Failed to fetch budgets:', error);
       });
   }, []);
@@ -30,27 +30,34 @@ const BudgetInfo = () => {
     return (
       <div className="w-full max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
         <h1 className="text-2xl font-bold mb-4 text-center">Overspending Alerts</h1>
-        {/* Add a dropdown or input fields to select month and year */}
+        {/* Use a similar filter layout as in LineChart */}
         <div className="mb-4 space-x-4 items-center">
-          <label className="text-gray-600 text-sm">Select Month:</label>
+          <label className="text-gray-600 text-sm">Month:</label>
           <select
             className="p-2 text-sm border border-gray-300 rounded-md"
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
             value={selectedMonth}
           >
+            <option value="">Select Month</option>
             {Array.from({ length: 12 }, (_, index) => (
               <option key={index + 1} value={index + 1}>
                 {new Date(0, index).toLocaleString('en-US', { month: 'long' })}
               </option>
             ))}
           </select>
-          <label className="text-gray-600 text-sm">Select Year:</label>
-          <input
-            type="number"
+          <label className="text-gray-600 text-sm">Year:</label>
+          <select
             className="p-2 text-sm border border-gray-300 rounded-md"
             onChange={(e) => setSelectedYear(Number(e.target.value))}
             value={selectedYear}
-          />
+          >
+            <option value="">Select Year</option>
+            {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="overflow-x-auto overflow-y-hidden">
           <div className="flex space-x-4">
