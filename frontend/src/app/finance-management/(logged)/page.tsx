@@ -5,5 +5,5 @@ import Outcome from './outcomes/page';
 
 
 export default function Home() {
-  redirect('/dashboard');
+  redirect('/finance-management/dashboard');
 }

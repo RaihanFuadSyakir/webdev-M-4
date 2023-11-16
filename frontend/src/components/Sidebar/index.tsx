@@ -65,7 +65,7 @@ const Sidebar = () => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-        <Link href="/">
+        <Link href="/finance-management/dashboard">
           <Image
             width={176}
             height={32}
@@ -111,7 +111,7 @@ const Sidebar = () => {
               {/* <!-- Menu Item Dashboard --> */}
               <li>
                 <Link
-                  href="/dashboard"
+                  href="/finance-management/dashboard"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("dashboard") && "bg-graydark dark:bg-meta-4"
                   }`}
@@ -157,7 +157,7 @@ const Sidebar = () => {
               {/* <!-- Menu Item Category --> */}
               <li>
                 <Link
-                  href="/categories"
+                  href="/finance-management/categories"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("categories") &&
                     "bg-graydark dark:bg-meta-4"
@@ -196,7 +196,7 @@ const Sidebar = () => {
               {/* <!-- Menu Item Wallet --> */}
               <li>
                 <Link
-                  href="/wallets"
+                  href="/finance-management/wallets"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("wallets") && "bg-graydark dark:bg-meta-4"
                   }`}
@@ -280,7 +280,7 @@ const Sidebar = () => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <Link
-                              href="/incomes"
+                              href="/finance-management/incomes"
                               className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
                                 pathname === "/cashflow/incomes" &&
                                 "text-white"
@@ -291,7 +291,7 @@ const Sidebar = () => {
                           </li>
                           <li>
                             <Link
-                              href="/outcomes"
+                              href="/finance-management/outcomes"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
                                 pathname === "/cashflow/outcomes" &&
                                 "text-white"
@@ -337,7 +337,7 @@ const Sidebar = () => {
               {/* <!-- Menu Item Budget --> */}
               <li>
                 <Link
-                  href="/budget"
+                  href="/finance-management/budget"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("budget") && "bg-graydark dark:bg-meta-4"
                   }`}
@@ -362,7 +362,7 @@ const Sidebar = () => {
               {/* <!-- Menu Item Recap --> */}
               <li>
                 <Link
-                  href="/recap"
+                  href="/finance-management/recap"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("recap") && "bg-graydark dark:bg-meta-4"
                   }`}
