@@ -43,7 +43,7 @@ const PieChartWallet = () => {
   };
 
   return (
-    <div className="w-full max-w-screen-lg mx-auto p-8">
+    <div className="w-full max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
       <HighchartsReact highcharts={Highcharts} options={chartOptions} />
     </div>
   );

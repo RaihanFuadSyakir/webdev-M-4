@@ -4,13 +4,13 @@ import LineChartIncome from '@/components/Dashboard/LineChartIncome';
 import IncomeInput from '@/components/income/IncomeInput';
 import OutcomeInput from '@/components/outcome/OutcomeInput';
 import BarChartReport from '@/components/Dashboard/BarChartReport';
+import Warning from '@/components/Dashboard/Budget';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
 import { Income, Outcome, User, dbResponse } from '@/utils/type';
 import { Button } from '@mui/material';
 import { AxiosResponse } from 'axios';
 // No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
@@ -20,8 +20,8 @@ import ListOutcomes from '@/components/outcome/ListOutcomes';
 import BudgetLeft from '@/components/Budget/BudgetLeft';
 import Budgets from '../budget/page';
 import TotalSavings from '@/components/Card/totalSummary';
+import CategoryOutcome from '@/components/Dashboard/CategoryOutcome';
 
-// ... imports ...
 
 export default function Dashboard() {
   const [activeButton, setActiveButton] = useState('all');
@@ -35,7 +35,6 @@ export default function Dashboard() {
 
   const limitedOutcomes = outcomes.slice(-5);
   const limitedIncomes = incomes.slice(-5);
-
   const handleLinkClick = (chart: SetStateAction<string>) => {
     setSelectedChart(chart);
     setActiveButton(chart);
@@ -90,19 +89,25 @@ export default function Dashboard() {
       case 'all':
         return (
           <>
+            <div className="flex">
+              <div className="p-2 rounded-lg ml-4 flex-1">
+                <LineChartIncome />
+              </div>
+            </div>
+            <div className="p-2 rounded-lg mb-4 mx-auto">
+              <Warning />
+            </div>
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <BarChartReport />
+            </div>
+            <div className="p-2 rounded-lg mb-4 mx-auto">
+              <CategoryOutcome />
             </div>
             <div className="flex">
               <div className="p-2 rounded-lg flex-1">
                 <LineChart />
               </div>
-              <div className="p-2 rounded-lg ml-4 flex-1">
-                <LineChartIncome />
-              </div>
-            </div>
-            <div className="flex">
-              <div className="p-2 rounded-lg ml-4 flex-1">
+              <div className="p-2 rounded-lg flex-1">
                 <PieChartWallet />
               </div>
             </div>
@@ -120,10 +125,15 @@ export default function Dashboard() {
             <LineChart />
           </div>
         );
-      case 'incomes':
-        return (
-          <div className="p-2 rounded-lg mx-auto">
-            <LineChartIncome />
+      case 'budget':
+        return(
+          <div className="flex">
+              <div className="p-2 rounded-lg ml-4 flex-1">
+                <LineChartIncome />
+                <div className="p-2 rounded-lg mb-4">
+                  <Warning />
+                </div>
+              </div>
           </div>
         );
       // Add other cases for different charts if needed
@@ -208,13 +218,11 @@ export default function Dashboard() {
           className={`m-2 text-blue ${activeButton === 'outcomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
         >  Outcome  
         </button>
-        <button
-          onClick={() => handleLinkClick('incomes')}
-          className={`m-2 text-blue ${activeButton === 'incomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
-        >  Income  
+        <button 
+          onClick={() => handleLinkClick('budget')} 
+          className={`m-2 text-blue ${activeButton === 'budget' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
+          >Budget & Category
         </button>
-        <button onClick={() => handleLinkClick('budget')} className='m-2'>Budget</button>
-        <button onClick={() => handleLinkClick('categories')} className='m-2'>Categories</button>
       </div>
       <h2 style={{ textAlign:'center', fontSize: '2rem', color: '#ffff', fontStyle: 'italic', marginBottom: '1rem' }}>Hello {username} !</h2>
 
