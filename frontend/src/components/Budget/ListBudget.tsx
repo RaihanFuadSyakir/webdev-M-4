@@ -14,6 +14,7 @@ import { Button } from '@mui/material';
 import { DataGrid, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
 import { format } from 'date-fns'
 import numeral from 'numeral';
+import { Popconfirm, message } from 'antd';
 
 interface dataBudget {
   budgets: Budget[];
@@ -35,6 +36,7 @@ const ListBudget = ({budgets, setDataBudgets, setSelectedMonth, setTotalBudget, 
 
   const handleDelete = (selectedOption: number) => {
     deleteBudget(selectedOption);
+    message.success('Budget deleted successfully. Please refresh the page.', 5);
   }
 
   const columns: GridColDef[] = [
@@ -89,14 +91,21 @@ const ListBudget = ({budgets, setDataBudgets, setSelectedMonth, setTotalBudget, 
           >
             Update
           </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            className="bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white ml-2"
-            onClick={() => handleDelete(params.row.id as number)}
+          <Popconfirm
+            title="Are you sure you want to delete this budget?"
+            onConfirm={() => handleDelete(params.row.id as number)}
+            okText="Yes"
+            okType="danger"
+            cancelText="No"
           >
-            Delete
-          </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              className="bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white ml-2"
+            >
+              Delete
+            </Button>
+            </Popconfirm>
         </div>
       ),
     },

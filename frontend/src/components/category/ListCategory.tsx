@@ -11,6 +11,8 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import { Popconfirm, message } from 'antd';
+
 interface CategoryProps {
   categories: Category[]
   setNewCategories: React.Dispatch<React.SetStateAction<Category[]>>
@@ -43,7 +45,8 @@ const ListCategories = ({ categories,setNewCategories}: CategoryProps) => {
     setNewCategories(()=>updatedCategories);
     updatedInputStates[index].inputValue = ''
     updatedInputStates[index].isInputVisible = false;
-    setInputStates(()=>updatedInputStates)
+    setInputStates(()=>updatedInputStates);
+    message.success('Category updated successfully', 5);
   };
   const handleDelete = (index : number) =>{
     const updatedCategories = [...categories];
@@ -52,9 +55,11 @@ const ListCategories = ({ categories,setNewCategories}: CategoryProps) => {
     .then((result)=>{
       if(!result.success){
         updatedInputStates[index].error = result.msg;
+        message.success('Category deleted successfully', 5);
       }else{
         updatedCategories.splice(index,1);
         updatedInputStates.splice(index,1);
+        message.success('Category deleted successfully', 5);
       }
     })
     setNewCategories(()=>updatedCategories);
@@ -89,14 +94,21 @@ const ListCategories = ({ categories,setNewCategories}: CategoryProps) => {
                 <div>{inputStates[index]?.error !== '' && inputStates[index]?.error}</div>
                 </TableCell>
                 <TableCell component="th" scope="row" align='center'>
-                <Button 
-                  variant="outlined" 
-                  color="secondary" 
-                  className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
-                  onClick={() => handleDelete(index)}
+                <Popconfirm
+                      title="Are you sure you want to delete this category?"
+                      onConfirm={() => handleDelete(index)}
+                      okText="Yes"
+                      okType="danger"
+                      cancelText="No"
                 >
-                  Delete
-                </Button>
+                  <Button 
+                    variant="outlined" 
+                    color="secondary" 
+                    className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
+                  >
+                    Delete
+                  </Button>
+                </Popconfirm>
                 </TableCell>
               </TableRow>
             ))}

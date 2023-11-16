@@ -17,6 +17,9 @@ import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 import ReactCardFlip from 'react-card-flip';
 import ListIncomes from '@/components/income/ListIncome';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
+import BudgetLeft from '@/components/Budget/BudgetLeft';
+import Budgets from '../budget/page';
+import TotalSavings from '@/components/Card/totalSummary';
 
 // ... imports ...
 
@@ -131,13 +134,21 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div className='flex-initial mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
+      <div className='flex'>
+        <div className='flex-1'>
+          <TotalSavings totalIncome={incomes} totalOutcome={outcomes} />
+        </div>
+        <div className='flex-none'>
+          <BudgetLeft/>
+        </div>
+      </div>
+      <div className='flex-initial mt-5 p-5 bg-white rounded-sm border border-stroke shadow-default'>
         <div className='flex'>
           <div>
             <div className='text-center'>
               <Button 
                 onClick={handleFlipOutcome} 
-                className='m-2 bg-blue-400 text-white hover:bg-blue-700'
+                className='m-2 bg-green-400 text-white hover:bg-green-700'
                 color='primary'
               >
                 Income
