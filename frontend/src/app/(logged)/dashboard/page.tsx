@@ -10,7 +10,7 @@ import { BACKEND_URL } from '@/constants';
 import { Income, Outcome, User, dbResponse } from '@/utils/type';
 import { Button } from '@mui/material';
 import { AxiosResponse } from 'axios';
-// No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
+// No code changes needed. Run npm install axios @types/axios in the terminal to install required packages.
 import { useRouter } from 'next/navigation';
 import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
@@ -18,6 +18,8 @@ import ReactCardFlip from 'react-card-flip';
 import ListIncomes from '@/components/income/ListIncome';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
 import CategoryOutcome from '@/components/Dashboard/CategoryOutcome';
+import TotalSavings from '@/components/Card/totalSummary';
+import BudgetLeft from '@/components/Budget/BudgetLeft';
 
 export default function Dashboard() {
   const [activeButton, setActiveButton] = useState('all');
@@ -58,7 +60,7 @@ export default function Dashboard() {
     // Fetch Incomes data when the component mounts
     useEffect(() => {
       axiosInstance
-        .get(`/incomes/user`) // Replace with your actual endpoint
+        .get('/incomes/user') // Replace with your actual endpoint
         .then((response: AxiosResponse<dbResponse<Income[]>>) => {
           const res: dbResponse<Income[]> = response.data;
           setIncomes(res.data);
@@ -70,7 +72,7 @@ export default function Dashboard() {
 
     useEffect(() => {
       axiosInstance
-        .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint
+        .get('${BACKEND_URL}/api/outcomes/') // Replace with your actual endpoint
         .then((response: AxiosResponse<dbResponse<Outcome[]>>) => {
           const res: dbResponse<Outcome[]> = response.data;
           setOutcomes(res.data);
@@ -140,83 +142,91 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div className='flex-initial mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
-        <div className='flex'>
+      <div className='flex'>
+        <div className='flex-1'>
+          <TotalSavings totalIncome={incomes} totalOutcome={outcomes} />
+        </div>
+        <div className='flex-none'>
+          <BudgetLeft />
+        </div>
+      </div>
+    <div className='flex-initial mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
+      <div className='flex'>
+        <div>
+          <div className='text-center'>
+            <Button 
+              onClick={handleFlipOutcome} 
+              className='m-2 bg-blue-400 text-white hover:bg-blue-700'
+              color='primary'
+            >
+              Income
+            </Button>
+            <Button 
+              onClick={handleFlipIncome}  
+              className='m-2 bg-red-400 text-white hover:bg-red-700'
+              color='secondary'
+            >
+              Outcome
+            </Button>
+          </div>
           <div>
-            <div className='text-center'>
-              <Button 
-                onClick={handleFlipOutcome} 
-                className='m-2 bg-blue-400 text-white hover:bg-blue-700'
-                color='primary'
-              >
-                Income
-              </Button>
-              <Button 
-                onClick={handleFlipIncome}  
-                className='m-2 bg-red-400 text-white hover:bg-red-700'
-                color='secondary'
-              >
-                Outcome
-              </Button>
-            </div>
-            <div>
-              <ReactCardFlip isFlipped={isFlipped}>
-                <div key='front'>
-                  <div className='flex'>
-                    <div className='p-2'>
-                      <h1 className='text-center font-bold text-xl'>Quick Income</h1>
-                      <IncomeInput />
-                    </div>
-                    <div className='p-2 ml-26'>
-                    <h1 className='text-center font-bold text-xl pb-2'>Recent Income</h1>
-                      <ListIncomes incomes={limitedIncomes} setIncomes={setIncomes}/>
-                    </div>
+            <ReactCardFlip isFlipped={isFlipped}>
+              <div key='front'>
+                <div className='flex'>
+                  <div className='p-2'>
+                    <h1 className='text-center font-bold text-xl'>Quick Income</h1>
+                    <IncomeInput />
+                  </div>
+                  <div className='p-2 ml-26'>
+                  <h1 className='text-center font-bold text-xl pb-2'>Recent Income</h1>
+                    <ListIncomes incomes={limitedIncomes} setIncomes={setIncomes}/>
                   </div>
                 </div>
-                <div key='back'>
-                  <div className='flex'>
-                    <div className='p-2'>
-                      <h1 className='text-center font-bold text-xl'>Quick Outcome</h1>
-                      <OutcomeInput />
-                    </div>
-                    <div className='p-2 ml-15'>
-                    <h1 className='text-center font-bold text-xl pb-2'>Recent Outcome</h1>
-                      <ListOutcomes outcomes={limitedOutcomes} setOutcomes={setOutcomes} />
-                    </div>
+              </div>
+              <div key='back'>
+                <div className='flex'>
+                  <div className='p-2'>
+                    <h1 className='text-center font-bold text-xl'>Quick Outcome</h1>
+                    <OutcomeInput />
+                  </div>
+                  <div className='p-2 ml-15'>
+                  <h1 className='text-center font-bold text-xl pb-2'>Recent Outcome</h1>
+                    <ListOutcomes outcomes={limitedOutcomes} setOutcomes={setOutcomes} />
                   </div>
                 </div>
-              </ReactCardFlip>
-            </div>
+              </div>
+            </ReactCardFlip>
           </div>
         </div>
       </div>
-      <div className='bg-slate-700 flex justify-center text-white'>
-        <button
-          onClick={() => handleLinkClick('all')}
-          className={`m-2 text-blue ${activeButton === 'all' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
-        >  All  
-        </button>
-        <button
-          onClick={() => handleLinkClick('wallet')}
-          className={`m-2 text-blue ${activeButton === 'wallet' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
-        >  Wallet  
-        </button>
-        <button
-          onClick={() => handleLinkClick('outcomes')}
-          className={`m-2 text-blue ${activeButton === 'outcomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
-        >  Outcome  
-        </button>
-        <button 
-          onClick={() => handleLinkClick('budget')} 
-          className={`m-2 text-blue ${activeButton === 'budget' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
-          >Budget & Category
-        </button>
-      </div>
-      <h2 style={{ textAlign:'center', fontSize: '2rem', color: '#ffff', fontStyle: 'italic', marginBottom: '1rem' }}>Hello {username} !</h2>
-
-      <div className="flex flex-col bg-gray-100">
-        {renderSelectedChart()}
-      </div>
     </div>
+    <div className='bg-slate-700 flex justify-center text-white'>
+      <button
+        onClick={() => handleLinkClick('all')}
+        className={`m-2 text-blue ${activeButton === 'all' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
+      >  All  
+      </button>
+      <button
+        onClick={() => handleLinkClick('wallet')}
+        className={`m-2 text-blue ${activeButton === 'wallet' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
+      >  Wallet  
+      </button>
+      <button
+        onClick={() => handleLinkClick('outcomes')}
+        className={`m-2 text-blue ${activeButton === 'outcomes' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
+      >  Outcome  
+      </button>
+      <button 
+        onClick={() => handleLinkClick('budget')} 
+        className={`m-2 text-blue ${activeButton === 'budget' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
+        >Budget & Category
+      </button>
+    </div>
+    <h2 style={{ textAlign:'center', fontSize: '2rem', color: '#ffff', fontStyle: 'italic', marginBottom: '1rem' }}>Hello {username} !</h2>
+
+    <div className="flex flex-col bg-gray-100">
+      {renderSelectedChart()}
+    </div>
+  </div>
   );
 }
