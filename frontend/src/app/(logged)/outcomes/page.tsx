@@ -16,6 +16,7 @@ import CategorySelect from '@/components/category/CategorySelect';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import numeral from 'numeral';
+import { message } from 'antd';
 
 const Outcomes = () => {
   const [nominal, setNominal] = useState(0);
@@ -100,6 +101,7 @@ const Outcomes = () => {
           setDate(''); // Reset the date field
           const newData = response.data.data
           setOutcomes((prev) => [...prev, newData])
+          message.success('Outcome added successfully', 5);
         })
         .catch((error: AxiosError) => {
           console.log("axios", error)

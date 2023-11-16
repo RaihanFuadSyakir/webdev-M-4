@@ -4,6 +4,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { Wallet, dbResponse } from '@/utils/type';
 import NewWalletForm from './NewWalletForm';
 import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow, Paper, Button } from '@mui/material';
+import { Popconfirm, message } from 'antd';
 
 
 const WalletList = () => {
@@ -40,6 +41,7 @@ const WalletList = () => {
         setWallets((prevWallets: Wallet[]) => {
           return prevWallets.filter(wallet => wallet.id !== walletId);
         });
+        message.success('Wallet deleted successfully', 5);
       })
       .catch((err_response: AxiosError<dbResponse<Wallet>>) => {
         console.log(err_response.response?.data.msg);
@@ -81,13 +83,20 @@ const WalletList = () => {
                     >
                       Edit
                     </Button>
-                    <Button
-                      variant="contained"
-                      className='bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white'
-                      onClick={() => handleDeleteWallet(wallet.id)}
+                    <Popconfirm
+                      title="Are you sure you want to delete this wallet?"
+                      onConfirm={() => handleDeleteWallet(wallet.id)}
+                      okText="Yes"
+                      okType="danger"
+                      cancelText="No"
                     >
-                      Delete
-                    </Button>
+                      <Button
+                        variant="contained"
+                        className='bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white'
+                      >
+                        Delete
+                      </Button>
+                    </Popconfirm>
                   </TableCell>
                 </TableRow>
               ))}
