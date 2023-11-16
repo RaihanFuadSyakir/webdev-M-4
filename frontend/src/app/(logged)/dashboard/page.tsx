@@ -22,7 +22,6 @@ import Budgets from '../budget/page';
 import TotalSavings from '@/components/Card/totalSummary';
 import CategoryOutcome from '@/components/Dashboard/CategoryOutcome';
 
-
 export default function Dashboard() {
   const [activeButton, setActiveButton] = useState('all');
   const [selectedChart, setSelectedChart] = useState('all');
