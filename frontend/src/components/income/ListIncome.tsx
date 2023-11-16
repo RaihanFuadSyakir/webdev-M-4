@@ -20,12 +20,17 @@ import FormControl from '@mui/material/FormControl';
 import WalletSelect from '@/components/wallet/WalletSelect';
 import {format} from 'date-fns'
 import numeral from 'numeral';
+import { TablePagination } from '@mui/material';
+import { Popconfirm, message } from 'antd';
 
 interface Props{
   incomes : Income[]
   setIncomes: React.Dispatch<React.SetStateAction<Income[]>>;
 }
+
 const ListIncomes = ({incomes,setIncomes} : Props) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5)
   const [editStates,setEditStates] = useState(
     incomes.map((income)=>({
       isEditing : false,
@@ -45,6 +50,7 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
     updatedIncomes.splice(index,1);
     setEditStates(newEditStates);
     setIncomes(updatedIncomes);
+    message.success('Income deleted successfully', 5);
   }
   useEffect(()=>{
     setEditStates(()=>(
@@ -118,6 +124,17 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
           console.log(JSON.stringify(res_err.response?.data));
         });
   }
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <div className='text-center'>
@@ -195,14 +212,21 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
                     </>
                 ) : (
                   <>
-                    <Button 
-                      variant="outlined" 
-                      color="secondary" 
-                      className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
-                      onClick={() => handleDelete(index)}
+                    <Popconfirm
+                      title="Are you sure you want to delete this income?"
+                      onConfirm={() => handleDelete(index)}
+                      okText="Yes"
+                      okType="danger"
+                      cancelText="No"
                     >
-                      Delete
-                    </Button>
+                      <Button 
+                        variant="outlined" 
+                        color="secondary" 
+                        className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
+                      >
+                        Delete
+                      </Button>
+                    </Popconfirm>
                     <Button 
                       variant="outlined" 
                       color="primary" 
@@ -219,6 +243,17 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div style={{ textAlign: 'right', padding: '10px' }}>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={incomes.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </div>
     </div>
   );
 };

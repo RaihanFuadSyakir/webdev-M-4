@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import React from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { AxiosError, AxiosResponse } from "axios";
+import { message } from 'antd';
 interface props {
   setSelectedCategory: React.Dispatch<React.SetStateAction<number>>;
   setNewCategories?: React.Dispatch<React.SetStateAction<Category[]>>
@@ -82,6 +83,7 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories
         if (setNewCategories !== undefined) {
           setNewCategories((prev) => [...prev, data]);
         }
+        message.success('Category added successfully', 5);
       })
       .catch((res_err: AxiosError<dbResponse<Category>>) => {
         console.log(JSON.stringify(res_err.response?.data));

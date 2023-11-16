@@ -14,6 +14,7 @@ import { BACKEND_URL } from "@/constants";
 import DateTable from "@/components/Budget/DateTable";
 import CategorySelect from "@/components/category/CategorySelect";
 import numeral from "numeral";
+import { message } from "antd";
 
 const Budgets = () => {
   const [seed, setSeed] = useState(0);
@@ -97,6 +98,7 @@ const Budgets = () => {
             console.log(response.data.msg);
             setBudgets((prev) => [...prev!, data]);
             setIsUpdateMode(false);
+            message.success('Budget added successfully', 5);
           })
           .catch((err_response) => {
             console.log(err_response.response?.data.msg);
@@ -184,7 +186,7 @@ const Budgets = () => {
             variant="contained"
             color="primary"
             className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2'>
-            {isUpdateMode ? 'Update' : 'Save'}
+            {isUpdateMode ? 'Update' : 'Save' }
           </Button>
         </div>}
         <div className="flex-1 p-2">

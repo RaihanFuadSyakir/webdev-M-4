@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Outcome, Income, dbResponse } from '@/utils/type';
 import axiosInstance from '@/utils/fetchData';
 import { AxiosResponse } from 'axios';
-import numeral from 'numeral';
 import { DataGrid, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
 import {
   Table,
@@ -63,10 +62,13 @@ const formatDate = (date: string) => {
     return `${day}/${month}/${year}`;
   };
   
-
-const formatMoney = (value: number) => `Rp ${numeral(value).format('0,0')}`;
-
-
+  const formatRupiah = (number: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
 
 const ListRecap = ({ incomes, outcomes }: RecapProps) => {
   const [selectedMonth, setSelectedMonth] = useState<number>(-1);
@@ -126,25 +128,25 @@ const ListRecap = ({ incomes, outcomes }: RecapProps) => {
       field: category,
       headerName: category,
       width: 150,
-      valueFormatter: (params: GridValueFormatterParams) => formatMoney(params.value as number),
+      valueFormatter: (params: GridValueFormatterParams) => formatRupiah(params.value as number),
     })),
     {
       field: 'totalOutcome',
       headerName: 'Total Outcome',
       width: 150,
-      valueFormatter: (params: GridValueFormatterParams) => formatMoney(params.value as number),
+      valueFormatter: (params: GridValueFormatterParams) => formatRupiah(params.value as number),
     },
     {
       field: 'totalIncome',
       headerName: 'Total Income',
       width: 150,
-      valueFormatter: (params: GridValueFormatterParams) => formatMoney(params.value as number),
+      valueFormatter: (params: GridValueFormatterParams) => formatRupiah(params.value as number),
     },
     {
       field: 'totalSavings',
       headerName: 'Savings',
       width: 150,
-      valueFormatter: (params: GridValueFormatterParams) => formatMoney(params.value as number),
+      valueFormatter: (params: GridValueFormatterParams) => formatRupiah(params.value as number),
     },
   ];
 
@@ -182,9 +184,9 @@ const ListRecap = ({ incomes, outcomes }: RecapProps) => {
           </Select>
         </FormControl>
         <Stack direction="row" spacing={2} className='p-3'>
-          <span className='pl-2'>Total Outcome</span><Chip label={totalOutcome} color="error" />
-          <span className='pl-2'>Total Income</span><Chip label={totalIncome} color="success" />
-          <span className='pl-2'>Total Savings</span><Chip label={totalSavings} color="primary" />
+          <span className='pl-2'>Total Outcome</span><Chip label={formatRupiah(totalOutcome)} color="error" />
+          <span className='pl-2'>Total Income</span><Chip label={formatRupiah(totalIncome)} color="success" />
+          <span className='pl-2'>Total Savings</span><Chip label={formatRupiah(totalSavings)} color="primary" />
         </Stack>
       </div>
       <div style={{ height: 400, width: '100%' }}>
