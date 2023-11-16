@@ -1,9 +1,9 @@
 "use client"
-import LineChart from '@/components/Dashboard/LineChart';
-import LineChartIncome from '@/components/Dashboard/LineChartIncome';
+import DailyOutcome from '@/components/Dashboard/DailyOutcome';
+import BudgetOverview from '@/components/Dashboard/BudgetOverview';
 import IncomeInput from '@/components/income/IncomeInput';
 import OutcomeInput from '@/components/outcome/OutcomeInput';
-import BarChartReport from '@/components/Dashboard/BarChartReport';
+import CashflowOverview from '@/components/Dashboard/CashflowOverview';
 import Warning from '@/components/Dashboard/Budget';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
@@ -89,14 +89,14 @@ export default function Dashboard() {
               <Warning />
             </div>
             <div className="p-2 rounded-lg mb-4 mx-auto">
-              <BarChartReport />
+              <CashflowOverview />
             </div>
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <CategoryOutcome />
             </div>
             <div className="flex">
               <div className="p-2 rounded-lg flex-1">
-                <LineChart />
+                <DailyOutcome />
               </div>
               <div className="p-2 rounded-lg flex-1">
                 <PieChartWallet />
@@ -112,15 +112,20 @@ export default function Dashboard() {
         );
       case 'outcomes':
         return (
-          <div className="p-2 rounded-lg mx-auto">
-            <LineChart />
+          <div className="flex">
+              <div className="p-2 rounded-lg ml-4 flex-1">
+                <DailyOutcome />
+                <div className="p-2 rounded-lg mb-4">
+                  <CategoryOutcome />
+                </div>
+              </div>
           </div>
         );
       case 'budget':
         return(
           <div className="flex">
               <div className="p-2 rounded-lg ml-4 flex-1">
-                <LineChartIncome />
+                <BudgetOverview />
                 <div className="p-2 rounded-lg mb-4">
                   <Warning />
                 </div>
