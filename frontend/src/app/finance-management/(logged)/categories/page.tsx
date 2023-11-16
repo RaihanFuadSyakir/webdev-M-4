@@ -13,6 +13,7 @@ import { currencySchema } from '@/utils/validation';
 import InputAdornment from '@mui/material/InputAdornment';
 import ListCategories from '@/components/category/ListCategory';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
+import ListExpensesByCategory from '@/components/category/ListExpensesByCategory';
 
 export default function Categories() {
   const [SelectedCategory, setSelectedCategory] = useState(0);
@@ -73,6 +74,9 @@ export default function Categories() {
           </div>
         </div>
         <div className='w-auto m-2 p-2'>
+
+          <ListExpensesByCategory incomes={incomes} outcomes={outcomes} />
+
         </div>
       </div>
     </>
