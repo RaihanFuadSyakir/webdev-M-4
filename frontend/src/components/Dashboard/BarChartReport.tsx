@@ -1,4 +1,3 @@
-"use client"
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
@@ -10,11 +9,13 @@ import HighchartsReact from 'highcharts-react-official';
 const BarChartReport = () => {
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [showAllData, setShowAllData] = useState<boolean>(false);
 
   useEffect(() => {
-    // Fetch incomes
     axiosInstance
-      .get(`/incomes/user`)  // Replace with your actual endpoint for incomes
+      .get(`${BACKEND_URL}/api/incomes/user`)
       .then((response: AxiosResponse<dbResponse<Income[]>>) => {
         const res: dbResponse<Income[]> = response.data;
         setIncomes(res.data);
@@ -23,9 +24,8 @@ const BarChartReport = () => {
         console.error('Failed to fetch incomes:', error);
       });
 
-    // Fetch outcomes
     axiosInstance
-      .get(`${BACKEND_URL}/api/outcomes/`) // Replace with your actual endpoint for outcomes
+      .get(`${BACKEND_URL}/api/outcomes/`)
       .then((response: AxiosResponse<dbResponse<Outcome[]>>) => {
         const res: dbResponse<Outcome[]> = response.data;
         setOutcomes(res.data);
@@ -35,41 +35,48 @@ const BarChartReport = () => {
       });
   }, []);
 
-  // Calculate monthly income and outcome based on fetched data
-  const monthlyData = incomes
-    .concat(outcomes) // Combine incomes and outcomes into a single array
-    .reduce((acc, item) => {
-      const date = new Date(item.date); // Assuming date is a string in 'YYYY-MM-DD' format
-      const monthYearKey = `${date.getMonth() + 1}-${date.getFullYear()}`;
-      const amount = item.total_income || item.total_outcome; // Assuming there are fields like total_income and total_outcome
+  const combinedData: (Income | Outcome)[] = [...incomes, ...outcomes];
 
-      if (!acc[monthYearKey]) {
-        acc[monthYearKey] = {
-          date: monthYearKey,
-          income: 0,
-          outcome: 0,
-        };
-      }
+  const filteredData = combinedData.filter((item) => {
+    const date = new Date(item.date);
+    const itemMonth = date.getMonth() + 1;
+    const itemYear = date.getFullYear();
+    return showAllData || (itemMonth === selectedMonth && itemYear === selectedYear);
+  });
 
-      if (item.total_income) {
-        acc[monthYearKey].income += amount;
-      } else {
-        acc[monthYearKey].outcome += amount;
-      }
+  const monthlyData = filteredData.reduce((acc, item) => {
+    const date = new Date(item.date);
+    const monthYearKey = `${date.getMonth() + 1}-${date.getFullYear()}`;
+    const amount = 'total_income' in item ? item.total_income : item.total_outcome || 0;
 
-      return acc;
-    }, {});
+    if (!acc[monthYearKey]) {
+      acc[monthYearKey] = {
+        date: monthYearKey,
+        income: 0,
+        outcome: 0,
+      };
+    }
 
-  // Sort data by date (in this case, month-year)
+    if ('total_income' in item) {
+      acc[monthYearKey].income += amount;
+    } else {
+      acc[monthYearKey].outcome += amount;
+    }
+
+    return acc;
+  }, {} as Record<string, { date: string; income: number; outcome: number }>);
+
   const sortedData = Object.values(monthlyData).sort((a, b) => {
     const [aMonth, aYear] = a.date.split('-');
     const [bMonth, bYear] = b.date.split('-');
-    return new Date(`${aYear}-${aMonth}`) - new Date(`${bYear}-${bMonth}`);
+    const aDate = new Date(parseInt(aYear), parseInt(aMonth) - 1);
+    const bDate = new Date(parseInt(bYear), parseInt(bMonth) - 1);
+    return aDate.getTime() - bDate.getTime();
   });
 
   const chartOptions = {
     chart: {
-      type: 'column', // Column chart
+      type: 'column',
       width: 800,
       height: 400,
     },
@@ -101,6 +108,40 @@ const BarChartReport = () => {
 
   return (
     <div className="w-full max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
+      <div className="mb-4 space-x-4 items-center">
+        <label className="text-gray-600 text-sm">Month:</label>
+        <select
+          className="p-2 text-sm border border-gray-300 rounded-md"
+          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+          value={selectedMonth}
+        >
+          <option value="0">Show All Data</option>
+          {Array.from({ length: 12 }, (_, index) => (
+            <option key={index + 1} value={index + 1}>
+              {new Date(0, index).toLocaleString('en-US', { month: 'long' })}
+            </option>
+          ))}
+        </select>
+        <label className="text-gray-600 text-sm">Year:</label>
+        <select
+          className="p-2 text-sm border border-gray-300 rounded-md"
+          onChange={(e) => setSelectedYear(Number(e.target.value))}
+          value={selectedYear}
+        >
+          <option value="">Select Year</option>
+          {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+        <label className="text-gray-600 text-sm">Show All Data:</label>
+        <input
+          type="checkbox"
+          onChange={() => setShowAllData(!showAllData)}
+          checked={showAllData}
+        />
+      </div>
       <HighchartsReact highcharts={Highcharts} options={chartOptions} />
     </div>
   );

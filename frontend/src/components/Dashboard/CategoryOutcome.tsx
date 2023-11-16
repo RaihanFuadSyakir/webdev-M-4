@@ -99,6 +99,8 @@ const BarChart = () => {
   const chartOptions = {
     chart: {
       type: 'column',
+      width: 800,
+      height: 400,
     },
     title: {
       text: 'Monthly Category-wise Outcome',
