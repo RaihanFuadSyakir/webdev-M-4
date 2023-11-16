@@ -4,7 +4,6 @@ import axiosInstance from '@/utils/fetchData';
 import { Wallet, dbResponse } from '@/utils/type';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { message } from 'antd';
 // import InputAdornment from '@mui/material/InputAdornment';
 
 interface NewWalletFormProps {
@@ -38,7 +37,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
   };
 
 
-  const handleInputChange = (e: { target: { value: string; }; }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Menghapus karakter selain angka
     const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
   
@@ -64,12 +63,10 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         // If in edit mode, send PUT request
         await axiosInstance.put('/wallet/${editingWallet.id}', data);
         onWalletEdited();
-        message.success('Wallet updated successfully', 5);
       } else {
         // If in add mode, send POST request
         await axiosInstance.post('/wallet/new', data);
         onWalletAdded();
-        message.success('Wallet added successfully', 5);
       }
   
       // Reset input fields
@@ -88,7 +85,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         label="Wallet Name"
         name="walletName"
         value={walletName}
-        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setWalletName(e.target.value)}
+        onChange={(e) => setWalletName(e.target.value)}
         fullWidth
         margin="normal"
         disabled={!!editingWallet} // Disable the field in edit mode
@@ -98,8 +95,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         name="totalBalance"
         type="text"
         value={totalBalance}
-        onKeyUp={handleInputChange}
-        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setTotalBalance(e.target.value)}
+        onChange={handleInputChange}
         fullWidth
         margin="normal"
         InputProps={{

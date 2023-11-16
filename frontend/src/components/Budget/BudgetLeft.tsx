@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react';
 import { Budget, dbResponse, Category } from '@/utils/type';
 import { AxiosError, AxiosResponse } from 'axios';
