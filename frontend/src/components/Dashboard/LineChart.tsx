@@ -4,62 +4,56 @@ import React, { useEffect, useState } from 'react';
 import { BACKEND_URL } from '@/constants';
 import axiosInstance from '@/utils/fetchData';
 import { AxiosError, AxiosResponse } from 'axios';
-import { Outcome, Wallet, dbResponse } from '@/utils/type';
+import { Outcome, dbResponse } from '@/utils/type';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 const LineChart = () => {
-  const [nominal, setNominal] = useState(0);
-  const [category, setCategory] = useState(0);
-  const [description, setDescription] = useState('');
-  const [wallet, setWallet] = useState(0);
-  const [date, setDate] = useState(''); // Add date state
-  const [nominalError, setNominalError] = useState('');
-  const [categoryError, setCategoryError] = useState('');
-  const [walletError, setWalletError] = useState('');
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [outcomes,setOutcomes] = useState<Outcome[]>([]);
-   // Fetch outcomes data when the component mounts
-   useEffect(() => {
+  const [allOutcomes, setAllOutcomes] = useState<Outcome[]>([]);
+  const [filteredOutcomes, setFilteredOutcomes] = useState<Outcome[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(new Date().getMonth() + 1); // Set default to current month
+  const [selectedYear, setSelectedYear] = useState<number | null>(new Date().getFullYear()); // Set default to current year
+
+  useEffect(() => {
     axiosInstance
       .get(`${BACKEND_URL}/api/outcomes/`)
       .then((response: AxiosResponse<dbResponse<Outcome[]>>) => {
         const res: dbResponse<Outcome[]> = response.data;
-        // Filter outcomes for the current month (assuming date field is in 'YYYY-MM-DD' format)
-        const currentDate = new Date();
-        const currentMonth = currentDate.getMonth() + 1;
-        const currentYear = currentDate.getFullYear();
-        const filteredOutcomes = res.data.filter((outcome) => {
-          const outcomeDate = new Date(outcome.date);
-          const outcomeMonth = outcomeDate.getMonth() + 1;
-          const outcomeYear = outcomeDate.getFullYear();
-          return outcomeMonth === currentMonth && outcomeYear === currentYear;
-        });
-        setOutcomes(filteredOutcomes);
+        setAllOutcomes(res.data);
       })
-      .catch((error) => {
+      .catch((error: AxiosError) => {
         console.error('Failed to fetch outcomes:', error);
       });
   }, []);
 
-  // Mengubah timestamp menjadi tanggal saja (misal: 2023-10-17 00:00:00 -> 17)
-  const formatTimestampToDay = (timestamp) => {
+  useEffect(() => {
+    // Filter outcomes based on selectedMonth and selectedYear
+    const filtered = allOutcomes.filter((outcome) => {
+      if (selectedMonth !== null && selectedYear !== null) {
+        const outcomeDate = new Date(outcome.date);
+        const outcomeMonth = outcomeDate.getMonth(); // Zero-indexed month
+        const outcomeYear = outcomeDate.getFullYear();
+        return outcomeMonth === selectedMonth - 1 && outcomeYear === selectedYear;
+      }
+      return true; // No filter applied if month or year is not selected
+    });
+
+    setFilteredOutcomes(filtered);
+  }, [selectedMonth, selectedYear, allOutcomes]);
+
+  const formatTimestampToDay = (timestamp: string | number | Date) => {
     const date = new Date(timestamp);
-    return date.getDate(); // Mengambil tanggal dari timestamp
+    return date.getDate();
   };
 
-  // Fungsi untuk mengelompokkan data outcome berdasarkan tanggal
   const groupOutcomesByDate = (outcomes: Outcome[]) => {
     return outcomes.reduce((result: { [key: string]: number }, outcome: Outcome) => {
-      const date = outcome.date; // Ambil tanggal dari outcome
+      const date = outcome.date;
       const totalOutcome = outcome.total_outcome;
 
-      // Jika tanggal sudah ada di result, tambahkan totalOutcome
       if (result[date]) {
         result[date] += totalOutcome;
       } else {
-        // Jika tanggal belum ada di result, tambahkan tanggal dengan totalOutcome
         result[date] = totalOutcome;
       }
 
@@ -67,41 +61,75 @@ const LineChart = () => {
     }, {});
   };
 
-  // Mengelompokkan data outcome perhari dan mengubah label sumbu x ke tanggal
-  const groupedOutcomes = groupOutcomesByDate(outcomes);
+  const groupedOutcomes = groupOutcomesByDate(filteredOutcomes);
 
-  // Mengubah hasil pengelompokkan ke format yang bisa digunakan oleh chartOptions
-  const chartData = Object.keys(groupedOutcomes).map(date => ({
-    date: formatTimestampToDay(date), // Mengubah label sumbu x ke tanggal
+  const chartData = Object.keys(groupedOutcomes).map((date) => ({
+    date: formatTimestampToDay(date),
     total_outcome: groupedOutcomes[date],
-  })).sort((a, b) => a.date - b.date); // Urutkan berdasarkan tanggal
+  })).sort((a, b) => a.date - b.date);
 
   const chartOptions = {
     title: {
-      text: 'Outcome This Month'
+      text: 'Daily Outcome',
     },
     xAxis: {
-      categories: chartData.map(item => item.date), // Menggunakan chartData yang sudah dielompokkan
+      categories: chartData.map((item) => item.date),
       title: {
-        text: 'Date'
-      }
+        text: 'Date',
+      },
     },
     yAxis: {
       title: {
-        text: 'Total Outcome'
-      }
+        text: 'Total Outcome',
+      },
     },
     series: [{
       name: 'Total Outcome',
-      data: chartData.map(item => item.total_outcome), // Menggunakan chartData yang sudah dielompokkan
+      data: chartData.map((item) => item.total_outcome),
       type: 'line',
       width: 800,
-      height: 400
-    }]
+      height: 400,
+    }],
   };
 
   return (
     <div className="w-full max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
+      <div className="mb-4 flex space-x-4 items-center">
+        <div className="flex space-x-4 items-center">
+          <label className="text-gray-600 text-sm" htmlFor="month">Month:</label>
+          <select
+            className="p-2 text-sm border border-gray-300 rounded-md"
+            id="month"
+            onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+            value={selectedMonth || ''}
+          >
+            <option value="">Select Month</option>
+            {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+              <option key={month} value={month}>
+                {new Date(0, month - 1).toLocaleString('en-US', { month: 'long' })}
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="flex space-x-4 items-center">
+          <label className="text-gray-600 text-sm" htmlFor="year">Year:</label>
+          <select
+            className="p-2 text-sm border border-gray-300 rounded-md"
+            id="year"
+            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+            value={selectedYear || ''}
+          >
+            <option value="">Select Year</option>
+            {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       <HighchartsReact highcharts={Highcharts} options={chartOptions} />
     </div>
   );

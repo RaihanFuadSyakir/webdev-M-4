@@ -49,7 +49,7 @@ const BudgetChart = () => {
       type: 'bar',
     },
     title: {
-      text: 'Budget Overview',
+      text: 'Monthly Budget Overview',
     },
     xAxis: {
       categories: chartData.map(item => item.category),
