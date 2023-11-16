@@ -4,6 +4,7 @@ import axiosInstance from '@/utils/fetchData';
 import { Wallet, dbResponse } from '@/utils/type';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { message } from 'antd';
 // import InputAdornment from '@mui/material/InputAdornment';
 
 interface NewWalletFormProps {
@@ -65,10 +66,12 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         // If in edit mode, send PUT request
         await axiosInstance.put(`/wallet/${editingWallet.id}`, data);
         onWalletEdited();
+        message.success('Wallet updated successfully', 5);
       } else {
         // If in add mode, send POST request
         await axiosInstance.post('/wallet/new', data);
         onWalletAdded();
+        message.success('Wallet added successfully', 5);
       }
   
       // Reset input fields
