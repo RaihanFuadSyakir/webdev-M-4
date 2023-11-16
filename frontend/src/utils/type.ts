@@ -60,7 +60,6 @@ export interface Budget {
   current_budget: number;
   description: string;
   wallet_id: number;
-  category_id: number;
   user_id: number;
   category: Category;
 }
