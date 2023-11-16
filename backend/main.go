@@ -39,7 +39,7 @@ func main() {
 	// 	panic(err)
 	// }
 
-	// Seed the database with dummy data
+	// //Seed the database with dummy data
 	// seeds.Seed(db) // Update the function call with the correct path
 
 	// Initialize the UserController with the database
