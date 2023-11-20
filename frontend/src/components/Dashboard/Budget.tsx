@@ -50,7 +50,7 @@ const BudgetInfo = () => {
   };
 
   return (
-    <div className="sm:w-full  sm:max-w-screen-lg sm:mx-auto sm:p-8 border border-stroke shadow-default rounded-lg">
+    <div className="sm:w-full sm:max-w-screen-lg sm:mx-auto sm:p-8 border border-stroke shadow-default rounded-lg">
       {renderNegativeBudgetInfo()}
     </div>
   );

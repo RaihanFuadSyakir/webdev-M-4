@@ -97,11 +97,13 @@ export default function Dashboard() {
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <Warning />
             </div>
-            <div className="p-2 rounded-lg mb-4 mx-auto">
-              <BarChartReport />
-            </div>
-            <div className="p-2 rounded-lg mb-4 mx-auto">
-              <CategoryOutcome />
+            <div className='sm:flex'>
+              <div className="p-2 rounded-lg flex-1">
+                <BarChartReport />
+              </div>
+              <div className="p-2 rounded-lg flex-1">
+                <CategoryOutcome />
+              </div>
             </div>
             <div className="sm:flex">
               <div className="p-2 rounded-lg flex-1">
