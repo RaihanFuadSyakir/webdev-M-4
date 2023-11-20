@@ -3,6 +3,7 @@ import axiosInstance from '@/utils/fetchData';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Wallet, dbResponse } from '@/utils/type';
 import NewWalletForm from './NewWalletForm';
+import { Popconfirm, message } from 'antd';
 import {
   TableContainer,
   Table,
@@ -40,7 +41,7 @@ const WalletList = () => {
     const reverse = rupiah.toString().split('').reverse().join('');
     const ribuan = reverse.match(/\d{1,3}/g);
     const hasil = ribuan?.join('.').split('').reverse().join('');
-    return 'Rp ' + hasil;
+    return 'Rp. ' + hasil;
   };
 
   const handleDeleteWallet = (walletId: number) => {
@@ -51,6 +52,7 @@ const WalletList = () => {
         setWallets((prevWallets: Wallet[]) => {
           return prevWallets.filter(wallet => wallet.id !== walletId);
         });
+        message.success('Wallet deleted successfully', 5);
       })
       .catch((err_response: AxiosError<dbResponse<Wallet>>) => {
         console.log(err_response.response?.data.msg);
@@ -71,8 +73,8 @@ const WalletList = () => {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, wallets.length - page * rowsPerPage);
 
   return (
-    <div className='flex'>
-      <div className='flex-initial w-1/3 m-4 rounded p-4 flex flex-col gap-4 bg-white'>
+    <div className='sm:flex'>
+      <div className='flex-initial sm:w-1/3 m-4 rounded flex flex-col gap-4 bg-white'>
         <NewWalletForm
           onWalletAdded={fetchWallets}
           onWalletEdited={() => {
@@ -82,14 +84,14 @@ const WalletList = () => {
           editingWallet={editingWallet}
         />
       </div>
-      <div className='flex-initial w-2/3 m-4 bg-white'>
+      <div className='flex-initial sm:w-2/3 m-4 bg-white'>
         <TableContainer component={Paper} className='max-h-96 overflow-auto'>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell style={{ fontWeight: 'bold' }}>Wallet Name</TableCell>
-                <TableCell style={{ fontWeight: 'bold' }}>Total Balance</TableCell>
-                <TableCell style={{ fontWeight: 'bold' }}>Actions</TableCell>
+                <TableCell align='center' style={{ fontWeight: 'bold' }}>Wallet Name</TableCell>
+                <TableCell align='center' style={{ fontWeight: 'bold' }}>Total Balance</TableCell>
+                <TableCell align='center' style={{ fontWeight: 'bold' }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -98,23 +100,30 @@ const WalletList = () => {
                 : wallets
               ).map((wallet) => (
                 <TableRow key={wallet.id}>
-                  <TableCell>{wallet.wallet_name}</TableCell>
-                  <TableCell>{formatCurrency(wallet.total_balance)}</TableCell>
-                  <TableCell>
+                  <TableCell align='center'>{wallet.wallet_name}</TableCell>
+                  <TableCell align='center'>{formatCurrency(wallet.total_balance)}</TableCell>
+                  <TableCell align='center'>
                     <Button
                       variant="contained"
-                      className={`bg-yellow-500 text-white rounded p-2 hover:bg-yellow-700 hover:text-white mr-2`}
+                      className={`bg-yellow-500 text-white rounded p-2 px-5 hover:bg-yellow-700 sm:mr-2 sm:mb-0 mb-2`}
                       onClick={() => setEditingWallet(wallet)}
                     >
                       Edit
                     </Button>
-                    <Button
-                      variant="contained"
-                      className={`bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white`}
-                      onClick={() => handleDeleteWallet(wallet.id)}
+                    <Popconfirm
+                      title="Are you sure you want to delete this wallet?"
+                      onConfirm={() => handleDeleteWallet(wallet.id)}
+                      okText="Yes"
+                      okType="danger"
+                      cancelText="No"
                     >
-                      Delete
-                    </Button>
+                      <Button
+                        variant="contained"
+                        className='bg-red-500 text-white rounded p-2 hover:bg-red-700'
+                      >
+                        Delete
+                      </Button>
+                    </Popconfirm>
                   </TableCell>
                 </TableRow>
               ))}

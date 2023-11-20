@@ -79,9 +79,7 @@ const sortedData = Object.values(monthlyData).sort((a, b) => {
 
   const chartOptions = {
     chart: {
-      type: 'column', // Column chart
-      width: 800,
-      height: 400,
+      type: 'column',
     },
     title: {
       text: 'Monthly Cashflow Overview',

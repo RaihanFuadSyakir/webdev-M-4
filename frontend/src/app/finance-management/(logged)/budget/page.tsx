@@ -143,8 +143,8 @@ const Budgets = () => {
   return (
     <>
       <Breadcrumb pageName="Budget" />
-      <div className="flex">
-        {<div className="flex-initial w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default">
+      <div className="sm:flex">
+        {<div className="flex-initial sm:w-73 mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default">
           <div>
             <h2 className="mb-2">Date</h2>
             <TextField

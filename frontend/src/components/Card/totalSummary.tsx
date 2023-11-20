@@ -39,22 +39,22 @@ const TotalFinancial: React.FC<TotalFinancialProps> = ({ totalIncome, totalOutco
 
   return (
     <div className="grid grid-cols-3 gap-4 mt-3">
-      <div className="w-54 h-36 bg-green-400 rounded-lg shadow-md p-4">
-        <div className="mb-12 text-white text-lg font-bold">Total Income</div>
-        <div className="flex flex-row-reverse text-2xl font-bold text-white">{formatRupiah(totalIncomeAmount)}</div>
+      <div className="sm:w-54 sm:h-36 bg-green-400 rounded-lg shadow-md p-4">
+        <div className="mb-12 text-white sm:text-lg font-bold">Total Income</div>
+        <div className="flex flex-row-reverse text-xs sm:text-2xl font-bold text-white">{formatRupiah(totalIncomeAmount)}</div>
       </div>
 
-      <div className="w-54 h-36 bg-red-400 rounded-lg shadow-md p-4">
-        <div className="mb-12 text-white text-lg font-bold">Total Outcome</div>
-        <div className="flex flex-row-reverse text-2xl font-bold text-white">{formatRupiah(totalOutcomeAmount)}</div>
+      <div className="sm:w-54 sm:h-36 bg-red-400 rounded-lg shadow-md p-4">
+        <div className="mb-12 text-white sm:text-lg font-bold">Total Outcome</div>
+        <div className="flex flex-row-reverse text-xs sm:text-2xl font-bold text-white">{formatRupiah(totalOutcomeAmount)}</div>
       </div>
 
-      <div className="w-54 h-36 bg-blue-400 rounded-lg shadow-md p-4">
-        <div className="mb-12 text-white text-lg font-bold">Total Savings</div>
-        <div className="flex flex-row-reverse text-2xl font-bold text-white">{formatRupiah(totalSavings)}</div>
+      <div className="sm:w-54 sm:h-36 bg-blue-400 rounded-lg shadow-md p-4">
+        <div className="mb-12 text-white sm:text-lg font-bold">Total Savings</div>
+        <div className="flex flex-row-reverse text-xs sm:text-2xl font-bold text-white">{formatRupiah(totalSavings)}</div>
       </div>
 
-      <div className={`mr-5 py-1 rounded-lg col-span-3 mt-4 text-l font-bold text-white text-center ${messageColor}`}>
+      <div className={`sm:mr-5 py-1 rounded-lg col-span-3 sm:mt-4 mb-4 text-l font-bold text-white text-center ${messageColor}`}>
         {message}
       </div>
     </div>
