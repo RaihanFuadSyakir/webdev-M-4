@@ -171,8 +171,8 @@ const ListRecap = ({ incomes, outcomes }: RecapProps) => {
     };
   });
   return (
-    <div className="max-w-6xl">
-      <div className='flex pb-5 justify-between'>
+    <div className="w-full sm:max-w-6xl">
+      <div className='sm:flex pb-5 justify-between'>
         <FormControl>
           <Select value={selectedMonth.toString()} onChange={handleMonthChange}>
             <MenuItem value={-1}>All Months</MenuItem>
@@ -183,10 +183,10 @@ const ListRecap = ({ incomes, outcomes }: RecapProps) => {
             ))}
           </Select>
         </FormControl>
-        <Stack direction="row" spacing={2} className='p-3'>
-          <span className='pl-2'>Total Outcome</span><Chip label={formatRupiah(totalOutcome)} color="error" />
-          <span className='pl-2'>Total Income</span><Chip label={formatRupiah(totalIncome)} color="success" />
-          <span className='pl-2'>Total Savings</span><Chip label={formatRupiah(totalSavings)} color="primary" />
+        <Stack direction={{sm:"row"}} spacing={2} className='p-3'>
+          <span className='py-2 sm:pl-2'>Total Outcome</span><Chip label={formatRupiah(totalOutcome)} color="error" />
+          <span className='py-2 sm:pl-2'>Total Income</span><Chip label={formatRupiah(totalIncome)} color="success" />
+          <span className='py-2 sm:pl-2'>Total Savings</span><Chip label={formatRupiah(totalSavings)} color="primary" />
         </Stack>
       </div>
       <div style={{ height: 400, width: '100%' }}>

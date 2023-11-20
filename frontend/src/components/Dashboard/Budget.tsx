@@ -23,10 +23,10 @@ const BudgetInfo = () => {
     const negativeBudgets = budgets.filter((budget) => budget.current_budget < 0);
 
     return (
-      <div className="w-full max-w-screen-lg mx-auto p-8 overflow-x-auto overflow-y-hidden">
-        <div className="flex space-x-4">
+      <div className="sm:w-full sm:max-w-screen-lg sm:mx-auto p-8 overflow-x-auto overflow-y-hidden">
+        <div className="flex sm:space-x-4">
           {negativeBudgets.map((budget) => (
-            <div key={budget.id} className="bg-white p-4 m-4 rounded-md shadow-lg min-w-64 flex-shrink-0">
+            <div key={budget.id} className="bg-white p-4 m-4 rounded-md shadow-lg w-full sm:min-w-64 flex-shrink-0">
               <h3 className="text-lg font-semibold">{budget.category.category_name}</h3>
               <div className="flex justify-between items-center mt-4">
                 <div className="bg-red-400 text-white p-2 rounded-md text-sm">
@@ -50,7 +50,7 @@ const BudgetInfo = () => {
   };
 
   return (
-    <div className="w-full max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
+    <div className="sm:w-full  sm:max-w-screen-lg sm:mx-auto sm:p-8 border border-stroke shadow-default rounded-lg">
       {renderNegativeBudgetInfo()}
     </div>
   );

@@ -89,7 +89,7 @@ export default function Dashboard() {
       case 'all':
         return (
           <>
-            <div className="flex">
+            <div className="sm:flex">
               <div className="p-2 rounded-lg ml-4 flex-1">
                 <LineChartIncome />
               </div>
@@ -103,7 +103,7 @@ export default function Dashboard() {
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <CategoryOutcome />
             </div>
-            <div className="flex">
+            <div className="sm:flex">
               <div className="p-2 rounded-lg flex-1">
                 <LineChart />
               </div>
@@ -144,7 +144,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <div className='flex'>
+      <div className='sm:flex'>
         <div className='flex-1'>
           <TotalSavings totalIncome={incomes} totalOutcome={outcomes} />
         </div>
@@ -153,7 +153,7 @@ export default function Dashboard() {
         </div>
       </div>
       <div className='flex-initial mt-5 p-5 bg-white rounded-sm border border-stroke shadow-default'>
-        <div className='flex'>
+        <div className='sm:flex'>
           <div>
             <div className='text-center'>
               <Button 
@@ -174,24 +174,24 @@ export default function Dashboard() {
             <div>
               <ReactCardFlip isFlipped={isFlipped}>
                 <div key='front'>
-                  <div className='flex'>
+                  <div className='sm:flex'>
                     <div className='p-2'>
                       <h1 className='text-center font-bold text-xl'>Quick Income</h1>
                       <IncomeInput />
                     </div>
-                    <div className='p-2 ml-26'>
+                    <div className='p-2 sm:ml-26'>
                     <h1 className='text-center font-bold text-xl pb-2'>Recent Income</h1>
                       <ListIncomes incomes={limitedIncomes} setIncomes={setIncomes}/>
                     </div>
                   </div>
                 </div>
                 <div key='back'>
-                  <div className='flex'>
+                  <div className='sm:flex'>
                     <div className='p-2'>
                       <h1 className='text-center font-bold text-xl'>Quick Outcome</h1>
                       <OutcomeInput />
                     </div>
-                    <div className='p-2 ml-15'>
+                    <div className='p-2 sm:ml-15'>
                     <h1 className='text-center font-bold text-xl pb-2'>Recent Outcome</h1>
                       <ListOutcomes outcomes={limitedOutcomes} setOutcomes={setOutcomes} />
                     </div>
@@ -202,7 +202,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className='bg-slate-700 flex justify-center text-white'>
+      <div className='my-4 bg-slate-700 flex justify-center text-white rounded-lg'>
         <button
           onClick={() => handleLinkClick('all')}
           className={`m-2 text-blue ${activeButton === 'all' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
@@ -224,9 +224,8 @@ export default function Dashboard() {
           >Budget & Category
         </button>
       </div>
-      <h2 style={{ textAlign:'center', fontSize: '2rem', color: '#ffff', fontStyle: 'italic', marginBottom: '1rem' }}>Hello {username} !</h2>
 
-      <div className="flex flex-col bg-gray-100">
+      <div className="sm:flex sm:flex-col bg-gray-100">
         {renderSelectedChart()}
       </div>
     </div>

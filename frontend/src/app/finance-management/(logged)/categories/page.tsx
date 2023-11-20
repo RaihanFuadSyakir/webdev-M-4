@@ -62,8 +62,8 @@ export default function Categories() {
   return (
     <>
       <Breadcrumb pageName="Categories" />
-      <div className="flex mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default">
-        <div className='w-2/3'>
+      <div className="sm:flex mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default">
+        <div className='sm:w-2/3'>
           <div className='w-full my-2 p-2'>
             <h2 className="font-bold text-xl mb-2">Create Category</h2>
             <CategorySelect setSelectedCategory={setSelectedCategory} setNewCategories={setCategories} />
@@ -73,10 +73,8 @@ export default function Categories() {
             <ListCategories categories={categories} setNewCategories={setCategories} />
           </div>
         </div>
-        <div className='w-auto m-2 p-2'>
-
+        <div className='sm:w-auto m-2 p-2'>
           <ListExpensesByCategory incomes={incomes} outcomes={outcomes} />
-
         </div>
       </div>
     </>

@@ -79,7 +79,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
   };  
 
   return (
-    <div className="flex-initial mt-2 rounded mb-4 p-5 text-black border border-stroke shadow-default">
+    <div className="flex-initial rounded mb-4 p-5 text-black border border-stroke shadow-default">
       <h2 className="font-bold text-xl mb-2">Add New Wallet</h2>
       <TextField
         label="Wallet Name"
