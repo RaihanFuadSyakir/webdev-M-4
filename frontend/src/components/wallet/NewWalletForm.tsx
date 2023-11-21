@@ -37,10 +37,10 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
   };
 
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: { target: { value: string; }; }) => {
     // Menghapus karakter selain angka
     const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
-  
+    
     setTotalBalance(formatRupiah(sanitizedValue));
   };
   
