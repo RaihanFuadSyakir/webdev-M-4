@@ -31,20 +31,26 @@ func (uc *UserController) GetUser(c *fiber.Ctx) error {
 
 func (uc *UserController) RegisterUser(c *fiber.Ctx) error {
 	var newUser struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-		Email    string `json:"email"`
-	}
-	if err := c.BodyParser(&newUser); err != nil {
-		return jsonResponse(c, fiber.StatusBadRequest, "Invalid request body", nil)
-	}
-	var existingUser models.User
-	if err := uc.DB.Where("username = ?", newUser.Username).First(&existingUser).Error; err == nil {
-		return jsonResponse(c, fiber.StatusBadRequest, "Username is already in use", nil)
-	}
-	if err := uc.DB.Where("email = ?", newUser.Email).First(&existingUser).Error; err == nil {
-		return jsonResponse(c, fiber.StatusBadRequest, "Email is already in use", nil)
-	}
+        Username string `json:"username"`
+        Password string `json:"password"`
+        Email    string `json:"email"`
+    }
+    if err := c.BodyParser(&newUser); err != nil {
+        return jsonResponse(c, fiber.StatusBadRequest, "Invalid request body", nil)
+    }
+
+    // Validate that required fields are not empty
+    if newUser.Username == "" || newUser.Password == "" || newUser.Email == "" {
+        return jsonResponse(c, fiber.StatusBadRequest, "Username, password, and email are required", nil)
+    }
+
+    var existingUser models.User
+    if err := uc.DB.Where("username = ?", newUser.Username).First(&existingUser).Error; err == nil {
+        return jsonResponse(c, fiber.StatusBadRequest, "Username is already in use", nil)
+    }
+    if err := uc.DB.Where("email = ?", newUser.Email).First(&existingUser).Error; err == nil {
+        return jsonResponse(c, fiber.StatusBadRequest, "Email is already in use", nil)
+    }
 	existingUser.Username = newUser.Username
 	existingUser.Password = newUser.Password
 	existingUser.Email = newUser.Email
