@@ -1,26 +1,25 @@
 "use client"
-import LineChart from '@/components/Dashboard/LineChart';
-import LineChartIncome from '@/components/Dashboard/LineChartIncome';
+import DailyOutcome from '@/components/Dashboard/DailyOutcome';
+import BudgetOverview from '@/components/Dashboard/BudgetOverview';
 import IncomeInput from '@/components/income/IncomeInput';
 import OutcomeInput from '@/components/outcome/OutcomeInput';
-import BarChartReport from '@/components/Dashboard/BarChartReport';
+import CashflowOverview from '@/components/Dashboard/CashflowOverview';
 import Warning from '@/components/Dashboard/Budget';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
 import { Income, Outcome, User, dbResponse } from '@/utils/type';
 import { Button } from '@mui/material';
 import { AxiosResponse } from 'axios';
-// No code changes needed. Run `npm install axios @types/axios` in the terminal to install required packages.
+// No code changes needed. Run npm install axios @types/axios in the terminal to install required packages.
 import { useRouter } from 'next/navigation';
 import { SetStateAction, useEffect, useState } from 'react';
 import PieChartWallet from '@/components/Dashboard/PieChartWallet';
 import ReactCardFlip from 'react-card-flip';
 import ListIncomes from '@/components/income/ListIncome';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
-import BudgetLeft from '@/components/Budget/BudgetLeft';
-import Budgets from '../budget/page';
-import TotalSavings from '@/components/Card/totalSummary';
 import CategoryOutcome from '@/components/Dashboard/CategoryOutcome';
+import TotalSavings from '@/components/Card/totalSummary';
+import BudgetLeft from '@/components/Budget/BudgetLeft';
 
 
 export default function Dashboard() {
@@ -84,83 +83,81 @@ export default function Dashboard() {
         });
     }, []);
 
-  const renderSelectedChart = () => {
-    switch (selectedChart) {
-      case 'all':
-        return (
-          <>
-            <div className="sm:flex">
-              <div className="p-2 rounded-lg ml-4 flex-1">
-                <LineChartIncome />
+    const renderSelectedChart = () => {
+      switch (selectedChart) {
+        case 'all':
+          return (
+            <>
+              <div className="p-2 rounded-lg mb-4 mx-auto">
+                <Warning />
               </div>
-            </div>
-            <div className="p-2 rounded-lg mb-4 mx-auto">
-              <Warning />
-            </div>
-            <div className='sm:flex'>
-              <div className="p-2 rounded-lg flex-1">
-                <BarChartReport />
+              <div className="p-2 rounded-lg mb-4 mx-auto">
+                <CashflowOverview />
               </div>
-              <div className="p-2 rounded-lg flex-1">
+              <div className="p-2 rounded-lg mb-4 mx-auto">
                 <CategoryOutcome />
               </div>
-            </div>
-            <div className="sm:flex">
-              <div className="p-2 rounded-lg flex-1">
-                <LineChart />
-              </div>
-              <div className="p-2 rounded-lg flex-1">
-                <PieChartWallet />
-              </div>
-            </div>
-          </>
-        );
-      case 'wallet':
-        return (
-          <div className="p-2 rounded-lg mx-auto">
-            <PieChartWallet />
-          </div>
-        );
-      case 'outcomes':
-        return (
-          <div className="p-2 rounded-lg mx-auto">
-            <LineChart />
-          </div>
-        );
-      case 'budget':
-        return(
-          <div className="flex">
-              <div className="p-2 rounded-lg ml-4 flex-1">
-                <LineChartIncome />
-                <div className="p-2 rounded-lg mb-4">
-                  <Warning />
+              <div className="flex">
+                <div className="p-2 rounded-lg flex-1">
+                  <DailyOutcome />
+                </div>
+                <div className="p-2 rounded-lg flex-1">
+                  <PieChartWallet />
                 </div>
               </div>
+            </>
+          );
+        case 'wallet':
+          return (
+            <div className="p-2 rounded-lg mx-auto">
+              <PieChartWallet />
+            </div>
+          );
+        case 'outcomes':
+          return (
+            <div className="flex">
+                <div className="p-2 rounded-lg ml-4 flex-1">
+                  <DailyOutcome />
+                  <div className="p-2 rounded-lg mb-4">
+                    <CategoryOutcome />
+                  </div>
+                </div>
+            </div>
+          );
+        case 'budget':
+          return(
+            <div className="flex">
+                <div className="p-2 rounded-lg ml-4 flex-1">
+                  <BudgetOverview />
+                  <div className="p-2 rounded-lg mb-4">
+                    <Warning />
+                  </div>
+                </div>
+            </div>
+          );
+        // Add other cases for different charts if needed
+        default:
+          return null;
+      }
+    };
+  
+    return (
+      <div>
+        <div className='flex'>
+          <div className='flex-1'>
+            <TotalSavings totalIncome={incomes} totalOutcome={outcomes} />
           </div>
-        );
-      // Add other cases for different charts if needed
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div>
-      <div className='sm:flex'>
-        <div className='flex-1'>
-          <TotalSavings totalIncome={incomes} totalOutcome={outcomes} />
+          <div className='flex-none'>
+            <BudgetLeft />
+          </div>
         </div>
-        <div className='flex-none'>
-          <BudgetLeft/>
-        </div>
-      </div>
-      <div className='flex-initial mt-5 p-5 bg-white rounded-sm border border-stroke shadow-default'>
-        <div className='sm:flex'>
+      <div className='flex-initial mt-2 p-5 bg-white rounded-sm border border-stroke shadow-default'>
+        <div className='flex'>
           <div>
             <div className='text-center'>
               <Button 
                 onClick={handleFlipOutcome} 
-                className='m-2 bg-green-400 text-white hover:bg-green-700'
+                className='m-2 bg-blue-400 text-white hover:bg-blue-700'
                 color='primary'
               >
                 Income
@@ -176,24 +173,24 @@ export default function Dashboard() {
             <div>
               <ReactCardFlip isFlipped={isFlipped}>
                 <div key='front'>
-                  <div className='sm:flex'>
+                  <div className='flex'>
                     <div className='p-2'>
                       <h1 className='text-center font-bold text-xl'>Quick Income</h1>
                       <IncomeInput />
                     </div>
-                    <div className='p-2 sm:ml-26'>
+                    <div className='p-2 ml-26'>
                     <h1 className='text-center font-bold text-xl pb-2'>Recent Income</h1>
                       <ListIncomes incomes={limitedIncomes} setIncomes={setIncomes}/>
                     </div>
                   </div>
                 </div>
                 <div key='back'>
-                  <div className='sm:flex'>
+                  <div className='flex'>
                     <div className='p-2'>
                       <h1 className='text-center font-bold text-xl'>Quick Outcome</h1>
                       <OutcomeInput />
                     </div>
-                    <div className='p-2 sm:ml-15'>
+                    <div className='p-2 ml-15'>
                     <h1 className='text-center font-bold text-xl pb-2'>Recent Outcome</h1>
                       <ListOutcomes outcomes={limitedOutcomes} setOutcomes={setOutcomes} />
                     </div>
@@ -204,7 +201,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <div className='my-4 bg-slate-700 flex justify-center text-white rounded-lg'>
+      <div className='bg-slate-700 flex justify-center text-white'>
         <button
           onClick={() => handleLinkClick('all')}
           className={`m-2 text-blue ${activeButton === 'all' ? 'text-blue-500' : 'bg-transparent'} hover:text-blue-500`}
@@ -226,10 +223,11 @@ export default function Dashboard() {
           >Budget & Category
         </button>
       </div>
-
-      <div className="sm:flex sm:flex-col bg-gray-100">
+      <h2 style={{ textAlign:'center', fontSize: '2rem', color: '#ffff', fontStyle: 'italic', marginBottom: '1rem' }}>Hello {username} !</h2>
+  
+      <div className="flex flex-col bg-gray-100">
         {renderSelectedChart()}
       </div>
     </div>
-  );
-}
+    );
+  }
