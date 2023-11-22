@@ -16,7 +16,6 @@ import CategorySelect from '@/components/category/CategorySelect';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import numeral from 'numeral';
-import { message } from 'antd';
 
 const OutcomeInput = () => {
   const [nominal, setNominal] = useState(0);
@@ -90,7 +89,7 @@ const OutcomeInput = () => {
         wallet_id: wallet,
       };
       axiosInstance
-        .post( `/outcome/new`, data, {
+        .post(`/outcome/new`, data, {
           withCredentials: true,
         })
         .then((response: AxiosResponse<dbResponse<Outcome>>) => {
@@ -103,7 +102,6 @@ const OutcomeInput = () => {
           setDate(''); // Reset the date field
           const newData = response.data.data
           setOutcomes((prev) => [...prev, newData])
-          message.success('Outcome added successfully', 5);
         })
         .catch((error: AxiosError) => {
           console.log("axios", error)

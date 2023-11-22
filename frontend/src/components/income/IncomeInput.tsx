@@ -16,7 +16,6 @@ import CategorySelect from '@/components/category/CategorySelect';
 import ListIncomes from '@/components/income/ListIncome';
 import Breadcrumb from '@/components/template/Breadcrumbs/Breadcrumb';
 import numeral from 'numeral';
-import { message } from 'antd';
 
 const IncomeInput = () => {
   const [incomes, setIncomes] = useState<Income[]>([]);
@@ -92,7 +91,7 @@ const IncomeInput = () => {
           setDescription('');
           setWallet(0);
           setDate(''); // Reset the date field
-          message.success('Income added successfully', 5);
+          
         })
         .catch((error: AxiosError) => {
           console.log("axios",error)
