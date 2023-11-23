@@ -152,13 +152,15 @@ const Incomes = () => {
               onChange={handleInput}
             />
           </div>
-        <Button 
-          onClick={addIncome}
-          variant="contained"
-          color="primary"
-          className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2 mt-2'>            
-          Save
-        </Button>
+          <div className='mt-2'>
+            <Button 
+              onClick={addIncome}
+              variant="contained"
+              color="success"
+              className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2'>            
+              Save
+            </Button>
+          </div>
       </div> }
 
       <div className='flex-1 p-2'>

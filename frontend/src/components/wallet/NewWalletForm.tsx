@@ -103,12 +103,16 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         }}
       />
 
-      <Button
-        className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
-        onClick={handleFormSubmit}
-      >
-        {editingWallet ? 'Save Update' : 'Save'}
-      </Button>
+        <div className='mt-2'>
+          <Button
+            variant="contained"
+            color="success"
+            className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
+            onClick={handleFormSubmit}
+          >
+            {editingWallet ? 'Save Update' : 'Save'}
+          </Button>
+        </div>
     </div>
   );
 };

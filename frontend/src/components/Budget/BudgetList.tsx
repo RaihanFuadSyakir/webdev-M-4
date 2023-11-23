@@ -117,6 +117,7 @@ const BudgetList = () => {
                           <div className="flex">
                             <Button
                               variant="contained"
+                              color="primary"
                               className={`bg-yellow-500 text-white rounded p-2 hover:bg-yellow-700 hover:text-white mr-2`}
                               onClick={() => setEditingBudget(budget)}
                             >
@@ -131,6 +132,7 @@ const BudgetList = () => {
                             >
                               <Button
                                 variant="contained"
+                                color='error'
                                 className='bg-red-500 text-white rounded p-2 hover:bg-red-700 hover:text-white'
                               >
                                 Delete

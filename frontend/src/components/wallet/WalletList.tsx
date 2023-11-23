@@ -108,6 +108,7 @@ const WalletList = () => {
                       <TableCell align='center'>
                         <Button
                           variant="contained"
+                          color='primary'
                           className={`bg-yellow-500 text-white rounded p-2 px-5 hover:bg-yellow-700 sm:mr-2 sm:mb-0 mb-2`}
                           onClick={() => setEditingWallet(wallet)}
                         >
@@ -122,6 +123,7 @@ const WalletList = () => {
                         >
                           <Button
                             variant="contained"
+                            color='error'
                             className='bg-red-500 text-white rounded p-2 hover:bg-red-700'
                           >
                             Delete
