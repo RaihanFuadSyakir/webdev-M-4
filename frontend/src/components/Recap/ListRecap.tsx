@@ -1,8 +1,9 @@
+
 import React, { useEffect, useState } from 'react';
 import { Outcome, Income, dbResponse } from '@/utils/type';
 import axiosInstance from '@/utils/fetchData';
 import { AxiosResponse } from 'axios';
-import numeral from 'numeral';
+import { DataGrid, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
 import {
   Table,
   TableContainer,
@@ -16,6 +17,8 @@ import {
   FormControl,
   InputLabel,
   SelectChangeEvent,
+  Stack,
+  Chip,
 } from '@mui/material';
 
 interface RecapProps {
@@ -59,125 +62,139 @@ const formatDate = (date: string) => {
     return `${day}/${month}/${year}`;
   };
   
-
-const formatMoney = (value: number) => `Rp ${numeral(value).format('0,0')}`;
+  const formatRupiah = (number: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
 
 const ListRecap = ({ incomes, outcomes }: RecapProps) => {
-    const [selectedMonth, setSelectedMonth] = useState<number>(-1); // -1 means no specific month is selected
+  const [selectedMonth, setSelectedMonth] = useState<number>(-1);
 
-    const months = Array.from(
-        new Set(
-            outcomes
-                .map((outcome) => new Date(outcome.date).getMonth())
-                .concat(incomes.map((income) => new Date(income.date).getMonth()))
-        )
-    );
+  const months = Array.from(
+    new Set(
+      outcomes
+        .map((outcome) => new Date(outcome.date).getMonth())
+        .concat(incomes.map((income) => new Date(income.date).getMonth()))
+    )
+  );
 
-    // Sort months in ascending order
-    months.sort((a: number, b: number) => a - b);
+  months.sort((a: number, b: number) => a - b);
 
-    const groupedData = groupDataByDate(outcomes, incomes);
+  const groupedData = groupDataByDate(outcomes, incomes);
 
-    const handleMonthChange = (event: SelectChangeEvent) => {
-        const selectedMonth = parseInt(event.target.value, 10); // Parse the string to an integer
-        setSelectedMonth(selectedMonth);
-    };
+  const handleMonthChange = (event: SelectChangeEvent) => {
+    const selectedMonth = parseInt(event.target.value, 10);
+    setSelectedMonth(selectedMonth);
+  };
 
   const categories = Array.from(
     new Set(outcomes.map((outcome) => outcome.category?.category_name || 'Uncategorized'))
   );
 
-  // Calculate total outcome and total income based on the selected month
+  // Define a type for the accumulator object
+  type CategoryAccumulator = {
+    [category: string]: number;
+  };
+
   const filteredData = selectedMonth === -1 ? groupedData : groupedData.filter((group) => new Date(group.date).getMonth() === selectedMonth);
 
   const totalOutcome = filteredData.reduce(
-    (total, group) => total + group.outcomes.reduce((sum: number, outcome: Outcome) => sum + outcome.total_outcome, 0),
+    (total, group) =>
+      total +
+      group.outcomes.reduce((sum: number, outcome: Outcome) => sum + outcome.total_outcome, 0),
     0
   );
 
   const totalIncome = filteredData.reduce(
-    (total, group) => total + group.incomes.reduce((sum: number, income: Income) => sum + income.total_income, 0),
+    (total, group) =>
+      total +
+      group.incomes.reduce((sum: number, income: Income) => sum + income.total_income, 0),
     0
   );
 
   const totalSavings = totalIncome - totalOutcome;
 
-  return (
-    <div className="">
-      <FormControl>
-        <Select value={selectedMonth.toString()} onChange={handleMonthChange}>
-          <MenuItem value={-1}>All Months</MenuItem>
-          {months.map((month) => (
-            <MenuItem key={month} value={month}>
-              {new Date(2023, month, 1).toLocaleString('default', { month: 'long' })}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Date</TableCell>
-              {categories.map((category) => (
-                <TableCell key={category} align="center">
-                  {category}
-                </TableCell>
-              ))}
-              <TableCell align="center">Total Outcome</TableCell>
-              <TableCell align="center">Total Income</TableCell>
-              <TableCell align="center">Savings</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredData.map((group, index) => (
-              <TableRow key={group.date}>
-                <TableCell component="th" scope="row" align="center">
-                  {formatDate(group.date)}
-                </TableCell>
-                {categories.map((category) => (
-                  <TableCell key={category} align="center">
-                    {formatMoney(group.categories[category] || 0)}
-                  </TableCell>
-                ))}
-                <TableCell align="center">
-                  {formatMoney(
-                    group.outcomes.reduce((total: number, outcome: Outcome) => total + outcome.total_outcome, 0)
-                  )}
-                </TableCell>
-                <TableCell align="center">
-                  {formatMoney(
-                    group.incomes.reduce((total: number, income: Income) => total + income.total_income, 0)
-                  )}
-                </TableCell>
-                <TableCell align="center">
-                  {formatMoney(group.incomes.reduce((total: number, income: Income) => total + income.total_income, 0) - group.outcomes.reduce((total: number, outcome: Outcome) => total + outcome.total_outcome, 0))}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+  const columns: GridColDef[] = [
+    {
+      field: 'date',
+      headerName: 'Date',
+      width: 150,
+      valueFormatter: (params: GridValueFormatterParams) => formatDate(params.value.toString()),
+    },
+    ...categories.map((category) => ({
+      field: category,
+      headerName: category,
+      width: 150,
+      valueFormatter: (params: GridValueFormatterParams) => formatRupiah(params.value as number),
+    })),
+    {
+      field: 'totalOutcome',
+      headerName: 'Total Outcome',
+      width: 150,
+      valueFormatter: (params: GridValueFormatterParams) => formatRupiah(params.value as number),
+    },
+    {
+      field: 'totalIncome',
+      headerName: 'Total Income',
+      width: 150,
+      valueFormatter: (params: GridValueFormatterParams) => formatRupiah(params.value as number),
+    },
+    {
+      field: 'totalSavings',
+      headerName: 'Savings',
+      width: 150,
+      valueFormatter: (params: GridValueFormatterParams) => formatRupiah(params.value as number),
+    },
+  ];
 
-      {/* New table for Total Outcome, Total Income, and Total Savings */}
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Total Outcome</TableCell>
-              <TableCell align="center">Total Income</TableCell>
-              <TableCell align="center">Total Savings</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell align="center">{formatMoney(totalOutcome)}</TableCell>
-              <TableCell align="center">{formatMoney(totalIncome)}</TableCell>
-              <TableCell align="center">{formatMoney(totalSavings)}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+  const rows = filteredData.map((group) => {
+    // Initialize the accumulator with an empty object
+    const acc: CategoryAccumulator = {};
+  
+    // Fill the accumulator with category data
+    categories.forEach((category) => {
+      acc[category] = group.categories[category] || 0;
+    });
+  
+    return {
+      id: group.date,
+      date: group.date,
+      ...acc, // Spread the accumulator object
+      totalOutcome: group.outcomes.reduce((total: number, outcome: Outcome) => total + outcome.total_outcome, 0),
+      totalIncome: group.incomes.reduce((total: number, income: Income) => total + income.total_income, 0),
+      totalSavings:
+        group.incomes.reduce((total: number, income: Income) => total + income.total_income, 0) -
+        group.outcomes.reduce((total: number, outcome: Outcome) => total + outcome.total_outcome, 0),
+    };
+  });
+  return (
+    <div className="w-full sm:max-w-6xl">
+      <div className='sm:flex pb-5 justify-between'>
+        <FormControl>
+          <Select value={selectedMonth.toString()} onChange={handleMonthChange}>
+            <MenuItem value={-1}>All Months</MenuItem>
+            {months.map((month) => (
+              <MenuItem key={month} value={month}>
+                {new Date(2023, month, 1).toLocaleString('default', { month: 'long' })}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Stack direction={{sm:"row"}} spacing={2} className='p-3'>
+          <span className='py-2 sm:pl-2'>Total Outcome</span><Chip label={formatRupiah(totalOutcome)} color="error" />
+          <span className='py-2 sm:pl-2'>Total Income</span><Chip label={formatRupiah(totalIncome)} color="success" />
+          <span className='py-2 sm:pl-2'>Total Savings</span><Chip label={formatRupiah(totalSavings)} color="primary" />
+        </Stack>
+      </div>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+        />
+      </div>
     </div>
   );
 };

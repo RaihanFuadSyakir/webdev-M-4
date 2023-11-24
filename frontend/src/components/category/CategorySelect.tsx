@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import React from 'react';
 import axiosInstance from '@/utils/fetchData';
 import { AxiosError, AxiosResponse } from "axios";
+import { message } from 'antd';
 interface props {
   setSelectedCategory: React.Dispatch<React.SetStateAction<number>>;
   setNewCategories?: React.Dispatch<React.SetStateAction<Category[]>>
@@ -82,6 +83,7 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories
         if (setNewCategories !== undefined) {
           setNewCategories((prev) => [...prev, data]);
         }
+        message.success('Category added successfully', 5);
       })
       .catch((res_err: AxiosError<dbResponse<Category>>) => {
         console.log(JSON.stringify(res_err.response?.data));
@@ -159,9 +161,9 @@ const CategorySelect: React.FC<props> = ({ setSelectedCategory, setNewCategories
           return (
             <li {...props} key={option.id}>
               <div className='flex justify-between align-middle'>
-                <div>{option.name}</div>
-                <div>
-                  <IconButton aria-label="delete" className='m-2' onClick={() => handleDelete(option.id!)}>
+                <div className='flex-1 w-55 mt-3'>{option.name}</div>
+                <div className='flex-none'>
+                  <IconButton aria-label="delete" className='m-2 mr-1 grid justify-items-end' onClick={() => handleDelete(option.id!)}>
                     <DeleteIcon fontSize="inherit" />
                   </IconButton>
                 </div>

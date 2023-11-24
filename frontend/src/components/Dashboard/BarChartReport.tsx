@@ -7,10 +7,17 @@ import { Income, Outcome, dbResponse } from '@/utils/type';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
+interface MonthlyData {
+  [key: string]: {
+    date: string;
+    income: number;
+    outcome: number;
+  };
+}
 const BarChartReport = () => {
   const [incomes, setIncomes] = useState<Income[]>([]);
   const [outcomes, setOutcomes] = useState<Outcome[]>([]);
-
+  const [combine_inout,setinout] = useState<Income[]|Outcome[]>([]);
   useEffect(() => {
     // Fetch incomes
     axiosInstance
@@ -35,43 +42,44 @@ const BarChartReport = () => {
       });
   }, []);
 
-  // Calculate monthly income and outcome based on fetched data
-  const monthlyData = incomes
-    .concat(outcomes) // Combine incomes and outcomes into a single array
-    .reduce((acc, item) => {
-      const date = new Date(item.date); // Assuming date is a string in 'YYYY-MM-DD' format
-      const monthYearKey = `${date.getMonth() + 1}-${date.getFullYear()}`;
-      const amount = item.total_income || item.total_outcome; // Assuming there are fields like total_income and total_outcome
+  // Assuming incomes and outcomes are arrays of objects with a 'date' property
+const monthlyData: MonthlyData = [...incomes, ...outcomes]
+.reduce((acc: MonthlyData, item) => {
+  const date = new Date(item.date); // Assuming date is a string in 'YYYY-MM-DD' format
+  const monthYearKey = `${date.getMonth() + 1}-${date.getFullYear()}`;
+  let amount = 0;
 
-      if (!acc[monthYearKey]) {
-        acc[monthYearKey] = {
-          date: monthYearKey,
-          income: 0,
-          outcome: 0,
-        };
-      }
+  
 
-      if (item.total_income) {
-        acc[monthYearKey].income += amount;
-      } else {
-        acc[monthYearKey].outcome += amount;
-      }
+  if (!acc[monthYearKey]) {
+    acc[monthYearKey] = {
+      date: monthYearKey,
+      income: 0,
+      outcome: 0,
+    };
+  }
+  if (typeof item === 'object' && 'total_income' in item) {
+    acc[monthYearKey].income = item.total_income;
+  } else if (typeof item === 'object' && 'total_outcome' in item) {
+    acc[monthYearKey].outcome = item.total_outcome; // Assuming there are fields like total_income and total_outcome
+  }
 
-      return acc;
-    }, {});
+  return acc; // Don't forget to return the updated acc
+}, {});
 
   // Sort data by date (in this case, month-year)
-  const sortedData = Object.values(monthlyData).sort((a, b) => {
-    const [aMonth, aYear] = a.date.split('-');
-    const [bMonth, bYear] = b.date.split('-');
-    return new Date(`${aYear}-${aMonth}`) - new Date(`${bYear}-${bMonth}`);
-  });
+// Sort data by date (in this case, month-year)
+const sortedData = Object.values(monthlyData).sort((a, b) => {
+  const [aMonth, aYear] = a.date.split('-').map(Number);
+  const [bMonth, bYear] = b.date.split('-').map(Number);
+  const dateA = new Date(`${aYear}-${aMonth}`);
+  const dateB = new Date(`${bYear}-${bMonth}`);
+  return (dateA as any) - (dateB as any); // Explicitly cast to any and then to number
+});
 
   const chartOptions = {
     chart: {
-      type: 'column', // Column chart
-      width: 800,
-      height: 400,
+      type: 'column',
     },
     title: {
       text: 'Monthly Cashflow Overview',
@@ -100,7 +108,7 @@ const BarChartReport = () => {
   };
 
   return (
-    <div className="w-full max-w-screen-lg mx-auto p-8">
+    <div className="w-full max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
       <HighchartsReact highcharts={Highcharts} options={chartOptions} />
     </div>
   );

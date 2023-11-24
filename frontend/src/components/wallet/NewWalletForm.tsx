@@ -33,16 +33,17 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
       .join('');
     var ribuan = reverse.match(/\d{1,3}/g);
     var hasil = ribuan?.join('.').split('').reverse().join('');
-    return hasil;
+    return hasil!;
   };
 
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Menghapus karakter selain angka
     const sanitizedValue = e.target.value.replace(/[^0-9]/g, '');
-    
+  
     setTotalBalance(formatRupiah(sanitizedValue));
   };
+  
 
   const handleFormSubmit = async () => {
     try {
@@ -60,7 +61,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
   
       if (editingWallet) {
         // If in edit mode, send PUT request
-        await axiosInstance.put(`/wallet/${editingWallet.id}`, data);
+        await axiosInstance.put('/wallet/${editingWallet.id}', data);
         onWalletEdited();
       } else {
         // If in add mode, send POST request
@@ -78,8 +79,8 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
   };  
 
   return (
-    <div className="rounded mb-4 p-2 text-black">
-      <h2 className="font-bold text-xl mb-2">Wallet</h2>
+    <div className="flex-initial rounded mb-4 p-5 text-black border border-stroke shadow-default">
+      <h2 className="font-bold text-xl mb-2">Add New Wallet</h2>
       <TextField
         label="Wallet Name"
         name="walletName"
@@ -94,20 +95,24 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
         name="totalBalance"
         type="text"
         value={totalBalance}
-        onKeyUp={handleInputChange}
-        onChange={(e) => setTotalBalance(e.target.value)}
+        onChange={handleInputChange}
         fullWidth
         margin="normal"
         InputProps={{
-          startAdornment: <div>Rp </div>, // Gunakan div untuk menampilkan "Rp" di sebelah input
+          startAdornment: <div>Rp </div>,
         }}
       />
-      <Button
-        className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
-        onClick={handleFormSubmit}
-      >
-        {editingWallet ? 'Update Wallet' : 'Add Wallet'}
-      </Button>
+
+        <div className='mt-2'>
+          <Button
+            variant="contained"
+            color="success"
+            className="bg-blue-500 text-white hover:bg-blue-700 hover:text-white"
+            onClick={handleFormSubmit}
+          >
+            {editingWallet ? 'Save Update' : 'Save'}
+          </Button>
+        </div>
     </div>
   );
 };

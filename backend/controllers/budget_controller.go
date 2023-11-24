@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/finance-management/models"
 	"github.com/gofiber/fiber/v2"
@@ -22,18 +23,45 @@ func (controller *BudgetController) CreateBudget(c *fiber.Ctx) error {
 	if err := c.BodyParser(&budget); err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Bad Request", nil)
 	}
+
+	// Check if month and year are in a valid range
+	if !isValidMonth(budget.Month) || !isValidYear(budget.Year) {
+		return jsonResponse(c, fiber.StatusBadRequest, "Invalid Month or Year", nil)
+	}
+
 	userID := c.Locals("userID")
 	budget.UserID = userID.(uint)
 	budget.CurrentBudget = budget.TotalBudget
+
 	if err := controller.DB.Create(&budget).Error; err != nil {
 		fmt.Println(err)
 		return jsonResponse(c, fiber.StatusInternalServerError, "Internal Server Error", nil)
 	}
+
 	if err := controller.DB.Preload("Category").Find(&budget, budget.ID).Error; err != nil {
 		return err
 	}
+
 	return jsonResponse(c, fiber.StatusCreated, "Budget created successfully", budget)
 }
+
+// isValidMonth checks if the given month is in a valid range (1 to 12).
+func isValidMonth(month uint) bool {
+	return month >= 1 && month <= 12
+}
+
+// isValidYear checks if the given year is in a valid range (not too far in the past or future).
+func isValidYear(year uint) bool {
+    // Set a reasonable range for the years (e.g., 5 years in the past and 10 years in the future).
+    currentYear := uint(time.Now().Year())
+    minValidYear := currentYear - 10
+    maxValidYear := currentYear + 10
+
+    return year >= minValidYear && year <= maxValidYear
+}
+
+
+
 
 // GetOutcomeByUserID retrieves outcomes for a user by their UserID.
 func (controller *BudgetController) GetBudgetsByUserID(c *fiber.Ctx) error {
