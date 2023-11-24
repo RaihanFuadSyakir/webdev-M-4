@@ -102,8 +102,8 @@ const ListCategories = ({ categories,setNewCategories}: CategoryProps) => {
                       cancelText="No"
                 >
                   <Button 
-                    variant="outlined" 
-                    color="secondary" 
+                    variant="contained" 
+                    color="error" 
                     className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
                   >
                     Delete

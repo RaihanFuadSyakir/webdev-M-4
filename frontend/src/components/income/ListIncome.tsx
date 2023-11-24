@@ -197,14 +197,15 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
                 {editStates[index]?.isEditing ? (
                     <>
                       <Button 
-                        variant="outlined" 
-                        color="primary" 
+                        variant="contained" 
+                        color="success" 
                         onClick={()=>handleSaveEdit(index)}
                       >
                         Save
                       </Button>
                       <Button 
-                        variant="outlined" 
+                        variant="contained" 
+                        color='error'
                         onClick={()=>{handleCancelEdit(index)}}
                       >
                         Cancel
@@ -220,15 +221,15 @@ const ListIncomes = ({incomes,setIncomes} : Props) => {
                       cancelText="No"
                     >
                       <Button 
-                        variant="outlined" 
-                        color="secondary" 
+                        variant="contained" 
+                        color="error" 
                         className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white'
                       >
                         Delete
                       </Button>
                     </Popconfirm>
                     <Button 
-                      variant="outlined" 
+                      variant="contained" 
                       color="primary" 
                       className="bg-blue-500 text-white rounded hover:bg-blue-700 hover:text-white"
                       onClick={()=>enableEdit(index)}

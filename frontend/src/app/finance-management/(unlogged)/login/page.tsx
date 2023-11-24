@@ -11,6 +11,7 @@ import { Avatar, Box, Button, Checkbox, CircularProgress, CssBaseline, FormContr
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { AxiosError, AxiosResponse } from 'axios';
 import Image from "next/image"
+import '@fontsource/roboto/400.css';
 
 const defaultTheme = createTheme()
 
@@ -105,15 +106,15 @@ const Login: React.FC = () => {
                 className="" 
               />
             </div>
-            <Typography component="h1" variant="h5">
+            <Typography className='font-bold mb-3' component="h1" variant="h5">
               Log in
             </Typography>
-            <Box component="form" noValidate onSubmit={handleLogin} sx={{ mt: 1 }}>
+            <Box component="form" noValidate onSubmit={handleLogin} sx={{ mt: 1, width:'100%' }}>
+              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">Email address or Username</label>
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                label="Username / Email"
                 error={errors[0] !== ''}
                 id={errors[0] !== '' ? "outlined-required" : "outlined-error-helper-text"}
                 name="identifier"
@@ -123,6 +124,7 @@ const Login: React.FC = () => {
                 helperText={errors[0] !== '' && errors[0]}
                 autoFocus
               />
+              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">Password</label>
               <TextField
                 margin="normal"
                 fullWidth
@@ -130,81 +132,40 @@ const Login: React.FC = () => {
                 error={errors[1] !== ''}
                 id={errors[1] !== '' ? "outlined-required" : "outlined-error-helper-text"}
                 name="password"
-                label="Password"
                 type="password"
                 value={password}
                 InputLabelProps={{ shrink: password !== '' }}
                 helperText={errors[1] !== '' && errors[1]}
                 onChange={handleOnChange}
               />
-              {isLoading ? <CircularProgress color='primary' /> : <Button
-                variant="contained"
-                type="submit"
-                fullWidth
-                className={`${!isLoading &&  'bg-sky-400'}`}
-                disabled={isLoading}
-                onClick={handleLogin}
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Log in
-              </Button>}
-              {errors[2] !== '' &&
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                  <strong className="font-bold">Error:</strong>
-                  <span className="block sm:inline">{errors[2]}</span>
-                </div>
-              }
+              <p className="mt-5 text-center text-sm text-gray-500">
+                Don't have an account? 
+                <a href="/finance-management/register" className="font-semibold leading-6 text-sky-400 hover:text-blue-700"> Register here</a>
+              </p>
+              <div className='text-center items-center justify-center'>
+                {isLoading ? <CircularProgress color='primary' /> : <Button
+                  variant="contained"
+                  type="submit"
+                  fullWidth
+                  className={`${!isLoading &&  'bg-sky-400'}`}
+                  disabled={isLoading}
+                  onClick={handleLogin}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Log in
+                </Button>}
+                {errors[2] !== '' &&
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                    <strong className="font-bold">Error:</strong>
+                    <span className="block sm:inline">{errors[2]}</span>
+                  </div>
+                }
+              </div>
             </Box>
           </Box>
         </Grid>
       </Grid>
     </ThemeProvider>
-    {/* <div className=' text-black flex items-center justify-center h-screen'>
-      <div className='flex flex-col h-72 w-72 shadow-md rounded'>
-        <h2 className="text-3xl font-semibold text-center text-indigo-600">Login</h2>
-        <TextField
-          required
-          error={errors[0] !== ''}
-          id={errors[0] !== '' ? "outlined-required" : "outlined-error-helper-text"}
-          name="identifier"
-          label="username/email"
-          value={identifier}
-          InputLabelProps={{ shrink: identifier !== '' }}  
-          onChange={handleOnChange}
-          helperText={errors[0] !== '' && errors[0]}
-          className='m-2'
-        />
-        <TextField
-          required
-          error={errors[1] !== ''}
-          id={errors[1] !== '' ? "outlined-required" : "outlined-error-helper-text"}
-          name="password"
-          label="Password"
-          type="password"
-          value={password}
-          InputLabelProps={{ shrink: password !== '' }}
-          helperText={errors[1] !== '' && errors[1]}
-          onChange={handleOnChange}
-          className='m-2'
-        />
-        <div className='flex items-center justify-center'>
-        {isLoading ? <CircularProgress color='primary' /> : <Button
-            variant="contained"
-            onClick={handleLogin}
-            className={`${!isLoading &&  'bg-cyan-700'}`}
-            disabled={isLoading}
-          >
-            <div>Login</div>
-          </Button>}
-        </div>
-        {errors[2] !== '' &&
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            <strong className="font-bold">Error:</strong>
-            <span className="block sm:inline">{errors[2]}</span>
-          </div>
-        }
-      </div>
-    </div> */}
     </>
   );
 };

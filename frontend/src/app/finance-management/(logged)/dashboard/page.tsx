@@ -1,9 +1,9 @@
 "use client"
-import LineChart from '@/components/Dashboard/LineChart';
-import LineChartIncome from '@/components/Dashboard/LineChartIncome';
+import DailyOutcome from '@/components/Dashboard/DailyOutcome';
+import BudgetOverview from '@/components/Dashboard/BudgetOverview';
 import IncomeInput from '@/components/income/IncomeInput';
 import OutcomeInput from '@/components/outcome/OutcomeInput';
-import BarChartReport from '@/components/Dashboard/BarChartReport';
+import CashflowOverview from '@/components/Dashboard/CashflowOverview';
 import Warning from '@/components/Dashboard/Budget';
 import axiosInstance from '@/utils/fetchData';
 import { BACKEND_URL } from '@/constants';
@@ -18,7 +18,6 @@ import ReactCardFlip from 'react-card-flip';
 import ListIncomes from '@/components/income/ListIncome';
 import ListOutcomes from '@/components/outcome/ListOutcomes';
 import BudgetLeft from '@/components/Budget/BudgetLeft';
-import Budgets from '../budget/page';
 import TotalSavings from '@/components/Card/totalSummary';
 import CategoryOutcome from '@/components/Dashboard/CategoryOutcome';
 
@@ -89,25 +88,20 @@ export default function Dashboard() {
       case 'all':
         return (
           <>
-            <div className="sm:flex">
-              <div className="p-2 rounded-lg ml-4 flex-1">
-                <LineChartIncome />
-              </div>
-            </div>
             <div className="p-2 rounded-lg mb-4 mx-auto">
               <Warning />
             </div>
             <div className='sm:flex'>
-              <div className="p-2 rounded-lg flex-1">
-                <BarChartReport />
+              <div className="p-2 rounded-lg mb-4 mx-auto">
+                <CashflowOverview />
               </div>
-              <div className="p-2 rounded-lg flex-1">
+              <div className="p-2 rounded-lg mb-4 mx-auto">
                 <CategoryOutcome />
               </div>
             </div>
             <div className="sm:flex">
               <div className="p-2 rounded-lg flex-1">
-                <LineChart />
+                <DailyOutcome />
               </div>
               <div className="p-2 rounded-lg flex-1">
                 <PieChartWallet />
@@ -123,15 +117,20 @@ export default function Dashboard() {
         );
       case 'outcomes':
         return (
-          <div className="p-2 rounded-lg mx-auto">
-            <LineChart />
+          <div className='sm:flex'>
+            <div className="p-2 rounded-lg ml-4 flex-1">
+              <DailyOutcome />
+              <div className="p-2 rounded-lg mb-4">
+                  <CategoryOutcome />
+                </div>
+            </div>
           </div>
         );
       case 'budget':
         return(
           <div className="flex">
               <div className="p-2 rounded-lg ml-4 flex-1">
-                <LineChartIncome />
+                <BudgetOverview />
                 <div className="p-2 rounded-lg mb-4">
                   <Warning />
                 </div>
@@ -157,21 +156,27 @@ export default function Dashboard() {
       <div className='flex-initial mt-5 p-5 bg-white rounded-sm border border-stroke shadow-default'>
         <div className='sm:flex'>
           <div>
-            <div className='text-center'>
-              <Button 
-                onClick={handleFlipOutcome} 
-                className='m-2 bg-green-400 text-white hover:bg-green-700'
-                color='primary'
-              >
-                Income
-              </Button>
-              <Button 
-                onClick={handleFlipIncome}  
-                className='m-2 bg-red-400 text-white hover:bg-red-700'
-                color='secondary'
-              >
-                Outcome
-              </Button>
+            <div className='text-center grid gap-x-8 grid-cols-2'>
+              <div className='place-self-end'>
+                <Button 
+                  onClick={handleFlipOutcome} 
+                  className='m-2 bg-green-400 text-white hover:bg-green-700'
+                  variant='contained'
+                  color='success'
+                >
+                  Income
+                </Button>
+              </div>
+              <div className='place-self-start'>
+                <Button 
+                  onClick={handleFlipIncome}  
+                  className='m-2 bg-red-400 text-white hover:bg-red-700'
+                  color='error'
+                  variant='contained'
+                >
+                  Outcome
+                </Button>
+              </div>
             </div>
             <div>
               <ReactCardFlip isFlipped={isFlipped}>
