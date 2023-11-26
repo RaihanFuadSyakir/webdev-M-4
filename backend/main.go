@@ -4,7 +4,6 @@ import (
 	"github.com/finance-management/controllers"
 	"github.com/finance-management/middleware"
 	"github.com/finance-management/migrations"
-	"github.com/finance-management/seeds"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	// Update the import path
@@ -13,7 +12,7 @@ import (
 func setupMiddleware(app *fiber.App) {
 	// CORS middleware setup
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000",
+		AllowOrigins:     "http://localhost:21033",
 		AllowMethods:     "GET,POST,PUT,DELETE,PATCH",
 		AllowHeaders:     "Origin, Content-Type, Accept,token , Authorization,Set-Cookie",
 		AllowCredentials: true,
@@ -42,7 +41,7 @@ func main() {
 	}
 
 	// Seed the database with dummy data
-	seeds.Seed(db) // Update the function call with the correct path
+	// seeds.Seed(db) // Update the function call with the correct path
 
 	// Initialize the UserController with the database
 
@@ -67,7 +66,7 @@ func main() {
 	defineIncomeRoutes(app, incomeController)
 	defineReportRoutes(app, reportController)
 	// Start the server
-	app.Listen(":5000")
+	app.Listen(":21032")
 }
 
 // Define route functions for each controller

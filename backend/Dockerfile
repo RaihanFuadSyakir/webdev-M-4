@@ -17,7 +17,7 @@ COPY . .
 RUN go build
 
 # Expose the port your Golang app will listen on
-EXPOSE 5000
+EXPOSE 21032
 
 # Define the command to start your Golang application
 CMD ["./finance-management"]

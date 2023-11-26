@@ -26,4 +26,5 @@ COPY . .
 EXPOSE 3000
 
 # Define the command to start your frontend app
-CMD ["npm", "run", "dev"]
+RUN npm run build
+CMD ["npm", "run", "start","--","-p","21033"]
