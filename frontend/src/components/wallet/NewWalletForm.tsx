@@ -61,7 +61,7 @@ const NewWalletForm: React.FC<NewWalletFormProps> = ({ onWalletAdded, onWalletEd
   
       if (editingWallet) {
         // If in edit mode, send PUT request
-        await axiosInstance.put('/wallet/${editingWallet.id}', data);
+        await axiosInstance.put(`/wallet/${editingWallet.id}`, data);
         onWalletEdited();
       } else {
         // If in add mode, send POST request
