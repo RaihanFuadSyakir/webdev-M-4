@@ -12,8 +12,8 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import TablePagination from '@mui/material/TablePagination'; 
-import Categories from '@/app/(logged)/categories/page';
-import Outcomes from '@/app/(logged)/outcomes/page';
+import Categories from '@/app/finance-management/(logged)/categories/page';
+import Outcomes from '@/app/finance-management/(logged)/outcomes/page';
 import WalletSelect from '../wallet/WalletSelect';
 import CategorySelect from '../category/CategorySelect';
 import {format} from 'date-fns';
@@ -203,14 +203,15 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                   {editStates[index]?.isEditing ? (
                     <>
                       <Button
-                        variant="outlined"
-                        color="primary"
+                        variant="contained"
+                        color="success"
                         onClick={() => handleSaveEdit(index)}
                       >
                         Save
                       </Button>
                       <Button
-                        variant="outlined"
+                        variant="contained"
+                        color='error'
                         onClick={() => handleCancelEdit(index)}
                       >
                         Cancel
@@ -226,15 +227,15 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                         cancelText="No"
                       >
                         <Button
-                          variant="outlined"
-                          color="secondary"
+                          variant="contained"
+                          color="error"
                           className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white mr-1'
                         >
                           Delete
                         </Button>
                       </Popconfirm>
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         color="primary"
                         className="bg-blue-500 text-white rounded hover:bg-blue-700 hover:text-white ml-1"
                         onClick={() => enableEdit(index)}

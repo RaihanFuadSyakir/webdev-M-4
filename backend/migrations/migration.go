@@ -105,6 +105,32 @@ func AddTriggers(db *gorm.DB) error {
         FOR EACH ROW
         EXECUTE FUNCTION update_wallet_balance_on_income_deletion();
 
+        -- Create a trigger function to update wallet balance on income update
+        CREATE OR REPLACE FUNCTION update_wallet_balance_on_income_update()
+            RETURNS TRIGGER AS $$
+        BEGIN
+            -- Subtract the old income amount
+            UPDATE wallets
+            SET total_balance = total_balance - OLD.total_income
+            WHERE id = OLD.wallet_id;
+
+            -- Add the new income amount
+            UPDATE wallets
+            SET total_balance = total_balance + NEW.total_income
+            WHERE id = NEW.wallet_id;
+
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+
+        -- Create a trigger for income update
+        CREATE OR REPLACE TRIGGER income_update_trigger
+        AFTER UPDATE
+        ON incomes
+        FOR EACH ROW
+        EXECUTE FUNCTION update_wallet_balance_on_income_update();
+
+
         -- Create a trigger for outcome deletion
         CREATE OR REPLACE TRIGGER outcome_deletion_trigger
         AFTER DELETE
@@ -129,6 +155,32 @@ func AddTriggers(db *gorm.DB) error {
             RETURN NEW;
         END;
         $$ LANGUAGE plpgsql;
+
+        -- Create a trigger function to update wallet balance on outcome update
+        CREATE OR REPLACE FUNCTION update_wallet_balance_on_outcome_update()
+            RETURNS TRIGGER AS $$
+        BEGIN
+            -- Subtract the old outcome amount
+            UPDATE wallets
+            SET total_balance = total_balance + OLD.total_outcome
+            WHERE id = OLD.wallet_id;
+
+            -- Add the new outcome amount
+            UPDATE wallets
+            SET total_balance = total_balance - NEW.total_outcome
+            WHERE id = NEW.wallet_id;
+
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+
+        -- Create a trigger for outcome update
+        CREATE OR REPLACE TRIGGER outcome_update_trigger
+        AFTER UPDATE
+        ON outcomes
+        FOR EACH ROW
+        EXECUTE FUNCTION update_wallet_balance_on_outcome_update();
+
         -- Create a trigger to update the TotalOutcome in the reports table after inserting into outcomes
         CREATE OR REPLACE FUNCTION update_total_outcome_on_report()
         RETURNS TRIGGER AS $$

@@ -87,47 +87,44 @@ const LineChart = () => {
       name: 'Total Outcome',
       data: chartData.map((item) => item.total_outcome),
       type: 'line',
-      width: 800,
-      height: 400,
     }],
   };
 
   return (
     <div className="w-full max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
-      <div className="mb-4 flex space-x-4 items-center">
-        <div className="flex space-x-4 items-center">
-          <label className="text-gray-600 text-sm" htmlFor="month">Month:</label>
-          <select
-            className="p-2 text-sm border border-gray-300 rounded-md"
-            id="month"
-            onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-            value={selectedMonth || ''}
-          >
-            <option value="">Select Month</option>
-            {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-              <option key={month} value={month}>
-                {new Date(0, month - 1).toLocaleString('en-US', { month: 'long' })}
-              </option>
-            ))}
-          </select>
+      <div className="mb-4 sm:flex space-x-4 items-center">
+        <div>
+            <label className="text-gray-600 text-sm pr-3" htmlFor="month">Month:</label>
+            <select
+                className="p-2 text-sm border border-gray-300 rounded-md"
+                id="month"
+                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                value={selectedMonth || ''}
+            >
+                <option value="">Select Month</option>
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                <option key={month} value={month}>
+                    {new Date(0, month - 1).toLocaleString('en-US', { month: 'long' })}
+                </option>
+                ))}
+            </select>
         </div>
-        
-        <div className="flex space-x-4 items-center">
-          <label className="text-gray-600 text-sm" htmlFor="year">Year:</label>
-          <select
-            className="p-2 text-sm border border-gray-300 rounded-md"
-            id="year"
-            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-            value={selectedYear || ''}
-          >
-            <option value="">Select Year</option>
-            {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
+        <div className='mt-4 sm:mt-0'>
+            <label className="text-gray-600 text-sm pr-3" htmlFor="year">Year:</label>
+            <select
+                className="p-2 text-sm border border-gray-300 rounded-md"
+                id="year"
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                value={selectedYear || ''}
+            >
+                <option value="">Select Year</option>
+                {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                <option key={year} value={year}>
+                    {year}
+                </option>
+                ))}
+            </select>
+      </div>
       </div>
 
       <HighchartsReact highcharts={Highcharts} options={chartOptions} />

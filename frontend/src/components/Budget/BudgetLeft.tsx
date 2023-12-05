@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react';
 import { Budget, dbResponse, Category } from '@/utils/type';
 import { AxiosError, AxiosResponse } from 'axios';
@@ -59,7 +60,7 @@ const BudgetLeft = () => {
   };
 
   return (
-    <div className='bg-white rounded-sm border border-stroke shadow-default overflow-auto min-h-50 max-h-60 w-100'>
+    <div className='bg-white rounded-sm border border-stroke shadow-default overflow-auto min-h-50 max-h-60 sm:w-100'>
       <div className='flex p-3 sticky top-0 justify-between z-1 bg-white'>
         <h2 className='font-bold text-xl'>Budget Savings</h2>
         {/* <div>
@@ -79,7 +80,7 @@ const BudgetLeft = () => {
               <Card
                 key={`${budget.year}-${budget.month}`}
                 title={`Budget for ${months[budget.month - 1]} ${budget.year}`}
-                style={{ width: 300, margin: '10px auto' }}
+                style={{ width: 300, margin: '15px auto' }}
               >
                 <p>
                   {budget.current_budget < 0 ?

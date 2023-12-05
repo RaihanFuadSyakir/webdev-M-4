@@ -1,4 +1,9 @@
-import { Package } from "@/types/package";
+export interface Package {
+  name: string;
+  price: number;
+  invoiceDate: string;
+  status: string;
+}
 
 const packageData: Package[] = [
   {

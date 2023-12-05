@@ -77,8 +77,6 @@ const BarChartReport = () => {
   const chartOptions = {
     chart: {
       type: 'column',
-      width: 800,
-      height: 400,
     },
     title: {
       text: 'Cashflow Overview',
@@ -107,40 +105,46 @@ const BarChartReport = () => {
   };
 
   return (
-    <div className="w-full max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
-      <div className="mb-4 space-x-4 items-center">
-        <label className="text-gray-600 text-sm">Month:</label>
-        <select
-          className="p-2 text-sm border border-gray-300 rounded-md"
-          onChange={(e) => setSelectedMonth(Number(e.target.value))}
-          value={selectedMonth}
-        >
-          <option value="0">Show All Data</option>
-          {Array.from({ length: 12 }, (_, index) => (
-            <option key={index + 1} value={index + 1}>
-              {new Date(0, index).toLocaleString('en-US', { month: 'long' })}
-            </option>
-          ))}
-        </select>
-        <label className="text-gray-600 text-sm">Year:</label>
-        <select
-          className="p-2 text-sm border border-gray-300 rounded-md"
-          onChange={(e) => setSelectedYear(Number(e.target.value))}
-          value={selectedYear}
-        >
-          <option value="">Select Year</option>
-          {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
-        <label className="text-gray-600 text-sm">Show All Data:</label>
-        <input
-          type="checkbox"
-          onChange={() => setShowAllData(!showAllData)}
-          checked={showAllData}
-        />
+    <div className="sm:w-full sm:max-w-screen-lg mx-auto p-8 border border-stroke shadow-default rounded-lg">
+      <div className="sm:flex mb-4 space-x-4 items-center">
+        <div>
+            <label className="text-gray-600 text-sm pr-3">Month:</label>
+            <select
+            className="p-2 text-sm border border-gray-300 rounded-md"
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            value={selectedMonth}
+            >
+            <option value="0">Show All Data</option>
+            {Array.from({ length: 12 }, (_, index) => (
+                <option key={index + 1} value={index + 1}>
+                {new Date(0, index).toLocaleString('en-US', { month: 'long' })}
+                </option>
+            ))}
+            </select>
+        </div>
+        <div className='mt-4 sm:mt-0'>
+            <label className="text-gray-600 text-sm pr-3">Year:</label>
+            <select
+            className="p-2 text-sm border border-gray-300 rounded-md"
+            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            value={selectedYear}
+            >
+            <option value="">Select Year</option>
+            {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                <option key={year} value={year}>
+                {year}
+                </option>
+            ))}
+            </select>
+        </div>
+        <div className='mt-4 sm:mt-0'>
+            <label className="text-gray-600 text-sm pr-3">Show All Data:</label>
+            <input
+                type="checkbox"
+                onChange={() => setShowAllData(!showAllData)}
+                checked={showAllData}
+            />
+        </div>
       </div>
       <HighchartsReact highcharts={Highcharts} options={chartOptions} />
     </div>

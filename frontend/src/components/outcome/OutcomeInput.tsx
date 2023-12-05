@@ -168,14 +168,16 @@ const OutcomeInput = () => {
               onChange={handleInput}
             />
           </div>
-          <Button
-            onClick={addOutcome}
-            variant="contained"
-            color="primary"
-            className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2 mt-2'
-          >
-            Save
-          </Button>
+          <div className='mt-2'>
+            <Button
+              onClick={addOutcome}
+              variant="contained"
+              color="success"
+              className='bg-green-500 text-white rounded p-2 hover:bg-green-700 hover:text-white mr-2'
+            >
+              Save
+            </Button>
+          </div>
         </div>
     </>
   );

@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import DropdownUser from "./DropdownUser";
 import Image from "next/image";

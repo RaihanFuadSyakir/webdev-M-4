@@ -108,7 +108,6 @@ const BudgetForm: React.FC<BudgetFormProps> = ({ onBudgetAdded, onBudgetUpdated,
             <div>
                 <h2>Total Budget</h2>
                 <TextField
-                    label="Total Budget"
                     type="text"
                     fullWidth
                     margin="normal"
