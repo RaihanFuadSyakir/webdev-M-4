@@ -11,12 +11,14 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Categories from '@/app/(logged)/categories/page';
-import Outcomes from '@/app/(logged)/outcomes/page';
+import TablePagination from '@mui/material/TablePagination'; 
+import Categories from '@/app/finance-management/(logged)/categories/page';
+import Outcomes from '@/app/finance-management/(logged)/outcomes/page';
 import WalletSelect from '../wallet/WalletSelect';
 import CategorySelect from '../category/CategorySelect';
 import {format} from 'date-fns';
 import numeral from 'numeral';
+import { Popconfirm, message } from 'antd';
 
 interface OutcomeProps {
   outcomes: Outcome[];
@@ -35,6 +37,9 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
   );
   const [newWalletId, setNewWalletId] = useState(0);
   const [newCategoryId, setNewCategoryId] = useState(0);
+  const [page, setPage] = useState(0);  
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   useEffect(() => {
     setEditStates(() => (
       outcomes.map((outcome) => ({
@@ -47,6 +52,15 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
     ))
   }, [outcomes.length])
 
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const handleDelete = (index: number) => {
     const newEditStates = [...editStates];
     const updatedOutcomes = [...outcomes];
@@ -55,6 +69,7 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
     updatedOutcomes.splice(index, 1);
     setEditStates(newEditStates);
     setOutcomes(updatedOutcomes);
+    message.success('Outcome deleted successfully', 5);
   }
 
   const enableEdit = (index: number) => {
@@ -188,14 +203,15 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                   {editStates[index]?.isEditing ? (
                     <>
                       <Button
-                        variant="outlined"
-                        color="primary"
+                        variant="contained"
+                        color="success"
                         onClick={() => handleSaveEdit(index)}
                       >
                         Save
                       </Button>
                       <Button
-                        variant="outlined"
+                        variant="contained"
+                        color='error'
                         onClick={() => handleCancelEdit(index)}
                       >
                         Cancel
@@ -203,16 +219,23 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
                     </>
                   ) : (
                     <>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white mr-1'
-                        onClick={() => handleDelete(index)}
+                      <Popconfirm
+                        title="Are you sure you want to delete this outcome?"
+                        onConfirm={() => handleDelete(index)}
+                        okText="Yes"
+                        okType="danger"
+                        cancelText="No"
                       >
-                        Delete
-                      </Button>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          className='bg-red-500 text-white rounded hover:bg-red-700 hover:text-white mr-1'
+                        >
+                          Delete
+                        </Button>
+                      </Popconfirm>
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         color="primary"
                         className="bg-blue-500 text-white rounded hover:bg-blue-700 hover:text-white ml-1"
                         onClick={() => enableEdit(index)}
@@ -226,6 +249,15 @@ const ListOutcomes = ({ outcomes, setOutcomes }: OutcomeProps) => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={outcomes.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
     </div>
   );
